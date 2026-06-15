@@ -5,7 +5,7 @@ RUN apk add --no-cache libc6-compat
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.11.0 --activate && pnpm i --frozen-lockfile
 
 # ── builder ───────────────────────────────────────────────────────────────────
 FROM base AS builder
@@ -18,7 +18,7 @@ ENV NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_OPTIONS="--no-deprecation --max-old-space-size=4096"
 
-RUN corepack enable pnpm && pnpm run build
+RUN corepack enable && corepack prepare pnpm@10.11.0 --activate && pnpm run build
 
 # ── runner ────────────────────────────────────────────────────────────────────
 FROM base AS runner
