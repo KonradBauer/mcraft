@@ -19,20 +19,23 @@
 
 ---
 
-## Faza 2 — Fetch + Homepage
+## Faza 2 — Fetch + Homepage ✅
 
-- [ ] Przekształcić `src/app/(frontend)/page.tsx` w async server component
-- [ ] Dodać fetch globals (hero, about, cvModal, bioModal) przez Payload Local API
-- [ ] Dodać fetch `StatTile` (posortowane wg `order`)
-- [ ] Dodać fetch `ServicePage` (tylko slug + thumbnailImage + thumbnailTitle)
-- [ ] Zdefiniować typ `HomeContentProps` i przekazać dane do `<HomeContent />`
-- [ ] Refaktor `HomeContent.tsx`: usunąć hardcoded `TILES`, zastąpić props
-- [ ] Refaktor `ModalCV`: treść z props zamiast hardcoded JSX
-- [ ] Refaktor `ModalBio`: treść z props zamiast hardcoded JSX
-- [ ] Refaktor `ModalTiles`: kafelki z props zamiast hardcoded `TILES`
-- [ ] Karuzela (marquee): dane z props, animacja bez zmian
-- [ ] Zaseed testowych danych w panelu admina (wypełnić wszystkie globals + 5 StatTile)
-- [ ] Weryfikacja: edycja tytułu w panelu → widoczna na stronie
+- [x] Przekształcić `src/app/(frontend)/page.tsx` w async server component
+- [x] Dodać fetch globals (hero, about, cvModal, bioModal) przez Payload Local API
+- [x] Dodać fetch `StatTile` (posortowane wg `order`)
+- [x] Dodać fetch `ServicePage` (slug + thumbnailTitle)
+- [x] Zdefiniować typ `HomeContentProps` i przekazać dane do `<HomeContent />`
+- [x] Refaktor `HomeContent.tsx`: usunąć hardcoded `TILES`, zastąpić props
+- [x] Refaktor `ModalCV`: treść z props zamiast hardcoded JSX (fallback gdy brak danych)
+- [x] Refaktor `ModalBio`: treść z props zamiast hardcoded JSX (fallback gdy brak danych)
+- [x] Refaktor `ModalTiles`: kafelki z props zamiast hardcoded `TILES`
+- [x] Karuzela (marquee): dane z props, animacja bez zmian
+- [ ] Zaseed testowych danych w panelu admina (ręczne — wymaga działającego serwera)
+- [ ] Weryfikacja: edycja tytułu w panelu → widoczna na stronie (ręczna)
+
+> **Uwaga SSG:** `/` buduje się statycznie (SSG). Zmiany w CMS będą widoczne po przebudowie.
+> Dodanie `dynamic = 'force-dynamic'` lub ISR revalidation — opcjonalnie w Fazie 5.
 
 ---
 
