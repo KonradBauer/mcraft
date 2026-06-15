@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 interface LogoProps {
   strokeColor?: string
   size?: number
@@ -5,7 +7,7 @@ interface LogoProps {
 
 export function Logo({ strokeColor = '#fff', size = 38 }: LogoProps) {
   return (
-    <div className="flex items-center gap-[14px]">
+    <Link href="/" className="flex items-center gap-[14px]">
       <svg
         viewBox="0 0 60 60"
         fill="none"
@@ -19,6 +21,6 @@ export function Logo({ strokeColor = '#fff', size = 38 }: LogoProps) {
         <path d="M8 12h6M52 12h-6" />
       </svg>
       <span className="font-montserrat font-semibold text-[20px] tracking-[0.34em]">MCRAFT</span>
-    </div>
+    </Link>
   )
 }

@@ -14,7 +14,7 @@ export interface SubpageLayoutProps {
   ctaLabel?: string
 }
 
-const wrap = 'max-w-[1180px] mx-auto px-12 max-[980px]:px-[26px] max-[560px]:px-5'
+const wrap = 'max-w-[1920px] mx-auto px-14 max-[980px]:px-[30px] max-[560px]:px-5'
 
 export function SubpageLayout({
   eyebrow,
@@ -30,8 +30,8 @@ export function SubpageLayout({
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
-          <nav className="flex items-center justify-between py-[26px]">
-            <Logo size={34} />
+          <nav className="flex items-center justify-between py-[30px]">
+            <Logo />
             <Link
               href="/"
               className="inline-flex items-center gap-3 font-montserrat text-xs font-medium tracking-[0.16em] uppercase text-light-muted transition-colors duration-200 hover:text-white"

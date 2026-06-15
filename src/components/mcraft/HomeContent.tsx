@@ -33,7 +33,7 @@ type ModalKey = 'cv' | 'bio' | 'tiles'
 
 /* ─── reusable class strings ─── */
 const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58]'
-const wrap = 'max-w-[1600px] mx-auto px-1 max-[980px]:px-[30px] max-[560px]:px-5'
+const wrap = 'max-w-[1920px] mx-auto px-14 max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200'
 
 /* ─── icon helpers ─── */
@@ -350,8 +350,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               </div>
             </nav>
 
-            <div className="relative pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px]">
-              <div className="max-w-[460px]">
+            <div className="flex items-center justify-between pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px] max-[980px]:block">
+              <div className="max-w-[460px] flex-shrink-0">
                 <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
                 <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[48px] max-[560px]:text-[38px]">
                   Michał<br />Macherzyński
@@ -371,7 +371,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 </button>
               </div>
 
-              <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center max-[980px]:hidden">
+              <div className="flex flex-col justify-center mr-[8%] max-[980px]:hidden">
                 <div>
                   <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
                   <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie</div>
@@ -380,13 +380,13 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 <div className="mt-4">
                   <hr className="border-[#ccc] mb-4" />
                   <p className="relative text-lg font-bold leading-[1.75] text-[#56544e] pl-5">
-                    <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'“'}</span>
+                    <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'"'}</span>
                     Doświadczeniem buduję
                     <br />
                     most pomiędzy teorią
                     <br />
                     a praktyką.
-                    <span className="ml-1 text-3xl font-bold text-[#00A887]">{'”'}</span>
+                    <span className="ml-1 text-3xl font-bold text-[#00A887]">{'"'}</span>
                   </p>
                 </div>
               </div>
