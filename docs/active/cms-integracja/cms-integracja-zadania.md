@@ -5,17 +5,17 @@
 
 ---
 
-## Faza 1 — Schema Payload
+## Faza 1 — Schema Payload ✅
 
-- [ ] Stworzyć `src/globals/HeroSection.ts` (backgroundImage, personPhoto, subtitle, description)
-- [ ] Stworzyć `src/globals/AboutSection.ts` (portraitPhoto, bioText)
-- [ ] Stworzyć `src/globals/CvModal.ts` (experience[], qualifications[], competencies, cvFile)
-- [ ] Stworzyć `src/globals/BioModal.ts` (sections[], bioFile)
-- [ ] Stworzyć `src/collections/StatTile.ts` (number, label, description, order)
-- [ ] Stworzyć `src/collections/ServicePage.ts` (slug, eyebrow, title, description, scopeItems[], mainImage, galleryImages[], thumbnailImage, thumbnailTitle)
-- [ ] Zarejestrować globals i kolekcje w `src/payload.config.ts`
-- [ ] Uruchomić `pnpm generate:types`
-- [ ] Sprawdzić panel admina: czy globals i kolekcje widoczne
+- [x] Stworzyć `src/globals/HeroSection.ts` (backgroundImage, personPhoto, subtitle, description)
+- [x] Stworzyć `src/globals/AboutSection.ts` (portraitPhoto, bioText)
+- [x] Stworzyć `src/globals/CvModal.ts` (experience[], qualifications[], competencies, cvFile)
+- [x] Stworzyć `src/globals/BioModal.ts` (sections[], bioFile)
+- [x] Stworzyć `src/collections/StatTile.ts` (number, label, description, order)
+- [x] Stworzyć `src/collections/ServicePage.ts` (slug, eyebrow, title, description, scopeItems[], mainImage, galleryImages[], thumbnailImage, thumbnailTitle)
+- [x] Zarejestrować globals i kolekcje w `src/payload.config.ts`
+- [x] Uruchomić `pnpm generate:types`
+- [ ] Sprawdzić panel admina: czy globals i kolekcje widoczne (weryfikacja manualna)
 
 ---
 
