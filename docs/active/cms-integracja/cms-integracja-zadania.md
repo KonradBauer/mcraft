@@ -39,15 +39,16 @@
 
 ---
 
-## Faza 3 — Podstrony usługowe
+## Faza 3 — Podstrony usługowe ✅
 
-- [ ] Zaseed 3 rekordów `ServicePage` (nadzor-spawalniczy, konstrukcje-stalowe, meble-premium) z obecnymi treściami
-- [ ] Refaktor `src/app/(frontend)/nadzor-spawalniczy/page.tsx` — fetch ServicePage
-- [ ] Refaktor `src/app/(frontend)/konstrukcje-stalowe/page.tsx` — fetch ServicePage
-- [ ] Refaktor `src/app/(frontend)/meble-premium/page.tsx` — fetch ServicePage
-- [ ] Rozszerzyć `SubpageLayout` props o real images (zastąpić `ImageSlot` przez `next/image`)
-- [ ] Obsługa braku obrazka (fallback na `ImageSlot` placeholder)
-- [ ] Weryfikacja: galeria na podstronie wyświetla obrazki wgrane przez admin panel
+- [ ] Zaseed 3 rekordów `ServicePage` w panelu admina (ręczne — wymaga działającego serwera)
+- [x] Refaktor `src/app/(frontend)/nadzor-spawalniczy/page.tsx` — fetch ServicePage
+- [x] Refaktor `src/app/(frontend)/konstrukcje-stalowe/page.tsx` — fetch ServicePage
+- [x] Refaktor `src/app/(frontend)/meble-premium/page.tsx` — fetch ServicePage
+- [x] Rozszerzyć `SubpageLayout` props o real images (mainImageUrl, galleryImages[])
+- [x] Obsługa braku obrazka (fallback na `ImageSlot` placeholder)
+- [x] Helper `src/lib/servicePageData.ts` — toSubpageLayoutProps() z fallback na hardcoded
+- [ ] Weryfikacja: galeria na podstronie wyświetla obrazki (ręczna — po seedzie)
 
 ---
 
