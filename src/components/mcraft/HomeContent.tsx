@@ -33,7 +33,7 @@ type ModalKey = 'cv' | 'bio' | 'tiles'
 
 /* ─── reusable class strings ─── */
 const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58]'
-const wrap = 'max-w-[1920px] mx-auto px-14 max-[980px]:px-[30px] max-[560px]:px-5'
+const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200'
 
 /* ─── icon helpers ─── */
