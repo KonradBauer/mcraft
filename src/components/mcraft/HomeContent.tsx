@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ImageSlot } from './ImageSlot'
@@ -59,7 +60,7 @@ function DownloadIcon() {
 /* ─── modal sub-components ─── */
 function ModalNote() {
   return (
-    <div className="flex items-center gap-2.5 mx-12 -mt-[18px] bg-[rgba(79,154,140,0.12)] border border-[rgba(79,154,140,0.4)] text-[#3c7a6e] text-[12.5px] px-4 py-[11px] font-medium max-[980px]:mx-7">
+    <div className="flex items-center gap-2.5 mx-12 -mt-3 bg-[rgba(79,154,140,0.12)] border border-[rgba(79,154,140,0.4)] text-[#3c7a6e] text-[12px] px-3.5 py-2 font-medium max-[980px]:mx-7">
       <InfoIcon />
       Treść przykładowa — ostateczna wersja zostanie wczytana z zasobów.
     </div>
@@ -68,7 +69,7 @@ function ModalNote() {
 
 function ModalHead({ eyebrowText, title, sub }: { eyebrowText: string; title: string; sub: string }) {
   return (
-    <div className="bg-ink text-light px-12 pt-[42px] pb-9 relative overflow-hidden flex-none max-[980px]:px-7">
+    <div className="bg-ink text-light px-12 pt-7 pb-6 relative overflow-hidden flex-none max-[980px]:px-7">
       <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
       <div className="relative">
         <span className="font-montserrat text-[11px] font-semibold tracking-[0.26em] uppercase text-accent-bright">{eyebrowText}</span>
@@ -81,7 +82,7 @@ function ModalHead({ eyebrowText, title, sub }: { eyebrowText: string; title: st
 
 function ModalDownloadBtn({ label }: { label: string }) {
   return (
-    <button className="self-start mx-12 mb-10 mt-1.5 inline-flex items-center gap-[14px] bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.16em] uppercase px-6 py-[15px] cursor-pointer border-none transition-all duration-[220ms] hover:bg-accent hover:text-ink max-[980px]:mx-7">
+    <button className="self-start mx-12 mb-5 mt-1 inline-flex items-center gap-3 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.16em] uppercase px-5 py-3 cursor-pointer border-none transition-all duration-[220ms] hover:bg-accent hover:text-ink max-[980px]:mx-7">
       <DownloadIcon />{label}
     </button>
   )
@@ -90,7 +91,7 @@ function ModalDownloadBtn({ label }: { label: string }) {
 function ModalBodySection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <>
-      <h3 className="font-montserrat font-semibold text-[13px] tracking-[0.16em] uppercase text-accent mt-[26px] first:mt-0 mb-[14px] pb-2.5 border-b border-hairline-light">{title}</h3>
+      <h3 className="font-montserrat font-semibold text-[11px] tracking-[0.16em] uppercase text-accent mt-4 first:mt-0 mb-2 pb-1.5 border-b border-hairline-light">{title}</h3>
       {children}
     </>
   )
@@ -101,37 +102,37 @@ function ModalCV() {
     <>
       <ModalHead eyebrowText="Dowiedz się więcej" title="Dr inż. Michał Macherzyński" sub="CV zawodowe — doświadczenie i kwalifikacje" />
       <ModalNote />
-      <div className="px-12 pt-9 pb-10 max-[980px]:px-7">
+      <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         <ModalBodySection title="Doświadczenie zawodowe">
-          <ul className="flex flex-col gap-[13px]">
+          <ul className="flex flex-col gap-2">
             {[
               ['Obecnie', 'Główny Spawalnik oraz Kierownik Projektów B+R — ZUGIL S.A.'],
               ['18+ lat', 'Nadzór spawalniczy, kwalifikowanie technologii spawania (WPQR/WPS), dokumentacja jakościowa.'],
               ['B+R', 'Robotyzacja i automatyzacja procesów spawalniczych, wdrożenia przemysłowe.'],
             ].map(([yr, text]) => (
-              <li key={yr} className="grid grid-cols-[120px_1fr] gap-[18px] text-[14.5px] leading-[1.6] text-[#56544e] max-[980px]:grid-cols-[92px_1fr] max-[980px]:gap-3">
-                <span className="font-montserrat font-semibold text-[13px] tracking-[0.04em] text-dark-text">{yr}</span>
+              <li key={yr} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
+                <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{yr}</span>
                 <span>{text}</span>
               </li>
             ))}
           </ul>
         </ModalBodySection>
         <ModalBodySection title="Kwalifikacje i certyfikaty">
-          <ul className="flex flex-col gap-[13px]">
+          <ul className="flex flex-col gap-2">
             {[
               ['IWE', 'International Welding Engineer — Międzynarodowy Inżynier Spawalnik.'],
               ['IWI', 'International Welding Inspector — Międzynarodowy Inspektor Spawalniczy.'],
               ['VT2 / PT2', 'Badania nieniszczące — wizualne i penetracyjne, poziom 2.'],
             ].map(([yr, text]) => (
-              <li key={yr} className="grid grid-cols-[120px_1fr] gap-[18px] text-[14.5px] leading-[1.6] text-[#56544e] max-[980px]:grid-cols-[92px_1fr] max-[980px]:gap-3">
-                <span className="font-montserrat font-semibold text-[13px] tracking-[0.04em] text-dark-text">{yr}</span>
+              <li key={yr} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
+                <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{yr}</span>
                 <span>{text}</span>
               </li>
             ))}
           </ul>
         </ModalBodySection>
         <ModalBodySection title="Kompetencje">
-          <p className="text-[14.5px] leading-[1.85] text-[#56544e] mb-[14px]">Łączenie wiedzy inżynierskiej z praktyką warsztatową, nadzór nad jakością, prowadzenie projektów badawczo-rozwojowych oraz konstrukcji stalowych dla przemysłu i budownictwa.</p>
+          <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Łączenie wiedzy inżynierskiej z praktyką warsztatową, nadzór nad jakością, prowadzenie projektów badawczo-rozwojowych oraz konstrukcji stalowych dla przemysłu i budownictwa.</p>
         </ModalBodySection>
       </div>
       <ModalDownloadBtn label="Pobierz CV (PDF)" />
@@ -144,15 +145,15 @@ function ModalBio() {
     <>
       <ModalHead eyebrowText="Więcej o mnie" title="Michał Macherzyński" sub="Życiorys — droga i pasja" />
       <ModalNote />
-      <div className="px-12 pt-9 pb-10 max-[980px]:px-7">
+      <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         <ModalBodySection title="Moja droga">
-          <p className="text-[14.5px] leading-[1.85] text-[#56544e] mb-[14px]">Tu znajdzie się bardziej osobista opowieść — życiorys, początki fascynacji metalem i spawaniem, droga od warsztatu do tytułu doktora inżyniera. Treść zostanie przygotowana i wczytana z zasobów.</p>
+          <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Tu znajdzie się bardziej osobista opowieść — życiorys, początki fascynacji metalem i spawaniem, droga od warsztatu do tytułu doktora inżyniera. Treść zostanie przygotowana i wczytana z zasobów.</p>
         </ModalBodySection>
         <ModalBodySection title="Pasja">
-          <p className="text-[14.5px] leading-[1.85] text-[#56544e] mb-[14px]">Poza pracą zawodową — tworzenie unikalnych mebli stalowych, projekty autorskie i ciągłe doskonalenie rzemiosła. To miejsce na prywatną, mniej formalną część historii.</p>
+          <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Poza pracą zawodową — tworzenie unikalnych mebli stalowych, projekty autorskie i ciągłe doskonalenie rzemiosła. To miejsce na prywatną, mniej formalną część historii.</p>
         </ModalBodySection>
         <ModalBodySection title="Wartości">
-          <p className="text-[14.5px] leading-[1.85] text-[#56544e] mb-[14px]">Jakość jako standard, a nie cel. Rzetelność, dbałość o detal i partnerskie podejście do każdego projektu.</p>
+          <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Jakość jako standard, a nie cel. Rzetelność, dbałość o detal i partnerskie podejście do każdego projektu.</p>
         </ModalBodySection>
       </div>
       <ModalDownloadBtn label="Pobierz życiorys (PDF)" />
@@ -165,12 +166,12 @@ function ModalTiles() {
     <>
       <ModalHead eyebrowText="W liczbach" title="Doświadczenie i kwalifikacje" sub="Kliknij dowolny kafelek, by poznać szczegóły" />
       <ModalNote />
-      <div className="grid grid-cols-4 p-[38px_48px_46px] max-[980px]:grid-cols-2 max-[980px]:p-7 max-[560px]:grid-cols-1">
+      <div className="grid grid-cols-4 p-[20px_48px_24px] max-[980px]:grid-cols-2 max-[980px]:p-5 max-[560px]:grid-cols-1">
         {TILES.map((t) => (
-          <div key={t.n} className="p-[24px_18px] border border-hairline-light -m-px">
-            <div className="font-montserrat font-semibold text-[34px] text-dark-text leading-none">{t.n}</div>
-            <div className="font-montserrat text-[11px] font-semibold tracking-[0.12em] uppercase text-accent my-3">{t.s}</div>
-            <p className="text-[13px] leading-[1.6] text-[#6a6862] m-0">{t.d}</p>
+          <div key={t.n} className="p-[14px_14px] border border-hairline-light -m-px">
+            <div className="font-montserrat font-semibold text-[28px] text-dark-text leading-none">{t.n}</div>
+            <div className="font-montserrat text-[10px] font-semibold tracking-[0.12em] uppercase text-accent my-1.5">{t.s}</div>
+            <p className="text-[12px] leading-[1.5] text-[#6a6862] m-0">{t.d}</p>
           </div>
         ))}
       </div>
@@ -219,14 +220,30 @@ export function HomeContent() {
   return (
     <>
       {/* ====== HERO ====== */}
-      <header className="relative bg-ink text-light min-h-[660px] overflow-hidden" id="top">
-        {/* Blueprint grid */}
-        <div className="absolute inset-0 z-0 opacity-50 blueprint-bg" />
+      <header className="relative bg-ink text-light min-h-[680px] overflow-hidden" id="top">
+        {/* Background image */}
+        <Image
+          src="/hero-tlo.png"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          alt=""
+          priority
+          className="z-0"
+        />
 
-        {/* Hero photo + gradient overlay */}
-        <div className="absolute top-0 right-0 bottom-0 w-[58%] z-[1] max-[980px]:w-[48%] max-[980px]:opacity-60 max-[560px]:hidden">
-          <ImageSlot placeholder="Hero — grafika z zasobów" className="w-full h-full" />
-          <div className="absolute inset-0 z-[2] pointer-events-none [background:linear-gradient(90deg,#0e1a17_0%,rgba(14,26,23,0.85)_18%,rgba(14,26,23,0.15)_48%,rgba(14,26,23,0)_70%)]" />
+        {/* Left overlay — darken for left text readability */}
+        <div className="absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
+
+        {/* Michał cutout photo */}
+        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-50 max-[560px]:hidden">
+          <Image
+            src="/hero-michal.png"
+            alt="Dr inż. Michał Macherzyński"
+            width={400}
+            height={640}
+            className="h-[640px] w-auto max-[980px]:h-[500px]"
+            priority
+          />
         </div>
 
         {/* Side decoration */}
@@ -253,24 +270,45 @@ export function HomeContent() {
               </div>
             </nav>
 
-            <div className="pt-[56px] pb-[90px] max-w-[560px] max-[560px]:pt-[30px] max-[560px]:pb-[60px]">
-              <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
-              <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[48px] max-[560px]:text-[38px]">
-                Michał<br />Macherzyński
-              </h1>
-              <div className="w-16 h-0.5 bg-accent mt-[34px] mb-[26px]" />
-              <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5]">
-                Inżynier spawalnik<br />IWE / IWI / VT2 / PT2
+            {/* Hero body — relative context for absolute right text */}
+            <div className="relative pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px]">
+
+              {/* Left content */}
+              <div className="max-w-[460px]">
+                <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
+                <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[48px] max-[560px]:text-[38px]">
+                  Michał<br />Macherzyński
+                </h1>
+                <div className="w-16 h-0.5 bg-accent mt-[34px] mb-[26px]" />
+                <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5]">
+                  Inżynier spawalnik<br />IWE / IWI / VT2 / PT2
+                </div>
+                <p className="mt-6 max-w-[400px] text-[15.5px] leading-[1.7] text-light-muted font-light">
+                  Łączę doświadczenie praktyczne z wiedzą inżynierską, dostarczając rozwiązania o najwyższej jakości w zakresie spawalnictwa i konstrukcji stalowych.
+                </p>
+                <button
+                  className="inline-flex items-center gap-[30px] mt-[38px] border border-white/[0.28] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
+                  onClick={(e) => openModal('cv', e.currentTarget)}
+                >
+                  Dowiedz się więcej <ArrowRight />
+                </button>
               </div>
-              <p className="mt-6 max-w-[430px] text-[15.5px] leading-[1.7] text-light-muted font-light">
-                Łączę doświadczenie praktyczne z wiedzą inżynierską, dostarczając rozwiązania o najwyższej jakości w zakresie spawalnictwa i konstrukcji stalowych.
-              </p>
-              <button
-                className="inline-flex items-center gap-[30px] mt-[38px] border border-white/[0.28] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
-                onClick={(e) => openModal('cv', e.currentTarget)}
-              >
-                Dowiedz się więcej <ArrowRight />
-              </button>
+
+              {/* Right display text — absolute, right edge of content area */}
+              <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center max-[980px]:hidden">
+                <div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-dark-text">Teoria</div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-accent">Doświadczenie</div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-dark-text">Praktyka</div>
+                </div>
+                <div className="mt-4 flex gap-2 items-start">
+                  <span className="font-great-vibes text-[22px] text-accent leading-none mt-0.5 flex-none">&ldquo;</span>
+                  <p className="text-[13.5px] leading-[1.75] text-[#56544e] font-normal">
+                    Doświadczeniem buduję<br />most pomiędzy teorią<br />a praktyką.
+                  </p>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -503,7 +541,7 @@ export function HomeContent() {
         onClick={closeModal}
       />
       <div
-        className={`fixed top-1/2 left-1/2 z-[95] w-[min(880px,66vw)] h-[min(74vh,800px)] bg-cream shadow-[0_40px_120px_rgba(0,0,0,0.55)] overflow-hidden flex flex-col max-[980px]:w-[92vw] max-[980px]:h-[86vh] ${isOpen ? 'visible' : 'invisible'}`}
+        className={`fixed top-1/2 left-1/2 z-[95] w-[min(880px,66vw)] max-h-[88vh] bg-cream shadow-[0_40px_120px_rgba(0,0,0,0.55)] overflow-hidden flex flex-col max-[980px]:w-[92vw] ${isOpen ? 'visible' : 'invisible'}`}
         role="dialog"
         aria-modal="true"
         style={{ transform, opacity, transition: 'transform 0.55s cubic-bezier(.16,1,.3,1), opacity 0.4s ease' }}
