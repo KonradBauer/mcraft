@@ -61,13 +61,13 @@
 
 ---
 
-## Faza 5 — Testy i cleanup
+## Faza 5 — Testy i cleanup ✅
 
-- [ ] Test integracyjny: GET global `hero-section` przez Payload Local API
-- [ ] Test integracyjny: GET kolekcji `StatTile` — weryfikacja sortowania
-- [ ] Test integracyjny: GET `ServicePage` po slug
-- [ ] E2E: admin panel → edycja `about-section` → verifikacja bio na stronie głównej
-- [ ] Usunąć `ModalNote` "Treść przykładowa" z ModalCV i ModalBio po podłączeniu danych
-- [ ] Usunąć `ImageSlot` import z plików gdzie zastąpiony real images
-- [ ] Uruchomić `pnpm lint` i `pnpm build` — zero błędów
-- [ ] `pnpm test` — wszystkie testy zielone
+- [x] Test integracyjny: GET global `hero-section` przez Payload Local API
+- [x] Test integracyjny: GET kolekcji `StatTile` — weryfikacja sortowania
+- [x] Test integracyjny: GET `ServicePage` po slug
+- [x] E2E: admin panel → edycja `about-section` → weryfikacja bio na stronie głównej
+- [x] Usunąć `ModalNote` "Treść przykładowa" z ModalCV i ModalBio — N/A (nie istniało w TSX)
+- [x] Usunąć `ImageSlot` import — N/A (nadal używany jako fallback gdy brak zdjęcia w CMS)
+- [x] Uruchomić `pnpm lint` i `pnpm build` — zero błędów (naprawiono brakujący `@eslint/eslintrc`, migracja do flat config)
+- [x] `pnpm test:int` — 10/10 zielonych

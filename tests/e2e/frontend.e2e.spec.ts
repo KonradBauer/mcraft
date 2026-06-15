@@ -1,20 +1,31 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 
 test.describe('Frontend', () => {
-  let page: Page
-
-  test.beforeAll(async ({ browser }, testInfo) => {
-    const context = await browser.newContext()
-    page = await context.newPage()
+  test('homepage loads with correct title', async ({ page }) => {
+    await page.goto('http://localhost:3000')
+    await expect(page).toHaveTitle(/MCRAFT/)
   })
 
-  test('can go on homepage', async ({ page }) => {
+  test('homepage renders hero heading', async ({ page }) => {
     await page.goto('http://localhost:3000')
-
-    await expect(page).toHaveTitle(/Payload Blank Template/)
-
     const heading = page.locator('h1').first()
+    await expect(heading).toContainText('Macherzyński')
+  })
 
-    await expect(heading).toHaveText('Welcome to your new project.')
+  test('subpage nadzor-spawalniczy loads', async ({ page }) => {
+    await page.goto('http://localhost:3000/nadzor-spawalniczy')
+    await expect(page).toHaveTitle(/Nadzór spawalniczy/)
+    const heading = page.locator('h1').first()
+    await expect(heading).toContainText('Nadzór')
+  })
+
+  test('subpage konstrukcje-stalowe loads', async ({ page }) => {
+    await page.goto('http://localhost:3000/konstrukcje-stalowe')
+    await expect(page).toHaveTitle(/Konstrukcje stalowe/)
+  })
+
+  test('subpage meble-premium loads', async ({ page }) => {
+    await page.goto('http://localhost:3000/meble-premium')
+    await expect(page).toHaveTitle(/Meble premium/)
   })
 })

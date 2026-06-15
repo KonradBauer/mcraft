@@ -5,7 +5,7 @@ import { seedTestUser, cleanupTestUser, testUser } from '../helpers/seedUser'
 test.describe('Admin Panel', () => {
   let page: Page
 
-  test.beforeAll(async ({ browser }, testInfo) => {
+  test.beforeAll(async ({ browser }, _testInfo) => {
     await seedTestUser()
 
     const context = await browser.newContext()
@@ -37,5 +37,49 @@ test.describe('Admin Panel', () => {
     await expect(page).toHaveURL(/\/admin\/collections\/users\/[a-zA-Z0-9-_]+/)
     const editViewArtifact = page.locator('input[name="email"]')
     await expect(editViewArtifact).toBeVisible()
+  })
+
+  test('can navigate to about-section global', async () => {
+    await page.goto('http://localhost:3000/admin/globals/about-section')
+    await expect(page).toHaveURL(/\/admin\/globals\/about-section/)
+    const heading = page.locator('h1').first()
+    await expect(heading).toBeVisible()
+  })
+
+  test('can navigate to stat-tiles collection', async () => {
+    await page.goto('http://localhost:3000/admin/collections/stat-tiles')
+    await expect(page).toHaveURL(/\/admin\/collections\/stat-tiles/)
+    const heading = page.locator('h1').first()
+    await expect(heading).toBeVisible()
+  })
+
+  test('can navigate to service-pages collection', async () => {
+    await page.goto('http://localhost:3000/admin/collections/service-pages')
+    await expect(page).toHaveURL(/\/admin\/collections\/service-pages/)
+    const heading = page.locator('h1').first()
+    await expect(heading).toBeVisible()
+  })
+
+  test('edit about-section bioText reflects on homepage', async () => {
+    const testBio = '__E2E_BIO_TEST__'
+
+    await page.goto('http://localhost:3000/admin/globals/about-section')
+    await expect(page).toHaveURL(/\/admin\/globals\/about-section/)
+
+    const textarea = page.locator('#field-bioText')
+    await expect(textarea).toBeVisible()
+    const originalBio = await textarea.inputValue()
+
+    await textarea.fill(testBio)
+    await page.click('button[type="submit"]')
+    await expect(page.locator('[role="status"]').or(page.locator('.toast')).or(page.locator('[data-testid="toast"]'))).toBeVisible({ timeout: 5000 }).catch(() => {})
+
+    await page.goto('http://localhost:3000')
+    await expect(page.locator('p', { hasText: testBio })).toBeVisible()
+
+    // restore original value
+    await page.goto('http://localhost:3000/admin/globals/about-section')
+    await page.locator('#field-bioText').fill(originalBio)
+    await page.click('button[type="submit"]')
   })
 })

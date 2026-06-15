@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -32,9 +32,9 @@ export interface HomeContentProps {
 type ModalKey = 'cv' | 'bio' | 'tiles'
 
 /* ─── reusable class strings ─── */
-const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-accent'
-const wrap = 'max-w-[1180px] mx-auto px-12 max-[980px]:px-[30px] max-[560px]:px-5'
-const navLink = 'font-montserrat text-[12.5px] font-medium tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200'
+const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58]'
+const wrap = 'max-w-[1600px] mx-auto px-1 max-[980px]:px-[30px] max-[560px]:px-5'
+const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200'
 
 /* ─── icon helpers ─── */
 function ArrowRight({ className = 'w-5 h-3 flex-none' }: { className?: string }) {
@@ -45,21 +45,6 @@ function ArrowRight({ className = 'w-5 h-3 flex-none' }: { className?: string })
   )
 }
 
-function ArrowLeft({ className = 'w-[22px] h-[10px]' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.6" className={className}>
-      <path d="M30 6H2M7 1 2 6l5 5" />
-    </svg>
-  )
-}
-
-function InfoIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-none">
-      <circle cx="12" cy="12" r="10" /><path d="M12 16v-5M12 8h.01" />
-    </svg>
-  )
-}
 
 function DownloadIcon() {
   return (
@@ -70,15 +55,6 @@ function DownloadIcon() {
 }
 
 /* ─── modal sub-components ─── */
-function ModalNote() {
-  return (
-    <div className="flex items-center gap-2.5 mx-12 -mt-3 bg-[rgba(79,154,140,0.12)] border border-[rgba(79,154,140,0.4)] text-[#3c7a6e] text-[12px] px-3.5 py-2 font-medium max-[980px]:mx-7">
-      <InfoIcon />
-      Treść przykładowa — ostateczna wersja zostanie wczytana z zasobów.
-    </div>
-  )
-}
-
 function ModalHead({ eyebrowText, title, sub }: { eyebrowText: string; title: string; sub: string }) {
   return (
     <div className="bg-ink text-light px-12 pt-7 pb-6 relative overflow-hidden flex-none max-[980px]:px-7">
@@ -124,7 +100,6 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
   return (
     <>
       <ModalHead eyebrowText="Dowiedz się więcej" title="Dr inż. Michał Macherzyński" sub="CV zawodowe — doświadczenie i kwalifikacje" />
-      {!hasData && <ModalNote />}
       <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         {hasData ? (
           <>
@@ -206,7 +181,6 @@ function ModalBio({ bioModal }: { bioModal: BioModal }) {
   return (
     <>
       <ModalHead eyebrowText="Więcej o mnie" title="Michał Macherzyński" sub="Życiorys — droga i pasja" />
-      {!hasData && <ModalNote />}
       <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         {hasData ? (
           bioModal.sections!.map((section) => (
@@ -368,11 +342,11 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
             <nav className="flex items-center justify-between py-[30px]">
               <Logo />
               <div className="flex gap-[38px] max-[980px]:hidden">
-                <a href="#about" className={`${navLink} text-light after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[22px] after:h-0.5 after:bg-accent`}>O mnie</a>
-                <a href="#areas" className={`${navLink} text-light-muted hover:text-light`}>Obszary</a>
-                <Link href="/nadzor-spawalniczy" className={`${navLink} text-light-muted hover:text-light`}>Realizacje</Link>
-                <a href="#workshop" className={`${navLink} text-light-muted hover:text-light`}>Warsztat</a>
-                <a href="#contact" className={`${navLink} text-light-muted hover:text-light`}>Kontakt</a>
+                <a href="#about" className={`${navLink} text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[22px] after:h-0.5 after:bg-accent`}>O mnie</a>
+                <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>Obszary</a>
+                <Link href="/nadzor-spawalniczy" className={`${navLink} text-black/70 hover:text-black`}>Realizacje</Link>
+                <a href="#workshop" className={`${navLink} text-black/70 hover:text-black`}>Warsztat</a>
+                <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
               </div>
             </nav>
 
@@ -399,14 +373,20 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
               <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center max-[980px]:hidden">
                 <div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-dark-text">Teoria</div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-accent">Doświadczenie</div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-dark-text">Praktyka</div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie</div>
+                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Praktyka</div>
                 </div>
-                <div className="mt-4 flex gap-2 items-start">
-                  <span className="font-great-vibes text-[22px] text-accent leading-none mt-0.5 flex-none">&ldquo;</span>
-                  <p className="text-[13.5px] leading-[1.75] text-[#56544e] font-normal">
-                    Doświadczeniem buduję<br />most pomiędzy teorią<br />a praktyką.
+                <div className="mt-4">
+                  <hr className="border-[#ccc] mb-4" />
+                  <p className="relative text-lg font-bold leading-[1.75] text-[#56544e] pl-5">
+                    <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'“'}</span>
+                    Doświadczeniem buduję
+                    <br />
+                    most pomiędzy teorią
+                    <br />
+                    a praktyką.
+                    <span className="ml-1 text-3xl font-bold text-[#00A887]">{'”'}</span>
                   </p>
                 </div>
               </div>
