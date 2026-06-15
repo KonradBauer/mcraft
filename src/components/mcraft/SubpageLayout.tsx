@@ -1,19 +1,16 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { ImageSlot } from './ImageSlot'
 import { Logo } from './Logo'
 
-interface SubpageItem {
-  text: string
-}
-
-interface SubpageLayoutProps {
-  eyebrow: string
+export interface SubpageLayoutProps {
+  eyebrow?: string | null
   title: string
-  description: string
-  items: SubpageItem[]
-  mainImagePlaceholder: string
-  galleryPlaceholders: [string, string, string]
+  description?: string | null
+  items: { text: string }[]
+  mainImageUrl?: string | null
+  galleryImages?: { url: string; alt?: string | null }[]
   ctaLabel?: string
 }
 
@@ -24,8 +21,8 @@ export function SubpageLayout({
   title,
   description,
   items,
-  mainImagePlaceholder,
-  galleryPlaceholders,
+  mainImageUrl,
+  galleryImages = [],
   ctaLabel = 'Zainteresowany współpracą?',
 }: SubpageLayoutProps) {
   return (
@@ -52,10 +49,14 @@ export function SubpageLayout({
       <header className="bg-ink text-light relative overflow-hidden pt-16 pb-[72px]">
         <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
         <div className={`${wrap} relative`}>
-          <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">{eyebrow}</span>
+          {eyebrow && (
+            <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">{eyebrow}</span>
+          )}
           <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px]">{title}</h1>
           <div className="w-16 h-0.5 bg-accent my-[26px]" />
-          <p className="max-w-[560px] text-base leading-[1.75] text-light-muted font-light">{description}</p>
+          {description && (
+            <p className="max-w-[560px] text-base leading-[1.75] text-light-muted font-light">{description}</p>
+          )}
         </div>
       </header>
 
@@ -73,15 +74,15 @@ export function SubpageLayout({
                   </li>
                 ))}
               </ul>
-              <div className="mt-9 inline-flex items-center gap-2.5 bg-[rgba(79,154,140,0.12)] border border-[rgba(79,154,140,0.4)] text-[#3c7a6e] text-[13px] px-[18px] py-3 font-medium">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 flex-none">
-                  <circle cx="12" cy="12" r="10" /><path d="M12 16v-5M12 8h.01" />
-                </svg>
-                Treść i zdjęcia zostaną uzupełnione z zasobów — strona w rozbudowie.
-              </div>
             </div>
             <div>
-              <ImageSlot placeholder={mainImagePlaceholder} className="w-full h-[340px]" />
+              {mainImageUrl ? (
+                <div className="relative w-full h-[340px]">
+                  <Image src={mainImageUrl} alt={title} fill className="object-cover" />
+                </div>
+              ) : (
+                <ImageSlot placeholder={`Zdjęcie — ${title}`} className="w-full h-[340px]" />
+              )}
             </div>
           </div>
 
@@ -89,9 +90,16 @@ export function SubpageLayout({
           <div className="mt-[18px]">
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
             <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
-              {galleryPlaceholders.map((ph, i) => (
-                <ImageSlot key={i} placeholder={ph} className="w-full h-[220px]" />
-              ))}
+              {galleryImages.length > 0
+                ? galleryImages.map((img, i) => (
+                    <div key={i} className="relative w-full h-[220px]">
+                      <Image src={img.url} alt={img.alt ?? `Realizacja ${i + 1}`} fill className="object-cover" />
+                    </div>
+                  ))
+                : (['Realizacja 1', 'Realizacja 2', 'Realizacja 3'] as const).map((ph) => (
+                    <ImageSlot key={ph} placeholder={ph} className="w-full h-[220px]" />
+                  ))
+              }
             </div>
           </div>
         </div>
