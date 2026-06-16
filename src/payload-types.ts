@@ -465,6 +465,7 @@ export interface CvModal {
     | {
         year: string;
         description: string;
+        company?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -475,7 +476,23 @@ export interface CvModal {
         id?: string | null;
       }[]
     | null;
-  competencies?: string | null;
+  education?:
+    | {
+        year: string;
+        institution: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  additionalQualifications?:
+    | {
+        year: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  skills?: string | null;
+  interests?: string | null;
   cvFile?: (string | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -531,6 +548,7 @@ export interface CvModalSelect<T extends boolean = true> {
     | {
         year?: T;
         description?: T;
+        company?: T;
         id?: T;
       };
   qualifications?:
@@ -540,7 +558,23 @@ export interface CvModalSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  competencies?: T;
+  education?:
+    | T
+    | {
+        year?: T;
+        institution?: T;
+        description?: T;
+        id?: T;
+      };
+  additionalQualifications?:
+    | T
+    | {
+        year?: T;
+        description?: T;
+        id?: T;
+      };
+  skills?: T;
+  interests?: T;
   cvFile?: T;
   updatedAt?: T;
   createdAt?: T;

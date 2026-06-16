@@ -93,9 +93,24 @@ function ModalBodySection({ title, children }: { title: string; children: React.
   )
 }
 
+const CV_ITEMS_LI = 'grid grid-cols-[130px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[90px_1fr]'
+const CV_YEAR = 'font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text'
+
+function CvLi({ year, title, sub }: { year: string; title: string; sub?: string }) {
+  return (
+    <li className={CV_ITEMS_LI}>
+      <span className={CV_YEAR}>{year}</span>
+      <span className="flex flex-col gap-0.5">
+        <span className="font-semibold text-dark-text text-[13.5px]">{title}</span>
+        {sub && <span>{sub}</span>}
+      </span>
+    </li>
+  )
+}
+
 function ModalCV({ cvModal }: { cvModal: CvModal }) {
   const hasData = (cvModal.experience?.length ?? 0) > 0
-  const cvFileUrl = mediaUrl(cvModal.cvFile)
+  const cvFileUrl = mediaUrl(cvModal.cvFile) ?? '/CV%20Micha%C5%82%20Macherzy%C5%84ski%20PL%20(06.2026).pdf'
 
   return (
     <>
@@ -107,29 +122,46 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
               <ModalBodySection title="Doświadczenie zawodowe">
                 <ul className="flex flex-col gap-2">
                   {cvModal.experience.map((item) => (
-                    <li key={item.id ?? item.year} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
-                      <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{item.year}</span>
-                      <span>{item.description}</span>
-                    </li>
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} sub={item.company ?? undefined} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
             {cvModal.qualifications && cvModal.qualifications.length > 0 && (
-              <ModalBodySection title="Kwalifikacje i certyfikaty">
+              <ModalBodySection title="Kwalifikacje">
                 <ul className="flex flex-col gap-2">
                   {cvModal.qualifications.map((item) => (
-                    <li key={item.id ?? item.code} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
-                      <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{item.code}</span>
-                      <span>{item.description}</span>
-                    </li>
+                    <CvLi key={item.id ?? item.code} year={item.code} title={item.description} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
-            {cvModal.competencies && (
-              <ModalBodySection title="Kompetencje">
-                <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{cvModal.competencies}</p>
+            {cvModal.education && cvModal.education.length > 0 && (
+              <ModalBodySection title="Edukacja">
+                <ul className="flex flex-col gap-2">
+                  {cvModal.education.map((item) => (
+                    <CvLi key={item.id ?? item.year + item.institution} year={item.year} title={item.institution} sub={item.description ?? undefined} />
+                  ))}
+                </ul>
+              </ModalBodySection>
+            )}
+            {cvModal.additionalQualifications && cvModal.additionalQualifications.length > 0 && (
+              <ModalBodySection title="Dodatkowe kwalifikacje">
+                <ul className="flex flex-col gap-2">
+                  {cvModal.additionalQualifications.map((item) => (
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} />
+                  ))}
+                </ul>
+              </ModalBodySection>
+            )}
+            {cvModal.skills && (
+              <ModalBodySection title="Umiejętności">
+                <p className="text-[13.5px] leading-[1.65] text-[#56544e] whitespace-pre-line">{cvModal.skills}</p>
+              </ModalBodySection>
+            )}
+            {cvModal.interests && (
+              <ModalBodySection title="Zainteresowania i hobby">
+                <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{cvModal.interests}</p>
               </ModalBodySection>
             )}
           </>
@@ -137,39 +169,54 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
           <>
             <ModalBodySection title="Doświadczenie zawodowe">
               <ul className="flex flex-col gap-2">
-                {[
-                  ['Obecnie', 'Główny Spawalnik oraz Kierownik Projektów B+R - ZUGIL S.A.'],
-                  ['18+ lat', 'Nadzór spawalniczy, kwalifikowanie technologii spawania (WPQR/WPS), dokumentacja jakościowa.'],
-                  ['B+R', 'Robotyzacja i automatyzacja procesów spawalniczych, wdrożenia przemysłowe.'],
-                ].map(([yr, text]) => (
-                  <li key={yr} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
-                    <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{yr}</span>
-                    <span>{text}</span>
-                  </li>
-                ))}
+                <CvLi year="2022r. - do dziś" title="Główny Spawalnik" sub="ZUGIL S.A." />
+                <CvLi year="2025r. - do dziś" title="Kierownik projektu B+R" sub="Numer wniosku o dofinansowanie: FENG.01.01-IP.01-A0QL/24" />
+                <CvLi year="2021r. - do dziś" title="Właściciel firmy" sub="MCRAFT Michał Macherzyński" />
+                <CvLi year="2019r. - 2023r." title="Kluczowy personel w projekcie B+R" sub="Numer wniosku o dofinansowanie: POIR.01.01.01-00-0779/18" />
+                <CvLi year="2016r. - 2022r." title="Technolog Spawalnik" sub="ZUGIL S.A." />
+                <CvLi year="2016r. - 2020r." title="Wykładowca" sub="Szkolenia spawaczy organizowane przez Wojewódzki Uniwersytet Robotniczy Sp. z o.o." />
               </ul>
             </ModalBodySection>
-            <ModalBodySection title="Kwalifikacje i certyfikaty">
+            <ModalBodySection title="Kwalifikacje">
               <ul className="flex flex-col gap-2">
-                {[
-                  ['IWE', 'International Welding Engineer - Międzynarodowy Inżynier Spawalnik.'],
-                  ['IWI', 'International Welding Inspector - Międzynarodowy Inspektor Spawalniczy.'],
-                  ['VT2 / PT2', 'Badania nieniszczące - wizualne i penetracyjne, poziom 2.'],
-                ].map(([yr, text]) => (
-                  <li key={yr} className="grid grid-cols-[110px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[80px_1fr]">
-                    <span className="font-montserrat font-semibold text-[12px] tracking-[0.04em] text-dark-text">{yr}</span>
-                    <span>{text}</span>
-                  </li>
-                ))}
+                <CvLi year="IWE" title="Międzynarodowy Inżynier Spawalnik" />
+                <CvLi year="IWI" title="Międzynarodowy Inspektor Spawalniczy" />
+                <CvLi year="VT2" title="Certyfikat kompetencji II stopnia zgodny z PN-EN ISO 9712, Instytut spawalnictwa w Gliwicach" />
+                <CvLi year="PT2" title="Certyfikat kompetencji II stopnia zgodny z PN-EN ISO 9712, Instytut spawalnictwa w Gliwicach" />
               </ul>
             </ModalBodySection>
-            <ModalBodySection title="Kompetencje">
-              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Łączenie wiedzy inżynierskiej z praktyką warsztatową, nadzór nad jakością, prowadzenie projektów badawczo-rozwojowych oraz konstrukcji stalowych dla przemysłu i budownictwa.</p>
+            <ModalBodySection title="Edukacja">
+              <ul className="flex flex-col gap-2">
+                <CvLi year="2017r. - 2022r." title="Politechnika Częstochowska" sub="Wydział Inżynierii Mechanicznej i Informatyki, Budowa i Eksploatacja Maszyn, III stopień" />
+                <CvLi year="2021r." title="Sieć Badawcza Łukasiewicz - Instytut Spawalnictwa" sub="Kurs Międzynarodowego Inspektora Spawalniczego IWI-C" />
+                <CvLi year="08.2019r." title="Wärtsilä Finland Oy" sub="Staż naukowy" />
+                <CvLi year="2016r. - 2018r." title="Politechnika Częstochowska" sub="Studium Kształcenia i Doskonalenia Nauczycieli, Fakultatywne Studia Pedagogiczne" />
+                <CvLi year="2017r. - 2018r." title="Politechnika Częstochowska" sub="Zakład Spawalnictwa, Wymagania i Kompetencje Międzynarodowego Inżyniera Spawalnika (IWE)" />
+                <CvLi year="2012r. - 2017r." title="Politechnika Częstochowska" sub="Wydział Inżynierii Mechanicznej i Informatyki, Mechanika i Budowa Maszyn, Spawalnictwo, I i II stopień, tryb stacjonarny" />
+                <CvLi year="2008r. - 2012r." title="Zespół Szkół nr 1 w Kłobucku" sub="Technikum Mechaniczne, Obróbka Skrawaniem" />
+              </ul>
+            </ModalBodySection>
+            <ModalBodySection title="Dodatkowe kwalifikacje">
+              <ul className="flex flex-col gap-2">
+                <CvLi year="09.2014r." title="Kurs KPP - uzyskanie tytułu Ratownika" />
+                <CvLi year="03.2014r." title="Kurs Autoryzowanego Centrum Szkoleniowego Autodesk - AutoCAD zaawansowany" />
+                <CvLi year="11.2010r." title="Prawo jazdy kategorii: A, B" />
+              </ul>
+            </ModalBodySection>
+            <ModalBodySection title="Umiejętności">
+              <ul className="flex flex-col gap-2">
+                <CvLi year="Obsługa" title="Autodesk Inventor Professional 3D, Autodesk AutoCAD, Siemens PLM Software Solid Edge 2D Drafting, Dassault Systemes Solid Works, Microsoft Office: Word, Excel, PowerPoint" />
+                <CvLi year="Spawanie" title="MMA (111), MIG (131), MAG (135, 136, 138), TIG (141)" />
+                <CvLi year="Dodatkowo" title="Znajomość rysunku technicznego, zarządzanie zespołem, praca zespołowa, rozwiązywanie problemów technicznych, bardzo dobra organizacja pracy" />
+              </ul>
+            </ModalBodySection>
+            <ModalBodySection title="Zainteresowania i hobby">
+              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Sport, motoryzacja, podróże</p>
             </ModalBodySection>
           </>
         )}
       </div>
-      <ModalDownloadBtn label="Pobierz CV (PDF)" href={cvFileUrl ?? undefined} />
+      <ModalDownloadBtn label="Pobierz CV (PDF)" href={cvFileUrl} />
     </>
   )
 }
@@ -301,7 +348,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   const heroPersonPhoto = mediaUrl(hero.personPhoto) ?? '/hero-michal.png'
   const heroSubtitle = hero.subtitle ?? 'Inżynier spawalnik\nIWE / IWI / VT2 / PT2'
   const heroDescription = hero.description ?? 'Łączę doświadczenie praktyczne z wiedzą inżynierską, dostarczając rozwiązania o najwyższej jakości w zakresie spawalnictwa i konstrukcji stalowych.'
-  const portraitUrl = mediaUrl(about.portraitPhoto)
+  const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
   const bioText = about.bioText ?? 'Główny Spawalnik oraz Kierownik Projektów B+R w ZUGIL S.A. Od ponad 18 lat związany ze spawalnictwem i konstrukcjami stalowymi. Krótka prezentacja, doświadczenie i wartości - pełny opis zostanie wczytany z zasobów.'
 
   return (
@@ -323,9 +370,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
-            width={400}
-            height={640}
-            className="h-[640px] w-auto max-[980px]:h-[500px]"
+            width={450}
+            height={720}
+            className="h-[720px] w-auto max-[980px]:h-[560px]"
             priority
           />
         </div>
@@ -401,17 +448,15 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
         <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern" />
         <div className={wrap}>
-          <div className="grid grid-cols-[0.85fr_1.15fr] gap-[70px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
+          <div className="grid grid-cols-[0.7fr_1.3fr] gap-[70px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
 
             <div className="relative pl-[18px] pt-[18px] pb-[18px]">
               <div className="absolute left-0 top-[42px] bottom-0 w-[78%] border border-accent z-0" />
               <div className="relative z-10">
                 {portraitUrl ? (
-                  <div className="relative w-full h-[430px] max-[980px]:h-[380px]">
-                    <Image src={portraitUrl} alt="Dr inż. Michał Macherzyński" fill className="object-cover" />
-                  </div>
+                  <Image src={portraitUrl} alt="Dr inż. Michał Macherzyński" width={600} height={800} className="w-full h-auto" />
                 ) : (
-                  <ImageSlot placeholder="Zdjęcie - Kim jestem" className="w-full h-[430px] max-[980px]:h-[380px]" />
+                  <ImageSlot placeholder="Zdjęcie - Kim jestem" className="w-full aspect-[3/4]" />
                 )}
               </div>
             </div>
@@ -470,6 +515,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 </span>
               </div>
             </div>
+
           </div>
         </div>
       </section>

@@ -20,15 +20,20 @@ export const CvModal: GlobalConfig = {
         },
         {
           name: 'description',
-          label: 'Opis',
+          label: 'Stanowisko',
           type: 'text',
           required: true,
+        },
+        {
+          name: 'company',
+          label: 'Firma / instytucja',
+          type: 'text',
         },
       ],
     },
     {
       name: 'qualifications',
-      label: 'Kwalifikacje i certyfikaty',
+      label: 'Kwalifikacje',
       type: 'array',
       fields: [
         {
@@ -46,9 +51,57 @@ export const CvModal: GlobalConfig = {
       ],
     },
     {
-      name: 'competencies',
-      label: 'Kompetencje (tekst)',
+      name: 'education',
+      label: 'Edukacja',
+      type: 'array',
+      fields: [
+        {
+          name: 'year',
+          label: 'Okres / rok',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'institution',
+          label: 'Uczelnia / instytucja',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'description',
+          label: 'Opis / kierunek',
+          type: 'text',
+        },
+      ],
+    },
+    {
+      name: 'additionalQualifications',
+      label: 'Dodatkowe kwalifikacje',
+      type: 'array',
+      fields: [
+        {
+          name: 'year',
+          label: 'Data',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'description',
+          label: 'Opis',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'skills',
+      label: 'Umiejętności (tekst)',
       type: 'textarea',
+    },
+    {
+      name: 'interests',
+      label: 'Zainteresowania i hobby',
+      type: 'text',
     },
     {
       name: 'cvFile',

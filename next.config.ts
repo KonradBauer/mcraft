@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     localPatterns: [
       { pathname: '/api/media/file/**' },
       { pathname: '/hero-*' },
+      { pathname: '/kim-jestem.jpg' },
     ],
   },
   webpack: (webpackConfig) => {
