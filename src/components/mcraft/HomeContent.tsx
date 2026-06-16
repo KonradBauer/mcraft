@@ -224,8 +224,6 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
 
 function ModalBio({ bioModal }: { bioModal: BioModal }) {
   const hasData = (bioModal.sections?.length ?? 0) > 0
-  const bioFileUrl = mediaUrl(bioModal.bioFile)
-
   return (
     <>
       <ModalHead eyebrowText="Więcej o mnie" title="Michał Macherzyński" sub="Życiorys - droga i pasja" />
@@ -250,7 +248,6 @@ function ModalBio({ bioModal }: { bioModal: BioModal }) {
           </>
         )}
       </div>
-      <ModalDownloadBtn label="Pobierz życiorys (PDF)" href={bioFileUrl ?? undefined} />
     </>
   )
 }
@@ -348,7 +345,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   const heroBackground = mediaUrl(hero.backgroundImage) ?? '/hero-tlo.png'
   const heroPersonPhoto = mediaUrl(hero.personPhoto) ?? '/hero-michal.png'
   const heroSubtitle = hero.subtitle ?? 'Inżynier spawalnik\nIWE / IWI / VT2 / PT2'
-  const heroDescription = hero.description ?? 'Łączę doświadczenie praktyczne z wiedzą inżynierską, dostarczając rozwiązania o najwyższej jakości w zakresie spawalnictwa i konstrukcji stalowych.'
+  const heroDescription = hero.description ?? ''
   const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
   const bioText = about.bioText ?? 'Główny Spawalnik oraz Kierownik Projektów B+R w ZUGIL S.A. Od ponad 18 lat związany ze spawalnictwem i konstrukcjami stalowymi. Krótka prezentacja, doświadczenie i wartości - pełny opis zostanie wczytany z zasobów.'
 
@@ -400,7 +397,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               </div>
             </nav>
 
-            <div className="flex items-center justify-between pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px] max-[980px]:block">
+            <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
                 <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
                 <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[48px] max-[560px]:text-[38px]">
@@ -410,18 +407,15 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5] whitespace-pre-line">
                   {heroSubtitle}
                 </div>
-                <p className="mt-6 max-w-[400px] text-[15.5px] leading-[1.7] text-light-muted font-light">
-                  {heroDescription}
-                </p>
                 <button
-                  className="inline-flex items-center gap-[30px] mt-[38px] border border-white/[0.28] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
+                  className="inline-flex items-center gap-[30px] mt-[90px] border border-white/[0.28] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
                   onClick={(e) => openModal('cv', e.currentTarget)}
                 >
                   Dowiedz się więcej <ArrowRight />
                 </button>
               </div>
 
-              <div className="flex flex-col justify-center mr-[8%] max-[980px]:hidden">
+              <div className="flex flex-col justify-start mr-[8%] max-[980px]:hidden">
                 <div>
                   <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
                   <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie</div>
@@ -447,11 +441,11 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
       {/* ====== ABOUT ====== */}
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
+        <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern" />
         <div className={wrap}>
           <div className="grid grid-cols-[0.7fr_1.3fr] gap-[70px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
 
             <div className="relative p-[18px] max-[980px]:p-[12px]">
-              <div className="absolute top-0 left-0 w-[100px] h-[80px] opacity-50 dots-pattern z-20 pointer-events-none" />
               {/* narożnik lewy górny */}
               <span className="absolute top-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-l border-accent pointer-events-none" />
               {/* narożnik prawy górny */}
@@ -564,44 +558,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         </div>
       </section>
 
-      {/* ====== WORKSHOP ====== */}
-      <section className="bg-cream-2 pb-[86px] relative" id="workshop">
-        <div className="absolute right-[30px] bottom-[60px] w-[120px] h-[90px] opacity-[0.45] dots-pattern" />
-        <div className={wrap}>
-          <div className="grid grid-cols-[1fr_1.35fr] gap-[50px] items-center border-t border-hairline-light pt-[54px] max-[980px]:grid-cols-1 max-[980px]:gap-9">
-            <div>
-              <span className={`${eyebrow} mb-4`}>Zaplecze</span>
-              <h2 className="font-semibold text-[23px] uppercase tracking-[0.03em] text-dark-text leading-[1.3] mb-5">Warsztat i zaplecze techniczne</h2>
-              <p className="text-[14.5px] leading-[1.8] text-[#56544e] max-w-[380px]">Dysponuję nowoczesnym zapleczem technologicznym oraz własnym warsztatem o powierzchni 350 m² z suwnicą 5 TON, co pozwala realizować nawet najbardziej wymagające projekty.</p>
-            </div>
-            <div className="grid grid-cols-4 max-[560px]:grid-cols-2">
-              {[
-                {
-                  lbl: 'Suwnica\n5 ton',
-                  icon: <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" className="w-[52px] h-[52px]"><path d="M10 8v36M10 8h30l-6 7H10M22 15v6M22 21l-4 4h8zM22 25v12M16 44h12M6 44h8" /></svg>,
-                },
-                {
-                  lbl: 'Powierzchnia\n350 m²',
-                  icon: <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" className="w-[52px] h-[52px]"><path d="M26 8L8 22v20h36V22zM18 42V30h16v12M14 26h6M32 26h6" /></svg>,
-                },
-                {
-                  lbl: 'Stanowiska\nspawalnicze',
-                  icon: <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" className="w-[52px] h-[52px]"><rect x="10" y="38" width="16" height="8" rx="1" /><path d="M18 38V24l14-10" /><circle cx="18" cy="22" r="3" /><path d="M32 14l8 4-3 7-8-3zM37 25l4 9" /></svg>,
-                },
-                {
-                  lbl: 'Nowoczesny\npark maszynowy',
-                  icon: <svg viewBox="0 0 52 52" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.3" className="w-[52px] h-[52px]"><rect x="8" y="12" width="36" height="22" rx="2" /><path d="M4 42h44M20 34v8M32 34v8M16 20h20M16 26h12" /></svg>,
-                },
-              ].map(({ lbl, icon }) => (
-                <div key={lbl} className="text-center px-2.5 border-r border-hairline-light last:border-r-0 max-[560px]:border-r-0 max-[560px]:mb-7">
-                  <div className="h-14 flex items-center justify-center text-[#3a3933] mb-4">{icon}</div>
-                  <div className="font-montserrat text-[11px] font-semibold tracking-[0.1em] uppercase text-[#43423c] leading-[1.6] whitespace-pre-line">{lbl}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+
 
       {/* ====== FOOTER ====== */}
       <footer className="bg-ink-3 text-light pt-16 pb-[26px] relative" id="contact">
