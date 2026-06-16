@@ -368,9 +368,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
-            width={450}
-            height={720}
-            className="h-[720px] w-auto max-[980px]:h-[560px]"
+            width={390}
+            height={620}
+            className="h-[620px] w-auto max-[980px]:h-[460px]"
             priority
           />
         </div>
@@ -408,7 +408,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                   {heroSubtitle}
                 </div>
                 <button
-                  className="inline-flex items-center gap-[30px] mt-[90px] border border-white/[0.28] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
+                  className="inline-flex items-center gap-[30px] mt-[90px] border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink"
                   onClick={(e) => openModal('cv', e.currentTarget)}
                 >
                   Dowiedz się więcej <ArrowRight />
@@ -443,9 +443,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
         <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern" />
         <div className={wrap}>
-          <div className="grid grid-cols-[0.7fr_1.3fr] gap-[36px] items-stretch max-[768px]:grid-cols-1 max-[768px]:gap-8">
+          <div className="grid [grid-template-columns:minmax(250px,0.7fr)_1.3fr] gap-[36px] items-stretch max-[700px]:grid-cols-1 max-[700px]:gap-8">
 
-            <div className="relative p-[18px] h-full min-w-[250px] max-[768px]:min-w-0 max-[768px]:aspect-[4/3]">
+            <div className="relative p-[18px] h-full max-[700px]:aspect-[4/3]">
               {/* narożnik lewy górny */}
               <span className="absolute top-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-l border-accent pointer-events-none" />
               {/* narożnik prawy górny */}
@@ -474,7 +474,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
               <div className="flex justify-end mt-[26px] mb-1.5">
                 <button
-                  className="inline-flex items-center gap-3 bg-transparent border border-accent text-accent font-montserrat text-xs font-semibold tracking-[0.14em] uppercase px-[18px] py-[11px] cursor-pointer transition-all duration-[220ms] hover:bg-accent hover:text-white"
+                  className="inline-flex items-center gap-3 bg-transparent border border-[#3A3A3A] text-accent font-montserrat text-xs font-semibold tracking-[0.14em] uppercase px-[18px] py-[11px] cursor-pointer transition-all duration-[220ms] hover:bg-accent hover:border-accent hover:text-white"
                   onClick={(e) => openModal('bio', e.currentTarget)}
                 >
                   …więcej o mnie
@@ -557,15 +557,22 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
       {/* ====== FOOTER ====== */}
       <footer className="bg-ink-3 text-light pt-16 pb-[26px] relative" id="contact">
         <div className={wrap}>
-          <div className="grid grid-cols-[1fr_1fr_0.8fr] gap-12 items-start max-[980px]:grid-cols-1">
+          <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
 
             <div>
               <span className={`${eyebrow} mb-[18px]`}>Porozmawiajmy o Twoim projekcie</span>
-              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[30px]">Skontaktuj się</h2>
+              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">Skontaktuj się</h2>
+              <div className="mb-[22px]">
+                <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">MCRAFT Michał Macherzyński</div>
+                <div className="text-[13px] text-light-muted leading-[1.8]">
+                  NIP: 5742046939<br />
+                  REGON: 388131678
+                </div>
+              </div>
               {[
                 {
                   href: 'tel:+48601488318',
-                  label: '+48 601 488 318',
+                  label: '+48 601-488-318',
                   icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" /></svg>,
                 },
                 {
@@ -581,23 +588,20 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               ))}
               <div className="flex items-center gap-4 text-[14.5px] text-light-muted">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" /><circle cx="12" cy="10" r="3" /></svg>
-                <span>Żołnierzy Września 36, 42-152 Wilkowiecko</span>
+                <span>ul. Żołnierzy Września 36, 42-152 Wilkowiecko</span>
               </div>
             </div>
 
-            <div className="border-l border-hairline-dark pl-[46px] max-[980px]:border-l-0 max-[980px]:pl-0 max-[980px]:border-t max-[980px]:border-hairline-dark max-[980px]:pt-[34px]">
-              <span className="font-great-vibes text-[74px] text-accent block h-[30px] leading-none">&ldquo;</span>
-              <p className="text-[18px] italic leading-[1.6] text-[#dfded8] font-light mb-[26px] max-w-[340px]">Jakość to nie cel. To standard, z którego się nie rezygnuje.</p>
-              <div className="font-great-vibes text-[34px] text-accent-bright">Michał Macherzyński</div>
-            </div>
-
-            <div className="flex flex-col items-end text-right max-[980px]:items-start max-[980px]:text-left">
-              <svg className="w-[62px] h-[62px] text-white" viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round">
-                <path d="M8 50V12l22 24 22-24v38" /><path d="M8 12h6M52 12h-6" />
-              </svg>
-              <div className="font-montserrat font-semibold text-[26px] tracking-[0.34em] mt-[14px] mb-4">MCRAFT</div>
-              <div className="font-montserrat text-[11px] font-medium tracking-[0.18em] uppercase text-light-muted">Łączę ludzi. Stal. Pomysły.</div>
-              <div className="w-[50px] h-0.5 bg-accent mt-[18px]" />
+            <div className="border-l border-hairline-dark pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-hairline-dark max-[768px]:pt-[34px] overflow-hidden">
+              <iframe
+                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
+                width="100%"
+                height="300"
+                style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Lokalizacja MCRAFT"
+              />
             </div>
           </div>
 
