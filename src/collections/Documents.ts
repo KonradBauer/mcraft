@@ -5,6 +5,9 @@ export const Documents: CollectionConfig = {
   labels: { singular: 'Dokument', plural: 'Dokumenty' },
   access: {
     read: () => true,
+    create: () => true,
+    update: () => true,
+    delete: () => true,
   },
   fields: [
     {
@@ -14,6 +17,7 @@ export const Documents: CollectionConfig = {
     },
   ],
   upload: {
+    staticDir: './public/media',
     mimeTypes: ['application/pdf'],
   },
 }
