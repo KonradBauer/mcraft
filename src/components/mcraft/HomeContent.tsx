@@ -443,9 +443,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
         <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern" />
         <div className={wrap}>
-          <div className="grid grid-cols-[0.7fr_1.3fr] gap-[70px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
+          <div className="grid grid-cols-[0.7fr_1.3fr] gap-[36px] items-stretch max-[768px]:grid-cols-1 max-[768px]:gap-8">
 
-            <div className="relative p-[18px] max-[980px]:p-[12px]">
+            <div className="relative p-[18px] h-full min-w-[250px] max-[768px]:min-w-0 max-[768px]:aspect-[4/3]">
               {/* narożnik lewy górny */}
               <span className="absolute top-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-l border-accent pointer-events-none" />
               {/* narożnik prawy górny */}
@@ -454,21 +454,21 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               <span className="absolute bottom-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-l border-accent pointer-events-none" />
               {/* narożnik prawy dolny */}
               <span className="absolute bottom-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-r border-accent pointer-events-none" />
-              <div className="relative z-10">
+              <div className="relative z-10 h-full">
                 {portraitUrl ? (
-                  <Image src={portraitUrl} alt="Dr inż. Michał Macherzyński" width={600} height={800} className="w-full h-auto" />
+                  <Image src={portraitUrl} alt="Dr inż. Michał Macherzyński" fill className="object-cover object-top" />
                 ) : (
-                  <ImageSlot placeholder="Zdjęcie - Kim jestem" className="w-full aspect-[3/4]" />
+                  <ImageSlot placeholder="Zdjęcie - Kim jestem" className="w-full h-full" />
                 )}
               </div>
             </div>
 
-            <div>
+            <div className="min-w-0">
               <span className={`${eyebrow} mb-[14px]`}>Kim jestem?</span>
               <h2 className="font-medium text-[27px] tracking-[0.02em] text-dark-text mt-[14px] mb-[22px] uppercase">
                 Dr inż. Michał Macherzyński
               </h2>
-              <p className="text-[15px] leading-[1.85] text-[#56544e] max-w-[520px]">
+              <p className="text-[15px] leading-[1.85] text-[#56544e]">
                 {bioText}
               </p>
 
@@ -511,10 +511,6 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                     }
                   </div>
                 </div>
-                <span className="absolute right-3 bottom-[9px] font-montserrat text-[9.5px] font-semibold tracking-[0.14em] uppercase text-accent flex items-center gap-[7px] [background:linear-gradient(90deg,transparent,var(--color-cream)_30%)] pl-[30px] pointer-events-none">
-                  Zobacz wszystkie
-                  <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-[15px] h-[9px]"><path d="M0 6h28M23 1l5 5-5 5" /></svg>
-                </span>
               </div>
             </div>
 
@@ -557,8 +553,6 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           </div>
         </div>
       </section>
-
-
 
       {/* ====== FOOTER ====== */}
       <footer className="bg-ink-3 text-light pt-16 pb-[26px] relative" id="contact">
