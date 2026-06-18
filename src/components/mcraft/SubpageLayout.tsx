@@ -2,6 +2,7 @@ import Link from 'next/link'
 import React from 'react'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
+import { MobileNav } from './MobileNav'
 
 export interface SubpageLayoutProps {
   eyebrow?: string | null
@@ -15,6 +16,14 @@ export interface SubpageLayoutProps {
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
+
+const SUBPAGE_NAV_LINKS = [
+  { href: '/#about', label: 'O mnie' },
+  { href: '/#areas', label: 'Obszary' },
+  { href: '/nadzor-spawalniczy', label: 'Realizacje' },
+  { href: '/#workshop', label: 'Warsztat' },
+  { href: '/#contact', label: 'Kontakt' },
+]
 
 export function SubpageLayout({
   eyebrow,
@@ -41,6 +50,7 @@ export function SubpageLayout({
               <Link href="/#workshop" className={navLink}>Warsztat</Link>
               <Link href="/#contact" className={navLink}>Kontakt</Link>
             </div>
+            <MobileNav links={SUBPAGE_NAV_LINKS} />
           </nav>
         </div>
       </div>

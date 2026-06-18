@@ -15,6 +15,7 @@ import type {
 } from '@/payload-types'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
+import { MobileNav } from './MobileNav'
 
 function mediaUrl(field: string | Media | Document | null | undefined): string | null {
   if (!field || typeof field === 'string') return null
@@ -300,6 +301,14 @@ const AREA_DEFAULTS = [
   { href: '/meble-premium', slug: 'meble-premium', name: 'Meble\npremium' },
 ]
 
+const HOME_NAV_LINKS = [
+  { href: '#about', label: 'O mnie' },
+  { href: '#areas', label: 'Obszary' },
+  { href: '/nadzor-spawalniczy', label: 'Realizacje' },
+  { href: '#workshop', label: 'Warsztat' },
+  { href: '#contact', label: 'Kontakt' },
+]
+
 /* ─── main component ─── */
 export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: HomeContentProps) {
   const [modalKey, setModalKey] = useState<ModalKey | null>(null)
@@ -363,8 +372,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         />
 
         <div className="absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
+        <div className="hidden max-[560px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-50 max-[560px]:hidden">
+        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-50 max-[560px]:opacity-[0.22] max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
@@ -395,6 +405,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 <a href="#workshop" className={`${navLink} text-black/70 hover:text-black`}>Warsztat</a>
                 <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
               </div>
+              <MobileNav links={HOME_NAV_LINKS} />
             </nav>
 
             <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[560px]:pt-[30px] max-[560px]:pb-[60px] max-[980px]:block">
