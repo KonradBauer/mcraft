@@ -109,13 +109,13 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         <div className="absolute inset-0 z-[1] pointer-events-none max-[980px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
         <div className="hidden max-[980px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
+        <div className="absolute bottom-0 z-[2] pointer-events-none shrink-0 left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
             width={390}
             height={620}
-            className="h-[620px] w-auto max-[980px]:h-[460px]"
+            className="h-[620px] w-[390px] max-[980px]:h-[460px] max-[980px]:w-[289px] shrink-0"
             priority
           />
         </div>
@@ -194,7 +194,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
       {/* ====== ABOUT ====== */}
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
-        <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern" />
+        <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern z-[2]" />
         <div className={wrap}>
           <div className="grid [grid-template-columns:minmax(250px,0.7fr)_1.3fr] gap-[36px] items-stretch max-[700px]:grid-cols-1 max-[700px]:gap-8">
 
@@ -203,7 +203,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               <span className="absolute top-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-r border-accent pointer-events-none" />
               <span className="absolute bottom-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-l border-accent pointer-events-none" />
               <span className="absolute bottom-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-r border-accent pointer-events-none" />
-              <div className="relative z-10 h-full">
+              <div className="relative h-full">
                 {portraitUrl ? (
                   <ImageWithSkeleton src={portraitUrl} alt="Dr inż. Michał Macherzyński" className="object-cover object-top" sizes="(max-width: 700px) 100vw, 35vw" />
                 ) : (
