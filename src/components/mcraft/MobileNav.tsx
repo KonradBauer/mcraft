@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface MobileNavProps {
   links: { href: string; label: string }[]
@@ -9,6 +9,7 @@ interface MobileNavProps {
 
 export function MobileNav({ links }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const scrollYRef = useRef(0)
 
   const close = () => setIsOpen(false)
 
@@ -19,8 +20,26 @@ export function MobileNav({ links }: MobileNavProps) {
   }, [])
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
+    if (isOpen) {
+      scrollYRef.current = window.scrollY
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollYRef.current}px`
+      document.body.style.width = '100%'
+    } else {
+      const y = scrollYRef.current
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+      if (y) window.scrollTo(0, y)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.width = ''
+    }
   }, [isOpen])
 
   return (
@@ -37,21 +56,15 @@ export function MobileNav({ links }: MobileNavProps) {
       </button>
 
       <div
-        className={`fixed inset-0 z-[79] bg-black/50 transition-opacity duration-300 ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
-        onClick={close}
-        aria-hidden="true"
-      />
-
-      <div
-        className={`fixed top-0 right-0 h-full w-[280px] bg-ink z-[80] flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}
+        className={`fixed inset-0 z-[80] bg-ink flex flex-col transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
         role="dialog"
         aria-modal="true"
         aria-label="Menu nawigacyjne"
       >
-        <div className="flex items-center justify-between px-7 py-[30px] border-b border-white/10">
-          <span className="font-montserrat font-light text-[16px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+        <div className="flex items-center justify-between px-5 py-[30px] border-b border-white/10 flex-none">
+          <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
           <button
-            className="w-8 h-8 flex items-center justify-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
+            className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
             onClick={close}
             aria-label="Zamknij menu"
           >
@@ -61,18 +74,22 @@ export function MobileNav({ links }: MobileNavProps) {
           </button>
         </div>
 
-        <nav className="flex flex-col px-7 pt-8 gap-1">
+        <nav className="flex-1 flex flex-col justify-center px-8">
           {links.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={close}
-              className="font-montserrat text-[13px] font-semibold tracking-[0.22em] uppercase text-light py-[14px] border-b border-white/10 hover:text-accent transition-colors duration-200"
+              className="font-montserrat text-[22px] font-light tracking-[0.25em] uppercase text-light/80 py-[18px] border-b border-white/[0.08] hover:text-accent hover:pl-3 transition-all duration-200 last:border-b-0"
             >
               {label}
             </Link>
           ))}
         </nav>
+
+        <div className="px-8 pb-10 flex-none">
+          <div className="w-10 h-px bg-accent" />
+        </div>
       </div>
     </>
   )
