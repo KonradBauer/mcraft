@@ -393,7 +393,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           </span>
         </div>
 
-        <div className="relative z-[3]">
+        <div className="relative z-[5]">
           <div className={wrap}>
             <nav className="flex items-center justify-between py-[30px]">
               <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
