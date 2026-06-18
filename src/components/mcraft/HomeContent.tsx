@@ -89,13 +89,13 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
   const bioText = about.bioText ?? 'Główny Spawalnik oraz Kierownik Projektów B+R w ZUGIL S.A. Od ponad 18 lat związany ze spawalnictwem i konstrukcjami stalowymi. Krótka prezentacja, doświadczenie i wartości - pełny opis zostanie wczytany z zasobów.'
 
-  const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[90px] max-[560px]:hidden border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
+  const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[90px] max-[980px]:hidden border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
   const cvBtnMobileClass = 'inline-flex items-center gap-[30px] border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
 
   return (
     <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles}>
       {/* ====== HERO ====== */}
-      <header className="relative bg-ink text-light min-h-[680px] max-[560px]:min-h-[100svh] overflow-hidden" id="top">
+      <header className="relative bg-ink text-light min-h-[680px] max-[980px]:min-h-[100svh] overflow-hidden" id="top">
         <Image
           src={heroBackground}
           fill
@@ -106,10 +106,10 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           className="z-0"
         />
 
-        <div className="absolute inset-0 z-[1] pointer-events-none max-[560px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
-        <div className="hidden max-[560px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
+        <div className="absolute inset-0 z-[1] pointer-events-none max-[980px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
+        <div className="hidden max-[980px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-50 max-[560px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
+        <div className="absolute bottom-0 z-[2] pointer-events-none left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
@@ -120,7 +120,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           />
         </div>
 
-        <div className="absolute left-0 top-[120px] bottom-[60px] z-[3] flex flex-col items-center max-[560px]:hidden">
+        <div className="absolute left-0 top-[120px] bottom-[60px] z-[3] flex flex-col items-center max-[980px]:hidden">
           <span className="w-px flex-1 bg-gradient-to-b from-accent to-transparent" />
           <span className="mt-[14px] text-light-muted">
             <svg width="14" height="30" viewBox="0 0 14 30" fill="none" stroke="currentColor" strokeWidth="1.4">
@@ -143,14 +143,14 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               <MobileNav links={HOME_NAV_LINKS} />
             </nav>
 
-            <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[560px]:pt-[24px] max-[560px]:pb-[16px] max-[980px]:block">
+            <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
                 <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
-                <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[48px] max-[560px]:text-[38px]">
+                <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
                   Michał<br />Macherzyński
                 </h1>
-                <div className="w-16 h-0.5 bg-accent mt-[34px] mb-[26px] max-[560px]:mt-[18px] max-[560px]:mb-[14px]" />
-                <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5] whitespace-pre-line max-[560px]:hidden">
+                <div className="w-16 h-0.5 bg-accent mt-[34px] mb-[26px] max-[980px]:mt-[18px] max-[980px]:mb-[14px]" />
+                <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5] whitespace-pre-line max-[980px]:hidden">
                   {heroSubtitle}
                 </div>
                 <ModalTrigger modalKey="cv" className={cvBtnClass}>
@@ -181,8 +181,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           </div>
         </div>
 
-        {/* Mobile bottom CTA */}
-        <div className="hidden max-[560px]:flex absolute bottom-[36px] left-0 right-0 z-[4] flex-col items-start px-5 gap-[14px]">
+        {/* Mobile/tablet bottom CTA */}
+        <div className="hidden max-[980px]:flex absolute bottom-[36px] left-0 right-0 z-[4] flex-col items-start px-5 gap-[14px]">
           <p className="font-montserrat font-light text-[11px] tracking-[0.22em] uppercase text-white whitespace-pre-line leading-[1.9]">
             {heroSubtitle}
           </p>
