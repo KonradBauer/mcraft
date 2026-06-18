@@ -95,7 +95,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   return (
     <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles}>
       {/* ====== HERO ====== */}
-      <header className="relative bg-ink text-light min-h-[680px] max-[560px]:min-h-[760px] overflow-hidden" id="top">
+      <header className="relative bg-ink text-light min-h-[680px] max-[560px]:min-h-[100svh] overflow-hidden" id="top">
         <Image
           src={heroBackground}
           fill
