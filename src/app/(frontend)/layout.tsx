@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Barlow, Great_Vibes, Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import React from 'react'
@@ -27,7 +28,7 @@ const greatVibes = Great_Vibes({
 const siteUrl = 'https://mcraft.pl'
 const ogImage = `${siteUrl}/opengraph-image`
 
-export const metadata = {
+export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default: 'Inzynier spawalnik Dr inz. Michal Macherzynski | MCRAFT',
