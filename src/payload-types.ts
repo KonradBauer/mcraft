@@ -204,6 +204,48 @@ export interface StatTile {
   id: string;
   number: string;
   label: string;
+  /**
+   * Ikona wyświetlana przy kafelku na stronie i w popupie
+   */
+  icon?:
+    | (
+        | 'Clock'
+        | 'Timer'
+        | 'TrendingUp'
+        | 'Warehouse'
+        | 'Users'
+        | 'Zap'
+        | 'Flame'
+        | 'GraduationCap'
+        | 'Search'
+        | 'Eye'
+        | 'Droplets'
+        | 'FileText'
+        | 'ClipboardCheck'
+        | 'ClipboardList'
+        | 'ShieldCheck'
+        | 'Layers'
+        | 'Train'
+        | 'UserCheck'
+        | 'Settings2'
+        | 'Briefcase'
+        | 'Globe'
+        | 'FlaskConical'
+        | 'PenTool'
+        | 'Box'
+        | 'Award'
+        | 'BadgeCheck'
+        | 'HardHat'
+        | 'Wrench'
+        | 'Factory'
+        | 'Ruler'
+        | 'Microscope'
+        | 'Cpu'
+        | 'CheckCircle'
+        | 'Star'
+        | 'Calendar'
+      )
+    | null;
   description: string;
   /**
    * Mniejsza liczba = wyświetla się wcześniej
@@ -401,6 +443,7 @@ export interface DocumentsSelect<T extends boolean = true> {
 export interface StatTilesSelect<T extends boolean = true> {
   number?: T;
   label?: T;
+  icon?: T;
   description?: T;
   order?: T;
   updatedAt?: T;

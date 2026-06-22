@@ -24,6 +24,12 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      graphics: {
+        Logo: '@/components/admin/Logo',
+        Icon: '@/components/admin/Icon',
+      },
+    },
   },
   collections: [Users, Media, Documents, StatTile, ServicePage],
   globals: [HeroSection, AboutSection, CvModal, BioModal],

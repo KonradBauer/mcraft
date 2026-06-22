@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { BioModal, CvModal, StatTile } from '@/payload-types'
+import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
 
 export type ModalKey = 'cv' | 'bio' | 'tiles'
@@ -225,13 +226,17 @@ function ModalTilesContent({ tiles }: { tiles: StatTile[] }) {
     <>
       <ModalHead eyebrowText="W liczbach" title="Doświadczenie i kwalifikacje" sub="Kliknij dowolny kafelek, by poznać szczegóły" />
       <div className="grid grid-cols-4 p-[20px_48px_24px] max-[980px]:grid-cols-2 max-[980px]:p-5 max-[560px]:grid-cols-1">
-        {tiles.map((t) => (
-          <div key={t.id} className="p-[14px_14px] border border-hairline-light -m-px">
-            <div className="font-montserrat font-semibold text-[28px] text-dark-text leading-none">{t.number}</div>
-            <div className="font-montserrat text-[10px] font-semibold tracking-[0.12em] uppercase text-accent my-1.5">{t.label}</div>
-            <p className="text-[12px] leading-[1.5] text-[#6a6862] m-0">{t.description}</p>
-          </div>
-        ))}
+        {tiles.map((t) => {
+          const Icon = getTileIcon(t.number, t.icon)
+          return (
+            <div key={t.id} className="overflow-hidden p-[14px_14px] border border-hairline-light -m-px">
+              <Icon className="w-[30px] h-[30px] text-accent mb-3 opacity-75" strokeWidth={1.4} />
+              <div className="font-montserrat font-semibold text-[26px] text-dark-text leading-none break-all">{t.number}</div>
+              <div className="font-montserrat text-[10px] font-semibold tracking-[0.08em] uppercase text-accent mt-2 mb-1.5 leading-[1.4] break-words">{t.label}</div>
+              <p className="text-[12px] leading-[1.5] text-[#6a6862] m-0">{t.description}</p>
+            </div>
+          )
+        })}
       </div>
     </>
   )
