@@ -31,7 +31,7 @@ const ogImage = `${siteUrl}/opengraph-image`
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'Inzynier spawalnik Dr inz. Michal Macherzynski | MCRAFT',
+    default: 'Inżynier spawalnik Dr inż. Michał Macherzyński | MCRAFT',
     template: '%s | MCRAFT',
   },
   description: 'Dr inz. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2. Nadzór spawalniczy, konstrukcje stalowe, meble premium. Wilkowiecko, woj. śląskie.',

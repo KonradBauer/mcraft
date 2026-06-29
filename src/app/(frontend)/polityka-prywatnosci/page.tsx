@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Polityka prywatności | MCRAFT',
+  title: 'Polityka prywatności',
   description: 'Polityka prywatności serwisu mcraft.pl - informacje o przetwarzaniu danych osobowych.',
   robots: { index: false },
 }
