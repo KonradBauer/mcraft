@@ -137,13 +137,13 @@ export default async function RealizacjaPage({ params }: Props) {
       <section className="py-20 bg-cream">
         <div className={wrap}>
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
-            {/* Left (desktop) / bottom (mobile): gallery */}
-            <div className="max-[980px]:order-2">
+            {/* Left (desktop) / top (mobile): gallery */}
+            <div>
               <RealizacjaGaleria images={galleryImages} />
             </div>
 
-            {/* Right (desktop) / top (mobile): description */}
-            <div className="max-[980px]:order-1">
+            {/* Right (desktop) / below (mobile): description */}
+            <div>
               {item.description ? (
                 <RichText
                   data={item.description}

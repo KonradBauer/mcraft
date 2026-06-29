@@ -172,7 +172,7 @@ export function RealizacjaGaleria({ images }: Props) {
 
           {/* Thumbnail strip */}
           {images.length > 1 && (
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto max-w-[90vw] px-2">
               {images.map((img, i) => (
                 <button
                   key={i}
