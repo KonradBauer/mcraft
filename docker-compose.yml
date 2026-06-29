@@ -17,7 +17,7 @@ services:
       mongo:
         condition: service_healthy
     volumes:
-      - media:/app/public/media
+      - media:/app/media
 
   mongo:
     image: mongo:7
