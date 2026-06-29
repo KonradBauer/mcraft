@@ -75,7 +75,7 @@ export function RealizacjaGaleria({ images }: Props) {
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex gap-2 mt-2 overflow-x-auto">
+        <div className="flex gap-2 mt-2 overflow-x-auto w-full min-w-0 modal-scroll pb-1">
           {images.map((img, i) => (
             <button
               key={i}

@@ -138,7 +138,7 @@ export default async function RealizacjaPage({ params }: Props) {
         <div className={wrap}>
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
             {/* Left (desktop) / top (mobile): gallery */}
-            <div>
+            <div className="min-w-0 overflow-hidden">
               <RealizacjaGaleria images={galleryImages} />
             </div>
 
