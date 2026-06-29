@@ -1,15 +1,21 @@
 import Link from 'next/link'
 import React from 'react'
+import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+
+function ScopeIcon({ icon }: { icon?: string | null }) {
+  const Icon = icon ? ICON_REGISTRY[icon] : null
+  if (!Icon) return <span className="w-[20px] h-[20px] bg-accent rotate-45 flex-none" />
+  return <Icon size={40} strokeWidth={1.4} className="text-accent flex-none" />
+}
 
 export interface NadzorLayoutProps {
   eyebrow?: string | null
   title: string
   description?: string | null
-  items: { text: string }[]
-  mainImageUrl?: string | null
+  items: { icon?: string | null; text: string; description?: string | null }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
 }
@@ -30,7 +36,6 @@ export function NadzorLayout({
   title,
   description,
   items,
-  mainImageUrl,
   realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
 }: NadzorLayoutProps) {
@@ -71,63 +76,65 @@ export function NadzorLayout({
       </header>
 
       {/* Body */}
-      <section className="py-20">
+      <section className="py-20 bg-cream">
         <div className={wrap}>
-          <div className="grid grid-cols-[1.1fr_0.9fr] gap-[60px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
-            <div>
-              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
-              <ul className="flex flex-col gap-4">
-                {items.map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
-                    <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
-                    <span>{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              {mainImageUrl ? (
-                <div className="relative w-full h-[340px]">
-                  <ImageWithSkeleton src={mainImageUrl} alt={title} className="object-cover" sizes="(max-width: 980px) 100vw, 50vw" />
-                </div>
-              ) : (
-                <ImageSlot placeholder={`Zdjęcie - ${title}`} className="w-full h-[340px]" />
-              )}
-            </div>
-          </div>
-
-          {/* Realizacje */}
-          <div className="mt-[18px]">
-            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
-            <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
-              {realizacje && realizacje.length > 0
-                ? realizacje.map((item, i) => (
-                    <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
-                      {item.thumbnailUrl ? (
-                        <ImageWithSkeleton
-                          src={item.thumbnailUrl}
-                          alt={item.title}
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <ImageSlot placeholder={item.title} className="w-full h-full" />
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
-                        <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
-                          {item.title}
-                        </span>
-                      </div>
-                    </Link>
-                  ))
-                : (['Realizacja 1', 'Realizacja 2', 'Realizacja 3'] as const).map((ph) => (
-                    <ImageSlot key={ph} placeholder={ph} className="w-full h-[220px]" />
-                  ))
-              }
-            </div>
-          </div>
+          {/* Scope list */}
+          {items.length > 0 && (
+            <ul className="flex flex-col gap-[8px]">
+              {items.map((item, i) => (
+                <li key={i} className="flex items-stretch bg-white">
+                  {/* Icon column */}
+                  <div className="flex-none relative flex items-center justify-center w-[80px]">
+                    <span className="absolute right-0 top-[16px] bottom-[16px] w-px bg-[#e8e3d9]" />
+                    <ScopeIcon icon={item.icon} />
+                  </div>
+                  {/* Content */}
+                  <div className="min-w-0 flex-1 px-[24px] py-[20px]">
+                    <span className="block font-montserrat font-semibold text-[15px] tracking-[0.02em] text-dark-text leading-[1.5]">
+                      {i + 1}.&nbsp;{item.text}
+                    </span>
+                    {item.description && (
+                      <p className="mt-[8px] text-[14.5px] leading-[1.8] text-[#56544e] font-light max-w-[780px]">
+                        {item.description}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
+
+      {/* Realizacje */}
+      {realizacje && realizacje.length > 0 && (
+        <section className="py-16 bg-cream-2">
+          <div className={wrap}>
+            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-8">Realizacje</h2>
+            <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
+              {realizacje.map((item, i) => (
+                <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
+                  {item.thumbnailUrl ? (
+                    <ImageWithSkeleton
+                      src={item.thumbnailUrl}
+                      alt={item.title}
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <ImageSlot placeholder={item.title} className="w-full h-full" />
+                  )}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
+                    <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
+                      {item.title}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* CTA */}
       <section className="bg-cream-2 py-16 text-center">
@@ -149,7 +156,6 @@ export function NadzorLayout({
       <footer className="bg-ink-3 text-light pt-16 pb-[26px]">
         <div className={wrap}>
           <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
-
             <div>
               <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">Porozmawiajmy o Twoim projekcie</span>
               <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">Skontaktuj się</h2>
@@ -189,12 +195,11 @@ export function NadzorLayout({
                 title="Lokalizacja MCRAFT"
               />
             </div>
-
           </div>
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
             <span>© 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
-            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatnosci</Link>
+            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatności</Link>
             <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>
         </div>

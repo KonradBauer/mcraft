@@ -73,7 +73,6 @@ export interface Config {
     'stat-tiles': StatTile;
     'service-pages': ServicePage;
     'portfolio-projects': PortfolioProject;
-    'nadzor-realizacje': NadzorRealizacje;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -87,7 +86,6 @@ export interface Config {
     'stat-tiles': StatTilesSelect<false> | StatTilesSelect<true>;
     'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
     'portfolio-projects': PortfolioProjectsSelect<false> | PortfolioProjectsSelect<true>;
-    'nadzor-realizacje': NadzorRealizacjeSelect<false> | NadzorRealizacjeSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -273,11 +271,51 @@ export interface ServicePage {
   description?: string | null;
   scopeItems?:
     | {
+        icon?:
+          | (
+              | 'Award'
+              | 'BadgeCheck'
+              | 'Box'
+              | 'Briefcase'
+              | 'Calendar'
+              | 'CheckCircle'
+              | 'ClipboardCheck'
+              | 'ClipboardList'
+              | 'Clock'
+              | 'Cpu'
+              | 'Droplets'
+              | 'Eye'
+              | 'Factory'
+              | 'FileSearch'
+              | 'FileText'
+              | 'Flame'
+              | 'FlaskConical'
+              | 'Globe'
+              | 'GraduationCap'
+              | 'HardHat'
+              | 'Layers'
+              | 'Microscope'
+              | 'PenTool'
+              | 'Ruler'
+              | 'Search'
+              | 'Settings2'
+              | 'ShieldCheck'
+              | 'Star'
+              | 'Timer'
+              | 'Train'
+              | 'TrendingUp'
+              | 'UserCheck'
+              | 'Users'
+              | 'Warehouse'
+              | 'Wrench'
+              | 'Zap'
+            )
+          | null;
         text: string;
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
-  mainImage?: (string | null) | Media;
   /**
    * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej
    */
@@ -304,44 +342,6 @@ export interface PortfolioProject {
    * Tylko Meble premium lub Konstrukcje stalowe
    */
   servicePage: string | ServicePage;
-  description?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  thumbnail?: (string | null) | Media;
-  images?:
-    | {
-        image: string | Media;
-        alt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  order?: number | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "nadzor-realizacje".
- */
-export interface NadzorRealizacje {
-  id: string;
-  title: string;
-  /**
-   * Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu.
-   */
-  slug: string;
   description?: {
     root: {
       type: string;
@@ -416,10 +416,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'portfolio-projects';
         value: string | PortfolioProject;
-      } | null)
-    | ({
-        relationTo: 'nadzor-realizacje';
-        value: string | NadzorRealizacje;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -546,10 +542,11 @@ export interface ServicePagesSelect<T extends boolean = true> {
   scopeItems?:
     | T
     | {
+        icon?: T;
         text?: T;
+        description?: T;
         id?: T;
       };
-  mainImage?: T;
   thumbnailTitle?: T;
   thumbnailImage?: T;
   updatedAt?: T;
@@ -563,26 +560,6 @@ export interface PortfolioProjectsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   servicePage?: T;
-  description?: T;
-  thumbnail?: T;
-  images?:
-    | T
-    | {
-        image?: T;
-        alt?: T;
-        id?: T;
-      };
-  order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "nadzor-realizacje_select".
- */
-export interface NadzorRealizacjeSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
   description?: T;
   thumbnail?: T;
   images?:

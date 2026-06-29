@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'edge'
-export const alt = 'MCRAFT - Dr inz. Michal Macherzynski | Inzynier spawalnik'
+export const alt = 'MCRAFT - Dr inż. Michał Macherzyński | Inżynier spawalnik'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -36,7 +36,7 @@ export default function Image() {
             marginBottom: 20,
           }}
         >
-          Dr inz.
+          Dr inż.
         </div>
 
         {/* Name */}
@@ -66,7 +66,7 @@ export default function Image() {
             fontWeight: 300,
           }}
         >
-          Inzynier spawalnik - IWE / IWI / VT2 / PT2
+          Inżynier spawalnik - IWE / IWI / VT2 / PT2
         </div>
 
         {/* Brand */}

@@ -40,7 +40,7 @@ export function RealizacjaGaleria({ images }: Props) {
   if (images.length === 0) {
     return (
       <div className="w-full aspect-[4/3] bg-ink/5 flex items-center justify-center text-ink/30 font-montserrat text-sm tracking-[0.1em] uppercase">
-        Brak zdiec
+        Brak zdjęć
       </div>
     )
   }
@@ -53,7 +53,7 @@ export function RealizacjaGaleria({ images }: Props) {
       <button
         className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7]"
         onClick={() => setLightboxOpen(true)}
-        aria-label={`Powieksz: ${active.alt}`}
+        aria-label={`Powiększ: ${active.alt}`}
       >
         <ImageWithSkeleton
           src={active.url}
@@ -113,7 +113,7 @@ export function RealizacjaGaleria({ images }: Props) {
           <button
             className="absolute top-5 right-5 text-white/60 hover:text-white transition-colors p-2"
             onClick={closeLightbox}
-            aria-label="Zamknij galerie"
+            aria-label="Zamknij galerię"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
               <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
@@ -130,7 +130,7 @@ export function RealizacjaGaleria({ images }: Props) {
             <button
               className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
               onClick={(e) => { e.stopPropagation(); goPrev() }}
-              aria-label="Poprzednie zdjecie"
+              aria-label="Poprzednie zdjęcie"
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5 rotate-180">
                 <path d="M0 6h28M23 1l5 5-5 5" />
@@ -155,7 +155,7 @@ export function RealizacjaGaleria({ images }: Props) {
             <button
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
               onClick={(e) => { e.stopPropagation(); goNext() }}
-              aria-label="Nastepne zdjecie"
+              aria-label="Następne zdjęcie"
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5">
                 <path d="M0 6h28M23 1l5 5-5 5" />

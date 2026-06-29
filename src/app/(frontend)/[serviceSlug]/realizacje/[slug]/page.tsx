@@ -163,7 +163,7 @@ export default async function RealizacjaPage({ params }: Props) {
             href="/#contact"
             className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
           >
-            Skontaktuj sie
+            Skontaktuj się
             <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
               <path d="M0 6h28M23 1l5 5-5 5" />
             </svg>
@@ -180,11 +180,11 @@ export default async function RealizacjaPage({ params }: Props) {
                 Porozmawiajmy o Twoim projekcie
               </span>
               <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">
-                Skontaktuj sie
+                Skontaktuj się
               </h2>
               <div className="mb-[22px]">
                 <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">
-                  MCRAFT Michal Macherzynski
+                  MCRAFT Michał Macherzyński
                 </div>
                 <div className="text-[13px] text-light-muted leading-[1.8]">
                   NIP: 5742046939<br />
@@ -211,7 +211,7 @@ export default async function RealizacjaPage({ params }: Props) {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none">
                   <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" /><circle cx="12" cy="10" r="3" />
                 </svg>
-                <span>ul. Zolnierzy Wrzesnia 36, 42-152 Wilkowiecko</span>
+                <span>ul. Żołnierzy Września 36, 42-152 Wilkowiecko</span>
               </div>
               <div className="flex items-center gap-4 text-[14.5px] text-light-muted">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-[17px] h-[17px] text-accent flex-none">
@@ -231,7 +231,7 @@ export default async function RealizacjaPage({ params }: Props) {
 
             <div className="border-l border-white/10 pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-white/10 max-[768px]:pt-[34px] overflow-hidden">
               <iframe
-                src="https://maps.google.com/maps?q=ul.+Zolnierzy+Wrzesnia+36,+42-152+Wilkowiecko&output=embed"
+                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
                 width="100%"
                 height="300"
                 style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
@@ -243,9 +243,9 @@ export default async function RealizacjaPage({ params }: Props) {
           </div>
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
-            <span>© 2025 MCRAFT Michal Macherzynski. Wszystkie prawa zastrzezone.</span>
+            <span>© 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
             <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">
-              Polityka prywatnosci
+              Polityka prywatności
             </Link>
             <span>
               Wykonanie:{' '}

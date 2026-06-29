@@ -8,11 +8,11 @@ import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 
 export const metadata: Metadata = {
   title: 'Meble stalowe premium - loft i industrial | MCRAFT',
-  description: 'Unikalne meble stalowe i loftowe tworzone z dbałością o detal: projekty autorskie na zamowienie, laczenie stali z drewnem i szklem, wykonczenie premium.',
+  description: 'Unikalne meble stalowe i loftowe tworzone z dbałością o detal: projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
   alternates: { canonical: 'https://mcraft.pl/meble-premium' },
   openGraph: {
     title: 'Meble stalowe premium - loft i industrial | MCRAFT',
-    description: 'Meble loftowe i industrialne, projekty autorskie na zamowienie, laczenie stali z drewnem i szklem, wykonczenie premium.',
+    description: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
     url: 'https://mcraft.pl/meble-premium',
     images: [{ url: 'https://mcraft.pl/opengraph-image', width: 1200, height: 630 }],
   },

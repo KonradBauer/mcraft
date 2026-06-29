@@ -8,7 +8,7 @@ export default function Logo() {
         fontWeight: 700,
         fontSize: '28px',
         letterSpacing: '0.18em',
-        color: '#0e1a17',
+        color: '#FFFFFF',
         lineHeight: 1,
       }}>
         MCRAFT
@@ -18,7 +18,7 @@ export default function Logo() {
         fontWeight: 400,
         fontSize: '9px',
         letterSpacing: '0.22em',
-        color: '#4f9a8c',
+        color: '#808080',
         textTransform: 'uppercase',
         lineHeight: 1,
       }}>

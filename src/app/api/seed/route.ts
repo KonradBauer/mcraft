@@ -32,9 +32,16 @@ const PAGES = [
   },
   {
     slug: 'nadzor-spawalniczy',
-    title: 'Nadzor spawalniczy',
+    title: 'Nadzór spawalniczy',
     eyebrow: 'Obszar działalności',
-    thumbnailTitle: 'Nadzor spawalniczy',
+    thumbnailTitle: 'Nadzór spawalniczy',
+    scopeItems: [],
+  },
+  {
+    slug: 'szkolenia',
+    title: 'Szkolenia',
+    eyebrow: 'Obszar działalności',
+    thumbnailTitle: 'Szkolenia',
     scopeItems: [],
   },
 ]

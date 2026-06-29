@@ -348,7 +348,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
           <div className="border-t border-hairline-dark mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
             <span>© 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
-            <Link href="/polityka-prywatnosci" className="hover:text-light/60 transition-colors duration-200">Polityka prywatnosci</Link>
+            <Link href="/polityka-prywatnosci" className="hover:text-light/60 transition-colors duration-200">Polityka prywatności</Link>
             <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-light/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>
         </div>

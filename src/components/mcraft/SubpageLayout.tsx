@@ -8,8 +8,7 @@ export interface SubpageLayoutProps {
   eyebrow?: string | null
   title: string
   description?: string | null
-  items: { text: string }[]
-  mainImageUrl?: string | null
+  items: { text: string; description?: string | null }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
 }
@@ -30,7 +29,6 @@ export function SubpageLayout({
   title,
   description,
   items,
-  mainImageUrl,
   realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
 }: SubpageLayoutProps) {
@@ -73,27 +71,16 @@ export function SubpageLayout({
       {/* Body */}
       <section className="py-20">
         <div className={wrap}>
-          <div className="grid grid-cols-[1.1fr_0.9fr] gap-[60px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-10">
-            <div>
-              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
-              <ul className="flex flex-col gap-4">
-                {items.map((item, i) => (
-                  <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
-                    <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
-                    <span>{item.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              {mainImageUrl ? (
-                <div className="relative w-full h-[340px]">
-                  <ImageWithSkeleton src={mainImageUrl} alt={title} className="object-cover" sizes="(max-width: 980px) 100vw, 50vw" />
-                </div>
-              ) : (
-                <ImageSlot placeholder={`Zdjęcie - ${title}`} className="w-full h-[340px]" />
-              )}
-            </div>
+          <div>
+            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
+            <ul className="flex flex-col gap-4">
+              {items.map((item, i) => (
+                <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
+                  <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
+                  <span>{item.text}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Realizacje */}
@@ -194,7 +181,7 @@ export function SubpageLayout({
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
             <span>© 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
-            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatnosci</Link>
+            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatności</Link>
             <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>
         </div>
