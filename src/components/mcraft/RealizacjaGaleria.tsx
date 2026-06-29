@@ -15,27 +15,25 @@ type Props = {
 export function RealizacjaGaleria({ images }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxLoaded, setLightboxLoaded] = useState(false)
+
+  const setActive = useCallback((i: number) => {
+    setLightboxLoaded(false)
+    setActiveIndex(i)
+  }, [])
 
   const closeLightbox = useCallback(() => setLightboxOpen(false), [])
-
-  const goNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % images.length)
-  }, [images.length])
-
-  const goPrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + images.length) % images.length)
-  }, [images.length])
 
   useEffect(() => {
     if (!lightboxOpen) return
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') closeLightbox()
-      if (e.key === 'ArrowRight') goNext()
-      if (e.key === 'ArrowLeft') goPrev()
+      if (e.key === 'ArrowRight') setActive((activeIndex + 1) % images.length)
+      if (e.key === 'ArrowLeft') setActive((activeIndex - 1 + images.length) % images.length)
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
-  }, [lightboxOpen, closeLightbox, goNext, goPrev])
+  }, [lightboxOpen, activeIndex, closeLightbox, setActive, images.length])
 
   if (images.length === 0) {
     return (
@@ -129,7 +127,7 @@ export function RealizacjaGaleria({ images }: Props) {
           {images.length > 1 && (
             <button
               className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
-              onClick={(e) => { e.stopPropagation(); goPrev() }}
+              onClick={(e) => { e.stopPropagation(); setActive((activeIndex - 1 + images.length) % images.length) }}
               aria-label="Poprzednie zdjęcie"
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5 rotate-180">
@@ -140,13 +138,22 @@ export function RealizacjaGaleria({ images }: Props) {
 
           {/* Image */}
           <div
-            className="max-w-[88vw] max-h-[80vh] flex items-center justify-center"
+            className="relative max-w-[88vw] max-h-[80vh] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
+            {!lightboxLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg className="w-8 h-8 text-white/30 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeDasharray="32" strokeDashoffset="12" />
+                </svg>
+              </div>
+            )}
             <img
+              key={active.url}
               src={active.url}
               alt={active.alt}
-              className="max-w-[88vw] max-h-[80vh] object-contain"
+              className={`max-w-[88vw] max-h-[80vh] object-contain transition-opacity duration-300 ${lightboxLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setLightboxLoaded(true)}
             />
           </div>
 
@@ -154,7 +161,7 @@ export function RealizacjaGaleria({ images }: Props) {
           {images.length > 1 && (
             <button
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
-              onClick={(e) => { e.stopPropagation(); goNext() }}
+              onClick={(e) => { e.stopPropagation(); setActive((activeIndex + 1) % images.length) }}
               aria-label="Następne zdjęcie"
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5">
@@ -169,11 +176,11 @@ export function RealizacjaGaleria({ images }: Props) {
               {images.map((img, i) => (
                 <button
                   key={i}
-                  onClick={(e) => { e.stopPropagation(); setActiveIndex(i) }}
-                  className={`relative w-[52px] h-[38px] overflow-hidden flex-none bg-black transition-opacity duration-200 ${
+                  onClick={(e) => { e.stopPropagation(); setActive(i) }}
+                  className={`relative w-[52px] h-[38px] overflow-hidden flex-none bg-black/50 transition-opacity duration-200 ${
                     i === activeIndex ? 'opacity-100 outline outline-2 outline-accent' : 'opacity-35 hover:opacity-70'
                   }`}
-                  aria-label={`Zdjecie ${i + 1}`}
+                  aria-label={`Zdjęcie ${i + 1}`}
                 >
                   <img src={img.url} alt={img.alt} className="w-full h-full object-contain" />
                 </button>
