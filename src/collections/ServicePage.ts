@@ -8,6 +8,8 @@ export const ServicePage: CollectionConfig = {
   },
   access: {
     read: () => true,
+    create: () => false,
+    delete: () => false,
   },
   admin: {
     useAsTitle: 'title',
@@ -16,12 +18,13 @@ export const ServicePage: CollectionConfig = {
   fields: [
     {
       name: 'slug',
-      label: 'Slug URL (np. nadzor-spawalniczy)',
+      label: 'Slug URL',
       type: 'text',
       required: true,
       unique: true,
       admin: {
-        description: 'Musi odpowiadać ścieżce URL. Nie zmieniaj bez konsultacji z deweloperem.',
+        readOnly: true,
+        description: 'Hardcoded - nie zmieniaj.',
       },
     },
     {

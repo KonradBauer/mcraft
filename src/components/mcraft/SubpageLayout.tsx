@@ -10,7 +10,7 @@ export interface SubpageLayoutProps {
   description?: string | null
   items: { text: string }[]
   mainImageUrl?: string | null
-  galleryImages?: { url: string; alt?: string | null }[]
+  realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
 }
 
@@ -31,7 +31,7 @@ export function SubpageLayout({
   description,
   items,
   mainImageUrl,
-  galleryImages = [],
+  realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
 }: SubpageLayoutProps) {
   return (
@@ -96,15 +96,29 @@ export function SubpageLayout({
             </div>
           </div>
 
-          {/* Gallery */}
+          {/* Realizacje */}
           <div className="mt-[18px]">
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
             <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
-              {galleryImages.length > 0
-                ? galleryImages.map((img, i) => (
-                    <div key={i} className="relative w-full h-[220px]">
-                      <ImageWithSkeleton src={img.url} alt={img.alt ?? `${title} - realizacja MCRAFT`} className="object-cover" sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw" />
-                    </div>
+              {realizacje && realizacje.length > 0
+                ? realizacje.map((item, i) => (
+                    <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
+                      {item.thumbnailUrl ? (
+                        <ImageWithSkeleton
+                          src={item.thumbnailUrl}
+                          alt={item.title}
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw"
+                        />
+                      ) : (
+                        <ImageSlot placeholder={item.title} className="w-full h-full" />
+                      )}
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
+                        <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
+                          {item.title}
+                        </span>
+                      </div>
+                    </Link>
                   ))
                 : (['Realizacja 1', 'Realizacja 2', 'Realizacja 3'] as const).map((ph) => (
                     <ImageSlot key={ph} placeholder={ph} className="w-full h-[220px]" />

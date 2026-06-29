@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
-import { toSubpageLayoutProps } from '@/lib/servicePageData'
+import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 
 export const metadata: Metadata = {
   title: 'Konstrukcje stalowe - prefabrykacja i montaz | MCRAFT',
@@ -39,5 +39,23 @@ export default async function KonstrukcjeStalowePage() {
     limit: 1,
   })
 
-  return <SubpageLayout {...toSubpageLayoutProps(docs[0], FALLBACK)} />
+  const servicePage = docs[0]
+  const portfolioDocs = servicePage
+    ? (
+        await payload.find({
+          collection: 'portfolio-projects',
+          where: { servicePage: { equals: servicePage.id } },
+          sort: 'order',
+          depth: 1,
+          limit: 100,
+        })
+      ).docs
+    : []
+
+  return (
+    <SubpageLayout
+      {...toSubpageLayoutProps(servicePage, FALLBACK)}
+      realizacje={toRealizacjeProps(portfolioDocs, 'konstrukcje-stalowe')}
+    />
+  )
 }

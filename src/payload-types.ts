@@ -72,6 +72,7 @@ export interface Config {
     documents: Document;
     'stat-tiles': StatTile;
     'service-pages': ServicePage;
+    'portfolio-projects': PortfolioProject;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     documents: DocumentsSelect<false> | DocumentsSelect<true>;
     'stat-tiles': StatTilesSelect<false> | StatTilesSelect<true>;
     'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
+    'portfolio-projects': PortfolioProjectsSelect<false> | PortfolioProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -261,7 +263,7 @@ export interface StatTile {
 export interface ServicePage {
   id: string;
   /**
-   * Musi odpowiadać ścieżce URL. Nie zmieniaj bez konsultacji z deweloperem.
+   * Hardcoded - nie zmieniaj.
    */
   slug: string;
   eyebrow?: string | null;
@@ -289,6 +291,34 @@ export interface ServicePage {
    * Jeśli puste — wyświetlana jest ikona SVG
    */
   thumbnailImage?: (string | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-projects".
+ */
+export interface PortfolioProject {
+  id: string;
+  title: string;
+  /**
+   * Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy
+   */
+  slug: string;
+  /**
+   * Do której podstrony przypisana jest ta realizacja
+   */
+  servicePage: string | ServicePage;
+  description?: string | null;
+  thumbnail?: (string | null) | Media;
+  images?:
+    | {
+        image: string | Media;
+        alt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -335,6 +365,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'service-pages';
         value: string | ServicePage;
+      } | null)
+    | ({
+        relationTo: 'portfolio-projects';
+        value: string | PortfolioProject;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -474,6 +508,27 @@ export interface ServicePagesSelect<T extends boolean = true> {
       };
   thumbnailTitle?: T;
   thumbnailImage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-projects_select".
+ */
+export interface PortfolioProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  servicePage?: T;
+  description?: T;
+  thumbnail?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
