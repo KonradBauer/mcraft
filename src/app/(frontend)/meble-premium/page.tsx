@@ -23,10 +23,11 @@ const FALLBACK = {
   title: 'Meble premium',
   description: 'Unikalne meble stalowe i loftowe tworzone z dbałością o detal - projekty autorskie i realizacje na zamówienie.',
   items: [
-    { text: 'Meble loftowe i industrialne' },
-    { text: 'Projekty autorskie na zamówienie' },
-    { text: 'Łączenie stali z drewnem i szkłem' },
-    { text: 'Wykończenie premium' },
+    { text: 'Autorskie meble premium' },
+    { text: 'Realizacje indywidualne na zamówienie' },
+    { text: 'Stal, kamień, drewno i szkło' },
+    { text: 'Konstrukcje wykonywane ręcznie' },
+    { text: 'Detale i wykończenia klasy premium' },
   ],
 }
 
