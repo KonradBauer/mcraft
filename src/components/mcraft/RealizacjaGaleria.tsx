@@ -39,7 +39,7 @@ export function RealizacjaGaleria({ images }: Props) {
 
   if (images.length === 0) {
     return (
-      <div className="w-full h-[360px] bg-ink/5 flex items-center justify-center text-ink/30 font-montserrat text-sm tracking-[0.1em] uppercase">
+      <div className="w-full aspect-[4/3] bg-ink/5 flex items-center justify-center text-ink/30 font-montserrat text-sm tracking-[0.1em] uppercase">
         Brak zdiec
       </div>
     )
@@ -51,50 +51,50 @@ export function RealizacjaGaleria({ images }: Props) {
     <>
       {/* Main image */}
       <button
-        className="relative w-full h-[420px] overflow-hidden group cursor-zoom-in max-[560px]:h-[280px]"
+        className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7]"
         onClick={() => setLightboxOpen(true)}
         aria-label={`Powieksz: ${active.alt}`}
       >
         <ImageWithSkeleton
           src={active.url}
           alt={active.alt}
-          className="object-cover group-hover:scale-[1.02] transition-transform duration-400"
-          sizes="(max-width: 560px) 100vw, (max-width: 980px) 100vw, 50vw"
+          className="object-contain"
+          sizes="(max-width: 980px) 100vw, 50vw"
         />
         {/* Zoom hint */}
-        <div className="absolute bottom-3 right-3 bg-black/50 rounded-sm px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="absolute bottom-3 right-3 bg-black/40 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35M11 8v6M8 11h6" strokeLinecap="round" />
           </svg>
         </div>
-        {/* Counter badge */}
+        {/* Counter */}
         {images.length > 1 && (
-          <div className="absolute top-3 right-3 bg-black/50 font-montserrat text-[11px] tracking-[0.12em] text-white px-2 py-1">
-            {activeIndex + 1} / {images.length}
+          <div className="absolute top-3 right-3 bg-black/40 font-montserrat text-[11px] tracking-[0.12em] text-white px-2 py-0.5">
+            {activeIndex + 1}&nbsp;/&nbsp;{images.length}
           </div>
         )}
       </button>
 
       {/* Thumbnails */}
       {images.length > 1 && (
-        <div className="flex gap-2 mt-3 overflow-x-auto pb-1">
+        <div className="flex gap-2 mt-2 overflow-x-auto">
           {images.map((img, i) => (
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className={`relative flex-none w-[72px] h-[52px] overflow-hidden transition-all duration-200 ${
+              className={`relative flex-none w-[68px] h-[50px] overflow-hidden bg-[#f0ede7] transition-opacity duration-200 ${
                 i === activeIndex
-                  ? 'ring-2 ring-accent ring-offset-1'
-                  : 'opacity-55 hover:opacity-100'
+                  ? 'outline outline-2 outline-accent opacity-100'
+                  : 'opacity-50 hover:opacity-90'
               }`}
-              aria-label={`Zdjecie ${i + 1}: ${img.alt}`}
+              aria-label={`Zdjecie ${i + 1}`}
               aria-pressed={i === activeIndex}
             >
               <ImageWithSkeleton
                 src={img.url}
                 alt={img.alt}
-                className="object-cover"
-                sizes="72px"
+                className="object-contain"
+                sizes="68px"
               />
             </button>
           ))}
@@ -122,7 +122,7 @@ export function RealizacjaGaleria({ images }: Props) {
 
           {/* Counter */}
           <span className="absolute top-6 left-1/2 -translate-x-1/2 font-montserrat text-xs tracking-[0.2em] text-white/50">
-            {activeIndex + 1} / {images.length}
+            {activeIndex + 1}&nbsp;/&nbsp;{images.length}
           </span>
 
           {/* Prev */}
@@ -140,13 +140,13 @@ export function RealizacjaGaleria({ images }: Props) {
 
           {/* Image */}
           <div
-            className="max-w-[88vw] max-h-[86vh] flex items-center justify-center"
+            className="max-w-[88vw] max-h-[80vh] flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={active.url}
               alt={active.alt}
-              className="max-w-[88vw] max-h-[86vh] object-contain"
+              className="max-w-[88vw] max-h-[80vh] object-contain"
             />
           </div>
 
@@ -163,19 +163,19 @@ export function RealizacjaGaleria({ images }: Props) {
             </button>
           )}
 
-          {/* Thumbnail strip in lightbox */}
+          {/* Thumbnail strip */}
           {images.length > 1 && (
             <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={(e) => { e.stopPropagation(); setActiveIndex(i) }}
-                  className={`relative w-[52px] h-[38px] overflow-hidden flex-none transition-all duration-200 ${
-                    i === activeIndex ? 'ring-2 ring-accent' : 'opacity-40 hover:opacity-80'
+                  className={`relative w-[52px] h-[38px] overflow-hidden flex-none bg-black transition-opacity duration-200 ${
+                    i === activeIndex ? 'opacity-100 outline outline-2 outline-accent' : 'opacity-35 hover:opacity-70'
                   }`}
                   aria-label={`Zdjecie ${i + 1}`}
                 >
-                  <img src={img.url} alt={img.alt} className="w-full h-full object-cover" />
+                  <img src={img.url} alt={img.alt} className="w-full h-full object-contain" />
                 </button>
               ))}
             </div>

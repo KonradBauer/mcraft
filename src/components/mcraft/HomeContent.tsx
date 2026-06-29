@@ -256,19 +256,34 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 <Link
                   key={href}
                   href={href}
-                  className="group flex flex-col items-center justify-center gap-[22px] border border-hairline-light bg-white/40 px-[26px] pt-12 pb-10 text-center transition-all duration-[250ms] relative min-h-[230px] hover:border-accent hover:bg-white hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(14,26,23,0.10)] overflow-hidden"
+                  className="group relative overflow-hidden min-h-[280px] flex items-end"
                 >
+                  {/* Background */}
                   {thumbUrl ? (
-                    <div className="relative w-full h-[120px] -mx-[26px] -mt-12 mb-0">
-                      <ImageWithSkeleton src={thumbUrl} alt={displayName} className="object-cover" sizes="(max-width: 980px) 100vw, 33vw" />
+                    <div className="absolute inset-0">
+                      <ImageWithSkeleton
+                        src={thumbUrl}
+                        alt={displayName}
+                        className="object-cover group-hover:scale-[1.06] transition-transform duration-500"
+                        sizes="(max-width: 980px) 100vw, 33vw"
+                      />
                     </div>
                   ) : (
-                    <span className="text-[#3a3933] transition-colors duration-[250ms] group-hover:text-accent">{AREA_ICONS[slug]}</span>
+                    <div className="absolute inset-0 bg-ink-2 flex items-center justify-center">
+                      <span className="text-accent/60">{AREA_ICONS[slug]}</span>
+                    </div>
                   )}
-                  <span className="font-montserrat font-semibold text-[15px] tracking-[0.1em] uppercase text-dark-text leading-[1.5] whitespace-pre-line">{displayName}</span>
-                  <span className="inline-flex items-center gap-[9px] font-montserrat text-[10.5px] font-semibold tracking-[0.16em] uppercase text-accent opacity-0 translate-y-1.5 transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-y-0">
-                    Zobacz <ArrowRight className="w-5 h-[9px]" />
-                  </span>
+                  {/* Gradient scrim */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
+                  {/* Text frame */}
+                  <div className="relative w-full px-[22px] py-[20px]">
+                    <span className="block font-montserrat font-semibold text-[15px] tracking-[0.1em] uppercase text-white leading-[1.5] whitespace-pre-line">
+                      {displayName}
+                    </span>
+                    <span className="inline-flex items-center gap-[9px] font-montserrat text-[10.5px] font-semibold tracking-[0.16em] uppercase text-accent mt-[10px] opacity-0 translate-y-1.5 transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-y-0">
+                      Zobacz <ArrowRight className="w-5 h-[9px]" />
+                    </span>
+                  </div>
                 </Link>
               )
             })}

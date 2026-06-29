@@ -63,25 +63,6 @@ export const ServicePage: CollectionConfig = {
       relationTo: 'media',
     },
     {
-      name: 'galleryImages',
-      label: 'Galeria realizacji',
-      type: 'array',
-      fields: [
-        {
-          name: 'image',
-          label: 'Zdjęcie',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-        },
-        {
-          name: 'alt',
-          label: 'Opis zdjęcia (dla dostępności)',
-          type: 'text',
-        },
-      ],
-    },
-    {
       name: 'thumbnailTitle',
       label: 'Tytuł kafelka na stronie głównej',
       type: 'text',

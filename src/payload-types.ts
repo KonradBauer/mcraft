@@ -278,13 +278,6 @@ export interface ServicePage {
       }[]
     | null;
   mainImage?: (string | null) | Media;
-  galleryImages?:
-    | {
-        image: string | Media;
-        alt?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   /**
    * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej
    */
@@ -557,13 +550,6 @@ export interface ServicePagesSelect<T extends boolean = true> {
         id?: T;
       };
   mainImage?: T;
-  galleryImages?:
-    | T
-    | {
-        image?: T;
-        alt?: T;
-        id?: T;
-      };
   thumbnailTitle?: T;
   thumbnailImage?: T;
   updatedAt?: T;
