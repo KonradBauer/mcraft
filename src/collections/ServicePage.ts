@@ -14,6 +14,7 @@ export const ServicePage: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug'],
+    hidden: true,
   },
   fields: [
     {
