@@ -8,6 +8,7 @@ import type { Metadata } from 'next'
 import type { Media, ServicePage } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { MobileNav } from '@/components/mcraft/MobileNav'
+import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
 
 const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe']
@@ -19,8 +20,14 @@ const navLink =
 const NAV_LINKS = [
   { href: '/#about', label: 'O mnie' },
   { href: '/#areas', label: 'Obszary' },
-  { href: '/nadzor-spawalniczy', label: 'Realizacje' },
-  { href: '/#workshop', label: 'Warsztat' },
+  {
+    label: 'Realizacje',
+    sub: [
+      { href: '/nadzor-spawalniczy', label: 'Nadzor spawalniczy' },
+      { href: '/meble-premium', label: 'Meble premium' },
+      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
+    ],
+  },
   { href: '/#contact', label: 'Kontakt' },
 ]
 
@@ -48,7 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!item) return {}
 
   return {
-    title: `${item.title} - MCRAFT`,
+    title: item.title,
   }
 }
 
@@ -95,8 +102,7 @@ export default async function RealizacjaPage({ params }: Props) {
             <div className="flex gap-[38px] max-[980px]:hidden">
               <Link href="/#about" className={navLink}>O mnie</Link>
               <Link href="/#areas" className={navLink}>Obszary</Link>
-              <Link href="/nadzor-spawalniczy" className={navLink}>Realizacje</Link>
-              <Link href="/#workshop" className={navLink}>Warsztat</Link>
+              <NavRealizacjeDropdown triggerClass={navLink} />
               <Link href="/#contact" className={navLink}>Kontakt</Link>
             </div>
             <MobileNav links={NAV_LINKS} />
@@ -131,13 +137,13 @@ export default async function RealizacjaPage({ params }: Props) {
       <section className="py-20 bg-cream">
         <div className={wrap}>
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
-            {/* Left: gallery */}
-            <div>
+            {/* Left (desktop) / bottom (mobile): gallery */}
+            <div className="max-[980px]:order-2">
               <RealizacjaGaleria images={galleryImages} />
             </div>
 
-            {/* Right: description */}
-            <div>
+            {/* Right (desktop) / top (mobile): description */}
+            <div className="max-[980px]:order-1">
               {item.description ? (
                 <RichText
                   data={item.description}

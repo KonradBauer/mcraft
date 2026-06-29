@@ -13,6 +13,7 @@ import { mediaUrl } from '@/lib/mediaUrl'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 import { ModalProvider } from './ModalProvider'
 import { ModalTrigger } from './ModalTrigger'
 import { TilesMarquee } from './TilesMarquee'
@@ -34,8 +35,14 @@ const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] upp
 const HOME_NAV_LINKS = [
   { href: '#about', label: 'O mnie' },
   { href: '#areas', label: 'Obszary' },
-  { href: '/nadzor-spawalniczy', label: 'Realizacje' },
-  { href: '#workshop', label: 'Warsztat' },
+  {
+    label: 'Realizacje',
+    sub: [
+      { href: '/nadzor-spawalniczy', label: 'Nadzor spawalniczy' },
+      { href: '/meble-premium', label: 'Meble premium' },
+      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
+    ],
+  },
   { href: '#contact', label: 'Kontakt' },
 ]
 
@@ -136,8 +143,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               <div className="flex gap-[38px] max-[980px]:hidden">
                 <a href="#about" className={`${navLink} text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[22px] after:h-0.5 after:bg-accent`}>O mnie</a>
                 <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>Obszary</a>
-                <Link href="/nadzor-spawalniczy" className={`${navLink} text-black/70 hover:text-black`}>Realizacje</Link>
-                <a href="#workshop" className={`${navLink} text-black/70 hover:text-black`}>Warsztat</a>
+                <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} />
                 <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
               </div>
               <MobileNav links={HOME_NAV_LINKS} />

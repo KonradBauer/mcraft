@@ -49,7 +49,7 @@ export function RealizacjaGaleria({ images }: Props) {
     <>
       {/* Main image */}
       <button
-        className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7]"
+        className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7] max-h-[520px]"
         onClick={() => setLightboxOpen(true)}
         aria-label={`Powiększ: ${active.alt}`}
       >

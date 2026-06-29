@@ -88,6 +88,15 @@ export const Portfolio: CollectionConfig = {
       relationTo: 'media',
     },
     {
+      name: 'bulkUploadImages',
+      type: 'ui',
+      admin: {
+        components: {
+          Field: '@/components/admin/BulkImageUpload',
+        },
+      },
+    },
+    {
       name: 'images',
       label: 'Zdjęcia galerii',
       type: 'array',

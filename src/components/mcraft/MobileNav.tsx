@@ -3,8 +3,12 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
+type NavItem =
+  | { href: string; label: string; sub?: never }
+  | { label: string; sub: { href: string; label: string }[]; href?: never }
+
 interface MobileNavProps {
-  links: { href: string; label: string }[]
+  links: NavItem[]
 }
 
 export function MobileNav({ links }: MobileNavProps) {
@@ -75,16 +79,37 @@ export function MobileNav({ links }: MobileNavProps) {
         </div>
 
         <nav className="flex-1 flex flex-col justify-center px-8">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={close}
-              className="font-montserrat text-[22px] font-light tracking-[0.25em] uppercase text-light/80 py-[18px] border-b border-white/[0.08] hover:text-accent hover:pl-3 transition-all duration-200 last:border-b-0"
-            >
-              {label}
-            </Link>
-          ))}
+          {links.map((item) => {
+            if (item.sub) {
+              return (
+                <div key={item.label} className="border-b border-white/[0.08] py-[14px]">
+                  <span className="block font-montserrat text-[11px] font-semibold tracking-[0.28em] uppercase text-accent/70 mb-[10px]">
+                    {item.label}
+                  </span>
+                  {item.sub.map(({ href, label }) => (
+                    <Link
+                      key={href}
+                      href={href}
+                      onClick={close}
+                      className="block font-montserrat text-[18px] font-light tracking-[0.22em] uppercase text-light/70 py-[10px] pl-3 hover:text-accent hover:pl-5 transition-all duration-200"
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </div>
+              )
+            }
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={close}
+                className="font-montserrat text-[22px] font-light tracking-[0.25em] uppercase text-light/80 py-[18px] border-b border-white/[0.08] hover:text-accent hover:pl-3 transition-all duration-200 last:border-b-0"
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="px-8 pb-10 flex-none">

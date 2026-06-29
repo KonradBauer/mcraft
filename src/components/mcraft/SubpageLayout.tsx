@@ -3,6 +3,7 @@ import React from 'react'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 
 export interface SubpageLayoutProps {
   eyebrow?: string | null
@@ -19,8 +20,14 @@ const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] upp
 const SUBPAGE_NAV_LINKS = [
   { href: '/#about', label: 'O mnie' },
   { href: '/#areas', label: 'Obszary' },
-  { href: '/nadzor-spawalniczy', label: 'Realizacje' },
-  { href: '/#workshop', label: 'Warsztat' },
+  {
+    label: 'Realizacje',
+    sub: [
+      { href: '/nadzor-spawalniczy', label: 'Nadzor spawalniczy' },
+      { href: '/meble-premium', label: 'Meble premium' },
+      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
+    ],
+  },
   { href: '/#contact', label: 'Kontakt' },
 ]
 
@@ -44,8 +51,7 @@ export function SubpageLayout({
             <div className="flex gap-[38px] max-[980px]:hidden">
               <Link href="/#about" className={navLink}>O mnie</Link>
               <Link href="/#areas" className={navLink}>Obszary</Link>
-              <Link href="/nadzor-spawalniczy" className={navLink}>Realizacje</Link>
-              <Link href="/#workshop" className={navLink}>Warsztat</Link>
+              <NavRealizacjeDropdown triggerClass={navLink} />
               <Link href="/#contact" className={navLink}>Kontakt</Link>
             </div>
             <MobileNav links={SUBPAGE_NAV_LINKS} />
