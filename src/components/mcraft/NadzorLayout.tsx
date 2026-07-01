@@ -4,12 +4,14 @@ import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+import { ModalProvider } from './ModalProvider'
+import { ModalTrigger } from './ModalTrigger'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 
 function ScopeIcon({ icon }: { icon?: string | null }) {
   const Icon = icon ? ICON_REGISTRY[icon] : null
-  if (!Icon) return <span className="w-[20px] h-[20px] bg-accent rotate-45 flex-none" />
-  return <Icon size={40} strokeWidth={1.4} className="text-accent flex-none" />
+  if (!Icon) return <span className="w-[28px] h-[28px] bg-accent rotate-45 flex-none" />
+  return <Icon size={56} strokeWidth={1.4} className="text-accent flex-none" />
 }
 
 export interface NadzorLayoutProps {
@@ -47,7 +49,7 @@ export function NadzorLayout({
   ctaLabel = 'Zainteresowany współpracą?',
 }: NadzorLayoutProps) {
   return (
-    <>
+    <ModalProvider>
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
@@ -84,30 +86,46 @@ export function NadzorLayout({
       {/* Body */}
       <section className="py-20 bg-cream">
         <div className={wrap}>
-          {/* Scope list */}
+          {/* Scope grid */}
           {items.length > 0 && (
-            <ul className="flex flex-col gap-[8px]">
-              {items.map((item, i) => (
-                <li key={i} className="flex items-stretch bg-white">
-                  {/* Icon column */}
-                  <div className="flex-none relative flex items-center justify-center w-[80px]">
-                    <span className="absolute right-0 top-[16px] bottom-[16px] w-px bg-[#e8e3d9]" />
+            <div className="grid grid-cols-2 gap-[18px] max-[980px]:grid-cols-1">
+              {items.map((item, i) => {
+                const cardClass = 'relative flex items-center gap-5 bg-white border border-[#e8e3d9] p-[28px]'
+                const content = (
+                  <>
+                    <span className="absolute top-0 left-0 w-[22px] h-[22px] border-t border-l border-accent pointer-events-none" />
                     <ScopeIcon icon={item.icon} />
-                  </div>
-                  {/* Content */}
-                  <div className="min-w-0 flex-1 px-[24px] py-[20px]">
-                    <span className="block font-montserrat font-semibold text-[15px] tracking-[0.02em] text-dark-text leading-[1.5]">
-                      {i + 1}.&nbsp;{item.text}
-                    </span>
-                    {item.description && (
-                      <p className="mt-[8px] text-[14.5px] leading-[1.8] text-[#56544e] font-light max-w-[780px]">
-                        {item.description}
-                      </p>
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <div className="min-w-0">
+                      <span className="block font-montserrat font-semibold text-[17px] text-dark-text leading-[1.4] mb-[8px]">
+                        {item.text}
+                      </span>
+                      {item.description && (
+                        <p className="text-[14.5px] leading-[1.7] text-[#56544e] font-light line-clamp-3">
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                  </>
+                )
+
+                if (!item.description) {
+                  return <div key={i} className={cardClass}>{content}</div>
+                }
+
+                return (
+                  <ModalTrigger
+                    key={i}
+                    modalKey="scope"
+                    asDiv
+                    ariaLabel={item.text}
+                    content={{ title: item.text, description: item.description }}
+                    className={`${cardClass} cursor-pointer transition-colors duration-200 hover:border-accent`}
+                  >
+                    {content}
+                  </ModalTrigger>
+                )
+              })}
+            </div>
           )}
         </div>
       </section>
@@ -210,6 +228,6 @@ export function NadzorLayout({
           </div>
         </div>
       </footer>
-    </>
+    </ModalProvider>
   )
 }

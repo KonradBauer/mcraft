@@ -5,10 +5,15 @@ import type { BioModal, CvModal, StatTile } from '@/payload-types'
 import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
 
-export type ModalKey = 'cv' | 'bio' | 'tiles'
+export type ModalKey = 'cv' | 'bio' | 'tiles' | 'scope'
+
+export interface ScopeModalContent {
+  title: string
+  description: string
+}
 
 interface ModalContextValue {
-  openModal: (key: ModalKey, el: HTMLElement) => void
+  openModal: (key: ModalKey, el: HTMLElement, content?: ScopeModalContent) => void
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null)
@@ -242,29 +247,42 @@ function ModalTilesContent({ tiles }: { tiles: StatTile[] }) {
   )
 }
 
+function ModalScopeContent({ title, description }: ScopeModalContent) {
+  return (
+    <>
+      <ModalHead eyebrowText="Zakres usług" title={title} />
+      <div className="px-12 pt-4 pb-8 max-[980px]:px-7">
+        <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{description}</p>
+      </div>
+    </>
+  )
+}
+
 /* ─── provider ─── */
 
 interface ModalProviderProps {
   children: React.ReactNode
-  cvModal: CvModal
-  bioModal: BioModal
-  tiles: StatTile[]
+  cvModal?: CvModal
+  bioModal?: BioModal
+  tiles?: StatTile[]
 }
 
 export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProviderProps) {
   const [modalKey, setModalKey] = useState<ModalKey | null>(null)
+  const [scopeContent, setScopeContent] = useState<ScopeModalContent | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [transform, setTransform] = useState('translate(-50%, -50%) scale(0.12)')
   const [opacity, setOpacity] = useState(0)
   const [isClosing, setIsClosing] = useState(false)
   const lastOrigin = useRef({ dx: 0, dy: 0 })
 
-  const openModal = useCallback((key: ModalKey, el: HTMLElement) => {
+  const openModal = useCallback((key: ModalKey, el: HTMLElement, content?: ScopeModalContent) => {
     const r = el.getBoundingClientRect()
     const dx = r.left + r.width / 2 - window.innerWidth / 2
     const dy = r.top + r.height / 2 - window.innerHeight / 2
     lastOrigin.current = { dx, dy }
     setModalKey(key)
+    setScopeContent(content ?? null)
     setTransform(`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.12)`)
     setOpacity(0)
     setIsOpen(true)
@@ -312,9 +330,10 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
           &times;
         </button>
         <div className="overflow-y-auto h-full flex flex-col modal-scroll">
-          {modalKey === 'cv' && <ModalCV cvModal={cvModal} />}
-          {modalKey === 'bio' && <ModalBio bioModal={bioModal} />}
-          {modalKey === 'tiles' && <ModalTilesContent tiles={tiles} />}
+          {modalKey === 'cv' && cvModal && <ModalCV cvModal={cvModal} />}
+          {modalKey === 'bio' && bioModal && <ModalBio bioModal={bioModal} />}
+          {modalKey === 'tiles' && tiles && <ModalTilesContent tiles={tiles} />}
+          {modalKey === 'scope' && scopeContent && <ModalScopeContent {...scopeContent} />}
         </div>
       </div>
     </ModalContext.Provider>

@@ -1,9 +1,8 @@
 'use client'
 
 import { useCallback } from 'react'
+import type { ModalKey, ScopeModalContent } from './ModalProvider'
 import { useModal } from './ModalProvider'
-
-type ModalKey = 'cv' | 'bio' | 'tiles'
 
 interface ModalTriggerProps {
   modalKey: ModalKey
@@ -13,14 +12,15 @@ interface ModalTriggerProps {
   ariaLabel?: string
   tabIndex?: number
   onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void
+  content?: ScopeModalContent
 }
 
-export function ModalTrigger({ modalKey, className, children, asDiv, ariaLabel, tabIndex, onKeyDown }: ModalTriggerProps) {
+export function ModalTrigger({ modalKey, className, children, asDiv, ariaLabel, tabIndex, onKeyDown, content }: ModalTriggerProps) {
   const { openModal } = useModal()
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    openModal(modalKey, e.currentTarget)
-  }, [openModal, modalKey])
+    openModal(modalKey, e.currentTarget, content)
+  }, [openModal, modalKey, content])
 
   if (asDiv) {
     return (
