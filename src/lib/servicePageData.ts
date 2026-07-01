@@ -16,7 +16,14 @@ export function toSubpageLayoutProps(
     eyebrow: page.eyebrow ?? fallback.eyebrow,
     title: page.title ?? fallback.title,
     description: page.description ?? fallback.description,
-    items: page.scopeItems?.length ? page.scopeItems.map((s) => ({ icon: s.icon ?? null, text: s.text, description: s.description ?? null })) : fallback.items,
+    items: page.scopeItems?.length
+      ? page.scopeItems.map((s) => ({
+          icon: s.icon ?? null,
+          text: s.text,
+          description: s.description ?? null,
+          modalDescription: s.modalDescription ?? null,
+        }))
+      : fallback.items,
   }
 }
 

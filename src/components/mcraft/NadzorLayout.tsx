@@ -18,7 +18,7 @@ export interface NadzorLayoutProps {
   eyebrow?: string | null
   title: string
   description?: string | null
-  items: { icon?: string | null; text: string; description?: string | null }[]
+  items: { icon?: string | null; text: string; description?: string | null; modalDescription?: string | null }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
 }
@@ -118,7 +118,7 @@ export function NadzorLayout({
                     modalKey="scope"
                     asDiv
                     ariaLabel={item.text}
-                    content={{ title: item.text, description: item.description }}
+                    content={{ title: item.text, description: item.modalDescription || item.description }}
                     className={`${cardClass} cursor-pointer transition-colors duration-200 hover:border-accent`}
                   >
                     {content}
