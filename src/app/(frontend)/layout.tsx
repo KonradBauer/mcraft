@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Barlow, Great_Vibes, Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import React from 'react'
+import { PageLoader } from '@/components/mcraft/PageLoader'
 import './styles.css'
 
 const montserrat = Montserrat({
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="pl" className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
       <body>
+        <PageLoader />
         {children}
         <Script id="schema-org" type="application/ld+json">
           {schemaOrg}

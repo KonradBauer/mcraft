@@ -136,3 +136,97 @@
 .modal-scroll::-webkit-scrollbar-button { display: none; }
 .modal-scroll { scrollbar-width: thin; scrollbar-color: #0e1a17 transparent; }
 
+/* Page loader - weld-seam progress trace */
+.loader-mark {
+  filter: drop-shadow(0 0 6px rgba(103, 179, 164, 0.5));
+}
+
+.weld-fill {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-accent) 0px,
+    var(--color-accent-bright) 4px,
+    var(--color-accent) 8px
+  );
+  box-shadow: 0 0 8px 1px rgba(103, 179, 164, 0.55);
+  animation: weld-progress 2.4s ease-in-out infinite;
+}
+
+.weld-head {
+  box-shadow:
+    0 0 6px 2px rgba(255, 255, 255, 0.95),
+    0 0 20px 8px rgba(103, 179, 164, 0.8);
+  animation: weld-head-flicker 0.3s ease-in-out infinite alternate;
+}
+
+.weld-spark {
+  opacity: 0;
+  box-shadow:
+    0 0 8px 2px rgba(255, 255, 255, 0.95),
+    0 0 14px 4px rgba(103, 179, 164, 0.7);
+}
+.weld-spark-1 { animation: weld-spark-fly-1 1.1s ease-out infinite; animation-delay: 0s; }
+.weld-spark-2 { animation: weld-spark-fly-2 1.2s ease-out infinite; animation-delay: 0.2s; }
+.weld-spark-3 { animation: weld-spark-fly-3 1s ease-out infinite; animation-delay: 0.45s; }
+.weld-spark-4 { animation: weld-spark-fly-4 1.25s ease-out infinite; animation-delay: 0.1s; }
+.weld-spark-5 { animation: weld-spark-fly-1 0.95s ease-out infinite; animation-delay: 0.6s; }
+.weld-spark-6 { animation: weld-spark-fly-5 1.05s ease-out infinite; animation-delay: 0.3s; }
+.weld-spark-7 { animation: weld-spark-fly-6 1.15s ease-out infinite; animation-delay: 0.5s; }
+.weld-spark-8 { animation: weld-spark-fly-2 0.9s ease-out infinite; animation-delay: 0.05s; }
+.weld-spark-9 { animation: weld-spark-fly-3 1.2s ease-out infinite; animation-delay: 0.7s; }
+.weld-spark-10 { animation: weld-spark-fly-5 1s ease-out infinite; animation-delay: 0.4s; }
+
+@keyframes weld-progress {
+  0% { width: 0%; opacity: 1; }
+  72% { width: 100%; opacity: 1; }
+  85% { width: 100%; opacity: 0; }
+  100% { width: 0%; opacity: 0; }
+}
+
+@keyframes weld-head-flicker {
+  from { transform: translateY(0) scale(1); opacity: 1; }
+  to { transform: translateY(0) scale(1.35); opacity: 0.7; }
+}
+
+@keyframes weld-spark-fly-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(12px, -14px) scale(0.9); opacity: 1; }
+  100% { transform: translate(22px, -26px) scale(0.2); opacity: 0; }
+}
+
+@keyframes weld-spark-fly-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(9px, 12px) scale(0.9); opacity: 1; }
+  100% { transform: translate(17px, 23px) scale(0.2); opacity: 0; }
+}
+
+@keyframes weld-spark-fly-3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(-7px, -11px) scale(0.9); opacity: 1; }
+  100% { transform: translate(-14px, -20px) scale(0.2); opacity: 0; }
+}
+
+@keyframes weld-spark-fly-4 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(6px, 16px) scale(0.9); opacity: 1; }
+  100% { transform: translate(11px, 29px) scale(0.2); opacity: 0; }
+}
+
+@keyframes weld-spark-fly-5 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(-11px, 9px) scale(0.9); opacity: 1; }
+  100% { transform: translate(-21px, 17px) scale(0.2); opacity: 0; }
+}
+
+@keyframes weld-spark-fly-6 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  60% { transform: translate(3px, -18px) scale(0.9); opacity: 1; }
+  100% { transform: translate(5px, -32px) scale(0.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weld-fill, .weld-head, .weld-spark, .loader-mark, .weld-torch { animation: none; }
+  .weld-fill { width: 100%; opacity: 1; }
+  .weld-spark { opacity: 0; }
+}
+
