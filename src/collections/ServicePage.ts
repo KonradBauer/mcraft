@@ -133,6 +133,15 @@ export const ServicePage: CollectionConfig = {
       },
     },
     {
+      name: 'heroImage',
+      label: 'Zdjęcie tła nagłówka (hero)',
+      type: 'upload',
+      relationTo: 'media',
+      admin: {
+        description: 'Tło w sekcji nagłówka podstrony. Jeśli puste — tylko wzór blueprint.',
+      },
+    },
+    {
       name: 'thumbnailImage',
       label: 'Zdjęcie kafelka na stronie głównej (opcjonalne)',
       type: 'upload',

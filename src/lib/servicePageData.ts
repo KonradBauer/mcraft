@@ -16,6 +16,7 @@ export function toSubpageLayoutProps(
     eyebrow: page.eyebrow ?? fallback.eyebrow,
     title: page.title ?? fallback.title,
     description: page.description ?? fallback.description,
+    heroImageUrl: resolveMediaUrl(page.heroImage),
     items: page.scopeItems?.length
       ? page.scopeItems.map((s) => ({
           icon: s.icon ?? null,

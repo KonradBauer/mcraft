@@ -325,6 +325,10 @@ export interface ServicePage {
    */
   thumbnailTitle?: string | null;
   /**
+   * Tło w sekcji nagłówka podstrony. Jeśli puste — tylko wzór blueprint.
+   */
+  heroImage?: (string | null) | Media;
+  /**
    * Jeśli puste — wyświetlana jest ikona SVG
    */
   thumbnailImage?: (string | null) | Media;
@@ -553,6 +557,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
         id?: T;
       };
   thumbnailTitle?: T;
+  heroImage?: T;
   thumbnailImage?: T;
   updatedAt?: T;
   createdAt?: T;

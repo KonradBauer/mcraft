@@ -18,6 +18,7 @@ export interface NadzorLayoutProps {
   eyebrow?: string | null
   title: string
   description?: string | null
+  heroImageUrl?: string | null
   items: { icon?: string | null; text: string; description?: string | null; modalDescription?: string | null }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
@@ -44,6 +45,7 @@ export function NadzorLayout({
   eyebrow,
   title,
   description,
+  heroImageUrl,
   items,
   realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
@@ -70,7 +72,14 @@ export function NadzorLayout({
 
       {/* Page header */}
       <header className="bg-ink text-light relative overflow-hidden pt-16 pb-[72px]">
-        <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
+        {heroImageUrl ? (
+          <>
+            <ImageWithSkeleton src={heroImageUrl} alt="" className="object-cover" />
+            <div className="absolute inset-0 bg-ink/70" />
+          </>
+        ) : (
+          <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
+        )}
         <div className={`${wrap} relative`}>
           {eyebrow && (
             <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">{eyebrow}</span>
