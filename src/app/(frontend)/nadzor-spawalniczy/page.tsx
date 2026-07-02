@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Nadzór spawalniczy - IWE / IWI | Michał Macherzyński',
     description: 'Kwalifikowanie technologii WPS/WPQR, nadzór nad jakością złączy spawanych, badania VT/PT, dokumentacja odbiorowa.',
     url: 'https://mcraft.pl/nadzor-spawalniczy',
-    images: [{ url: 'https://mcraft.pl/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: 'https://mcraft.pl/og-image.png', width: 1200, height: 630 }],
   },
 }
 

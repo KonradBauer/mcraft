@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Meble stalowe premium - loft i industrial',
     description: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
     url: 'https://mcraft.pl/meble-premium',
-    images: [{ url: 'https://mcraft.pl/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: 'https://mcraft.pl/og-image.png', width: 1200, height: 630 }],
   },
 }
 

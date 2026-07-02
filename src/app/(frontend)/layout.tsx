@@ -27,7 +27,7 @@ const greatVibes = Great_Vibes({
 })
 
 const siteUrl = 'https://mcraft.pl'
-const ogImage = `${siteUrl}/opengraph-image`
+const ogImage = `${siteUrl}/og-image.png`
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -41,6 +41,7 @@ export const metadata: Metadata = {
   creator: 'Michał Macherzyński',
   robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
   alternates: { canonical: siteUrl },
+  icons: { icon: '/favicon.png' },
   openGraph: {
     title: 'Inżynier spawalnik Dr inż. Michał Macherzyński | MCRAFT',
     description: 'Nadzór spawalniczy, konstrukcje stalowe, meble premium. IWE/IWI/VT2/PT2. Wilkowiecko, woj. śląskie.',

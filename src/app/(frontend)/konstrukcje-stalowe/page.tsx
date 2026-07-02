@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Konstrukcje stalowe - prefabrykacja i montaż',
     description: 'Konstrukcje przemysłowe i hale, elementy infrastruktury, prefabrykacja w warsztacie, montaż na obiekcie.',
     url: 'https://mcraft.pl/konstrukcje-stalowe',
-    images: [{ url: 'https://mcraft.pl/opengraph-image', width: 1200, height: 630 }],
+    images: [{ url: 'https://mcraft.pl/og-image.png', width: 1200, height: 630 }],
   },
 }
 

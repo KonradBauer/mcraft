@@ -85,7 +85,7 @@ function CvLi({ year, title, sub }: { year: string; title: string; sub?: string 
 
 function ModalCV({ cvModal }: { cvModal: CvModal }) {
   const hasData = (cvModal.experience?.length ?? 0) > 0
-  const cvFileUrl = mediaUrl(cvModal.cvFile) ?? '/CV%20Micha%C5%82%20Macherzy%C5%84ski%20PL%20(06.2026).pdf'
+  const cvFileUrl = mediaUrl(cvModal.cvFile) ?? undefined
 
   return (
     <>
