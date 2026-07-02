@@ -6,131 +6,166 @@ argument-hint: "[ścieżka-do-folderu np. 'docs/active/auth-refaktor']"
 
 # Wykonanie kolejnej fazy zadania
 
+Pipeline: `/dev-brainstorm` → `/dev-plan` → `/dev-docs` → **`/dev-docs-execute` (WYKONANIE)** → `/dev-docs-review`.
+
+Ten skill wykonuje DOKŁADNIE JEDNĄ fazę z checklisty zadania i zatrzymuje się. Jedyny skill pipeline'u, który pisze kod.
+
 ## Zmienne
+
 - ŚCIEŻKA_ZADANIA: $1
 
-## Instrukcje
+**Jeśli $1 puste:** wykonaj `Glob docs/active/*/`. Jeden katalog → użyj go i poinformuj. Wiele → zapytaj usera który (AskUserQuestion). Zero → "Brak aktywnych zadań w docs/active/. Użyj /dev-docs żeby stworzyć strukturę." STOP.
+
+## Twarde reguły wykonania
+
+1. **Jedna faza na uruchomienie.** Po ukończeniu fazy STOP — nie przechodź do następnej.
+2. **Scope guard:** niczego z sekcji "Granice scope'u" / "Poza zakresem" nie implementuj, nawet jeśli wygląda na przydatne. Zadanie wymaga pracy poza zakresem → STOP i poinformuj usera.
+3. **Dyscyplina testowa** (z `.claude/rules/coding-rules.md`, egzekwowana TUTAJ):
+   - Test failuje → napraw KOD, nie test
+   - Zakaz osłabiania asercji, usuwania testów, testów bez asercji
+   - Mockuj tylko zewnętrzne serwisy, nie testowany kod
+4. **Komendy projektu:** wykryj przed pierwszym użyciem — (a) sekcja Commands w `CLAUDE.md` (w tym wymagane prefixy env), (b) package manager z lockfile: `pnpm-lock.yaml`→pnpm, `bun.lockb`→bun, `yarn.lock`→yarn, inaczej npm, (c) skrypty z `package.json`. Nie zgaduj komend.
+5. **Format checkboxów:** zadania oznaczaj markdown checkboxem `- [x]`. Emoji ✅ tylko w nagłówku ukończonej fazy (`## Faza 1 — Nazwa ✅`). Nie przepisuj checkboxów na emoji.
+6. **Data:** z kontekstu środowiska. Aktualny rok to 2026.
+
+## Kroki
 
 ### 0. Walidacja git
-1. **Sprawdź aktualny branch:** `git branch --show-current`
-2. **Przeczytaj wymagany branch** z dokumentacji w `$1/` (szukaj "Branch:" w plikach)
-3. **Porównaj:**
-   - Jeśli branch się zgadza → kontynuuj
-   - Jeśli branch się nie zgadza → poinformuj użytkownika i zapytaj czy przełączyć
-4. **Sprawdź czy nie ma niezacommitowanych zmian** z poprzednich sesji
 
-### 1. Zapoznaj się z dokumentacją zadania
-Przeczytaj wszystkie pliki `.md` w `$1/`:
-- Plik z planem (zawiera fazy, cele, kryteria)
-- Plik z kontekstem (decyzje, stan, notatki)
-- Plik z zadaniami (lista ze statusami ✅/⬜)
+1. `git branch --show-current`
+2. Wymagany branch: szukaj `Branch:` w plikach `$1/*.md`.
+3. Zgodny → kontynuuj. Niezgodny → zapytaj usera (AskUserQuestion): [przełącz na wymagany] [kontynuuj na obecnym — odnotuj w kontekst.md] [przerwij].
+4. Niezacommitowane zmiany z poprzednich sesji → pokaż `git status` i zapytaj: [zacommituj jako osobny commit przed startem] [kontynuuj — zmiany wlicz do tej fazy] [przerwij].
 
-### 2. Określ aktualny stan
-Na podstawie pliku z zadaniami:
-- Znajdź ostatnią ukończoną fazę/etap (oznaczoną ✅)
-- Zidentyfikuj NASTĘPNĄ fazę/etap do wykonania
-- Jeśli wszystko ukończone → poinformuj użytkownika i zakończ
+### 1. Wczytaj dokumentację zadania
 
-### 2.5 Wybór strategii wykonania
-Na podstawie liczby i zależności zadań w fazie, zdecyduj:
-- **Inline** (1-2 taski, mały scope) — wykonaj bezpośrednio w tej sesji
-- **Serial subagents** (3+ zadań z zależnościami) — uruchom Task dla każdego zadania sekwencyjnie, każdy sub-agent dostaje świeży kontekst
-- **Parallel subagents** (3+ niezależnych zadań) — uruchom Task równolegle dla zadań bez wspólnych zależności i plików
+Przeczytaj WSZYSTKIE pliki `.md` w `$1/`:
+- `*-plan.md` — fazy, cele, kryteria
+- `*-kontekst.md` — decyzje, powiązane pliki, notatki z poprzednich sesji
+- `*-zadania.md` — checklist ze statusami
 
-Dla prostych faz (1-2 zadania) zawsze wybierz Inline.
+Dodatkowo: jeśli sekcja "Źródła" wskazuje plan techniczny w `docs/plans/` — przeczytaj odpowiedni Implementation Unit przed implementacją (zawiera podejście, wzorce, scenariusze).
 
-### 3. Wykonaj TYLKO JEDNĄ fazę
-- Sprawdź czy w planie (`docs/plans/`) lub w pliku z planem zadania istnieje sekcja "Granice scope'u" / "Poza zakresem"
-- Jeśli tak → przeczytaj ją i NIE implementuj niczego co jest tam wymienione, nawet jeśli wydaje się przydatne
-- Jeśli zadanie wymaga pracy poza zakresem → STOP, poinformuj użytkownika
-- Jeśli checklist fazy zawiera checkboxy z prefixem `Test:` — traktuj je jako integralną część implementacji fazy. Napisz testy RAZEM z kodem implementacyjnym, nie odkładaj na koniec fazy
-- Checkboxy z prefixem `Weryfikacja:` NIE wykonuj — zostaną zweryfikowane wizualnie w przeglądarce podczas `/dev-docs-review`
-- Realizuj zadania z kolejnej fazy/etapu
-- NIE przechodź do następnych faz
-- Zatrzymaj się po ukończeniu tej jednej fazy
+### 2. Określ aktualną fazę
 
-### 4. Walidacja i testy
-Po zakończeniu fazy:
-- Sprawdź czy w planie są zdefiniowane testy akceptacyjne dla tej fazy
-- Jeśli tak → wykonaj je
-- Zapisz wyniki testów i zrzuty ekranu w `$1/`
+- Ostatnia ukończona faza = nagłówek z ✅ lub wszystkie checkboxy `- [x]`
+- Następna faza = pierwsza z niezaznaczonymi checkboxami
+- Wszystko ukończone → poinformuj: "Wszystkie fazy ukończone. Następny krok: /dev-docs-complete $1" i STOP
 
-### 4.5 System-Wide Test Check
-Przed zamknięciem fazy odpowiedz na 5 pytań:
-1. Czy typecheck przechodzi bez nowych błędów?
-2. Czy istniejące testy nadal przechodzą?
-3. Czy nowe testy pokrywają happy path i przynajmniej jeden error case?
-3b. Czy checklist fazy zawierał checkboxy testowe (`Test:`)? Jeśli tak — czy odpowiadające testy zostały napisane i przechodzą? Jeśli nie zostały napisane — napisz je TERAZ przed zamknięciem fazy.
-4. Czy nowe importy nie łamią istniejących modułów?
-5. Czy build przechodzi?
+### 2.5 Strategia wykonania
 
-Jeśli odpowiedź na którekolwiek pytanie to NIE — napraw przed kontynuacją.
+| Warunek | Strategia |
+|---|---|
+| 1-2 zadania lub mały scope | **Inline** — wykonaj bezpośrednio w tej sesji (domyślna) |
+| 3+ zadań zależnych sekwencyjnie, duży kontekst per zadanie | **Serial subagents** |
+| 3+ zadań niezależnych (rozłączne pliki — zweryfikuj listy plików zadań przed decyzją) | **Parallel subagents** |
+
+W razie wątpliwości: Inline. Subagenty tylko gdy realnie odciążają kontekst.
+
+**Prompt subagenta MUSI zawierać:** (a) treść zadania z checklisty, (b) relewantny fragment planu technicznego (Podejście, Wzorce, Scenariusze testowe), (c) listę plików do zmiany, (d) reguły twarde 2-4 z tego skilla, (e) polecenie: nie commituj, nie aktualizuj dokumentacji — raportuj wynik.
+
+**Integracja wyników:** aktualizacja checklisty, dokumentacji i commity są ZAWSZE robione przez główną sesję, nigdy przez subagenty.
+
+### 3. Wykonaj fazę
+
+- Realizuj zadania z fazy w kolejności.
+- Checkboxy `Test:` = integralna część fazy. Pisz testy RAZEM z kodem implementacyjnym, nie na końcu fazy.
+- Checkboxów `Weryfikacja:` NIE wykonuj — weryfikuje je `/dev-docs-review` w przeglądarce. Nie rób zrzutów ekranu ani manualnej weryfikacji wizualnej w tym skillu.
+- Zadania `(ręczne)` — pomiń, wypisz w podsumowaniu jako czekające na usera.
+
+**Procedura blokady** — gdy zadanie nie daje się ukończyć (test failuje mimo prób naprawy kodu, brak zależności, sprzeczność w planie):
+1. NIE osłabiaj testów, NIE obchodź problemu, NIE zgaduj.
+2. Zapisz blokadę w `*-kontekst.md` (sekcja "Blokady": co, dlaczego, co próbowano).
+3. Oznacz zadanie w checkliście: `- [ ] [ZABLOKOWANE: powód] treść zadania`.
+4. Dokończ pozostałe niezależne zadania fazy, jeśli są.
+5. W podsumowaniu jawnie zgłoś blokadę userowi. Faza z blokadą NIE dostaje ✅.
+
+### 4. Walidacja fazy
+
+Jeśli plan definiuje testy akceptacyjne dla tej fazy → wykonaj je (testy automatyczne: unit/integracyjne). Wyniki zapisz w podsumowaniu; artefakty tekstowe (logi) w `$1/` tylko gdy wnoszą wartość dla review.
+
+### 4.5 System-Wide Check — wszystkie odpowiedzi muszą być TAK
+
+1. Typecheck przechodzi bez nowych błędów?
+2. Istniejące testy nadal przechodzą?
+3. Nowe testy pokrywają happy path + minimum 1 error case?
+4. Checkboxy `Test:` fazy mają napisane i przechodzące testy? (Brakuje → napisz TERAZ.)
+5. Nowe importy nie łamią istniejących modułów?
+6. Lint przechodzi bez nowych błędów?
+7. Build przechodzi? (Uruchamiaj gdy faza zmieniała konfigurację, zależności lub strukturę routingu; dla czystych zmian wewnątrz modułów wystarczą punkty 1-6.)
+
+Kolejność uruchamiania: typecheck → test → lint (zgodnie z coding-rules). Odpowiedź NIE → napraw przed przejściem dalej; nie da się naprawić → procedura blokady.
 
 ### 5. Aktualizuj dokumentację
-**W pliku z zadaniami:**
-- Oznacz ukończone zadania jako ✅
-- Dodaj nowo odkryte zadania (jeśli są)
 
-**W pliku z kontekstem:**
-- Dodaj zmiany wprowadzone w tej fazie
-- Zapisz podjęte decyzje
-- Zaktualizuj "Ostatnia aktualizacja: RRRR-MM-DD"
+**`*-zadania.md`:**
+- Ukończone zadania → `- [x]`
+- Ukończona faza → dopisz ✅ w nagłówku fazy
+- Nowo odkryte zadania: dodaj do fazy, której logicznie dotyczą, z dopiskiem `(odkryte podczas Fazy N)`. Zadanie poza scope → NIE dodawaj do checklisty; odnotuj w kontekst.md jako propozycję.
 
-### 5.5 Aktualizacja planu technicznego
-Jeśli istnieje plan techniczny w `docs/plans/`:
-- Znajdź Implementation Unit odpowiadający ukończonej fazie
-- Zaktualizuj checkboxy test scenarios (odznacz spełnione)
-- Zaktualizuj checkboxy verification (odznacz spełnione)
-- Plan staje się żywym dokumentem śledzenia postępu
+**`*-kontekst.md`:**
+- Dopisz zmiany wprowadzone w fazie i podjęte decyzje
+- Zaktualizuj `Ostatnia aktualizacja: RRRR-MM-DD`
 
-### 6. Commit zmian (inkrementalny)
-Heurystyka: commituj gdy możesz napisać sensowny commit message opisujący kompletną zmianę.
-- Nie czekaj do końca fazy — commituj logiczne jednostki pracy
-- Jeśli commit message brzmiałby "WIP" lub "partial" — nie commituj jeszcze
-- Pattern: `feat/fix/refactor([nazwa-zadania]): [co i dlaczego]`
-- Jedna faza może mieć wiele commitów lub jeden — zależy od złożoności
-- Staguj tylko pliki związane z daną jednostką pracy (nie `git add .`)
+### 5.5 Aktualizuj plan techniczny (gdy istnieje)
 
-### 7. Przygotuj podsumowanie
-Napisz podsumowanie w **prostym języku** zrozumiałym dla osoby nietechnicznej:
+W pliku z `docs/plans/` wskazanym w "Źródłach":
+- Odznacz checkbox ukończonego Implementation Unit
+- Odznacz spełnione scenariusze testowe i weryfikacje unitu
+
+Plan techniczny jest żywym dokumentem postępu.
+
+### 6. Commit (inkrementalny)
+
+- Commituj logiczną jednostkę pracy, gdy potrafisz opisać ją sensownym commit message. Message brzmiałby "WIP"/"partial" → nie commituj jeszcze.
+- Pattern: `feat|fix|refactor([nazwa-zadania]): [co i dlaczego]`
+- Staguj TYLKO pliki danej jednostki (nigdy `git add .`)
+- Jedna faza = jeden lub więcej commitów, wg złożoności
+- Aktualizacje dokumentacji z kroków 5-5.5 dołącz do ostatniego commita fazy albo osobnym `docs(...)` commitem
+
+### 7. Podsumowanie
+
+Prostym językiem, zrozumiałym dla osoby nietechnicznej:
+
 ```
 ## Podsumowanie fazy [numer/nazwa]
 
 ### Co zostało zrobione
-[Opis w prostych słowach, bez żargonu technicznego]
+[Bez żargonu technicznego]
 
 ### Co widać w aplikacji
 **Desktop:**
-- [Widoczne zmiany dla użytkownika]
+- [Widoczne zmiany]
 
 **Mobile:**
-- [Widoczne zmiany dla użytkownika]
+- [Widoczne zmiany]
 
-### Zmiany "pod maską" (backend/kod)
-[Wyjaśnij DLACZEGO te zmiany były ważne, nawet jeśli niewidoczne]
+### Zmiany "pod maską"
+[DLACZEGO były ważne, mimo że niewidoczne]
+
+### Blokady / zadania ręczne
+[Jeśli są — jawnie; jeśli brak — pomiń sekcję]
 
 ### Następny krok
-[Jaka faza/etap jest następny]
-
+[Następna faza lub /dev-docs-complete]
 ```
 
 ## Format wyjściowy
+
 ```
 ✅ Ukończono fazę [numer/nazwa] w $1
+   (lub: ⚠️ Faza [numer] częściowo — [N] zablokowanych zadań)
 
 🔀 Branch: [nazwa-brancha]
 
 📋 Wykonane zadania:
-   - [lista ukończonych w tej fazie]
+   - [lista]
 
-🧪 Testy akceptacyjne: [PASS/FAIL/brak testów]
+🧪 Testy: typecheck [PASS/FAIL] | testy [PASS/FAIL/brak] | lint [PASS/FAIL]
 
-📁 Zapisane pliki:
-   - [zrzuty ekranu, logi, inne]
+📝 Zaktualizowana dokumentacja w $1/ [+ docs/plans/... jeśli dotyczy]
 
-📝 Zaktualizowana dokumentacja w $1/
-
-💾 Commit: feat([nazwa-zadania]): [opis]
+💾 Commity: [lista messages]
 
 ---
 
@@ -141,3 +176,14 @@ Napisz podsumowanie w **prostym języku** zrozumiałym dla osoby nietechnicznej:
 ➡️ Review ukończonej fazy:
    Uruchom: /dev-docs-review $1 Faza [numer]
 ```
+
+## Anty-wzorce — NIGDY
+
+- Nie wykonuj więcej niż jednej fazy na uruchomienie.
+- Nie osłabiaj asercji, nie usuwaj testów, nie pisz testów bez asercji — test failuje = napraw kod.
+- Nie implementuj niczego z "Poza zakresem", nawet drobiazgu "przy okazji".
+- Nie wykonuj checkboxów `Weryfikacja:` — należą do /dev-docs-review.
+- Nie używaj `git add .` — staguj wybiórczo.
+- Nie zamieniaj checkboxów markdown na emoji w pliku zadań.
+- Nie pozwalaj subagentom commitować ani edytować dokumentacji zadania.
+- Nie zgaduj przy blokadzie — dokumentuj i zgłoś userowi.

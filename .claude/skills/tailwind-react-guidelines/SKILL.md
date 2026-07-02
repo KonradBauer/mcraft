@@ -1,9 +1,15 @@
 ---
 name: tailwind-react-guidelines
-description: Frontend React 19 + TypeScript 5.7+ + TailwindCSS v4 + shadcn/ui dla Vite SPA. Komponenty, React Query, formularze (RHF + Zod), testowanie (Vitest + RTL + MSW), lazy loading, Suspense, Sonner. Używaj przy tworzeniu komponentów, stron, stylowaniu, data fetchingu, formularzach, testach, optymalizacji.
+description: Frontend React 19 + TypeScript 5.7+ + TailwindCSS v4 + shadcn/ui dla Vite SPA. Komponenty, React Query, formularze (RHF + Zod), testowanie (Vitest + RTL + MSW), lazy loading, Suspense, Sonner. Używaj przy tworzeniu komponentów, stron, stylowaniu, data fetchingu, formularzach, testach — TYLKO w projektach Vite SPA; NIE w Next.js (tam server components zastępują React Query/client-side fetching).
 ---
 
 # Tailwind React Guidelines
+
+## Gate stosowalności — sprawdź PRZED użyciem
+
+1. Sprawdź `package.json`: `vite` w devDependencies = projekt docelowy tego skilla.
+2. **Projekt Next.js** (`next` w dependencies) → NIE stosuj wzorców data fetchingu (React Query), routingu (React Router) ani SPA loading states — architektura server components robi to inaczej. Sekcje uniwersalne (TypeScript standards, część wzorców komponentów, Tailwind v4 syntax) stosuj ostrożnie i tylko gdy nie kolidują z konwencjami projektu z CLAUDE.md.
+3. Biblioteki wymieniane w przewodniku (shadcn/ui, React Query, RHF, Zod, MSW, Sonner) stosuj TYLKO jeśli już są w package.json — nie instaluj ich, żeby "dopasować projekt do przewodnika".
 
 ## Cel
 

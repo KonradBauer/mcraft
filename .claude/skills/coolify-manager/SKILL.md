@@ -7,6 +7,13 @@ description: Manage and troubleshoot Coolify deployments using the official CLI 
 
 Skill for managing Coolify deployments through CLI (v1.4.0) and direct API access. Covers diagnosing issues, fixing WordPress problems, managing containers, creating resources, and performing deployments.
 
+## Safety Rules — obowiązują zawsze
+
+1. **Diagnoza przed akcją:** zawsze najpierw operacje read-only (`resource list`, `logs`, `deployments list`, `env list`), dopiero potem zmiany. Nie restartuj "na próbę".
+2. **Operacje na produkcji wymagają potwierdzenia usera:** restart, redeploy, `deploy cancel`, `env delete/update`, usuwanie zasobów — proponuj z uzasadnieniem i czekaj na zgodę (AskUserQuestion), chyba że user już jawnie polecił konkretną akcję w tej rozmowie.
+3. **Tokeny:** nigdy nie wypisuj tokena API w outputach ani logach; `coolify context add` z tokenem podawaj tak, by nie trafił do plików repo. Kontekstów CLI nie commituj.
+4. **Po każdej akcji zmieniającej stan:** zweryfikuj efekt (status/logi), nie zakładaj sukcesu.
+
 ## Prerequisites
 
 1. Coolify instance access (self-hosted or cloud)

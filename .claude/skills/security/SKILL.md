@@ -1,11 +1,27 @@
 ---
 name: security
-description: "Systematyczny audyt bezpieczeństwa dla React 19 + Supabase + Edge Functions. Używaj przy review bezpieczeństwa, przed deployem, przy pracy z auth/authz, walidacją inputów, RLS policies, XSS, OWASP Top 10."
+description: "Systematyczny audyt bezpieczeństwa — 6-skanowy protokół (input validation, query safety, XSS, auth/authz, data exposure, OWASP Top 10). Protokół uniwersalny; przykłady dla React + Supabase z adaptacją do innych stacków. Używaj przy review bezpieczeństwa, przed deployem, przy pracy z auth/authz, walidacją inputów, XSS."
 ---
 
 # Security Audit
 
-Skill do przeprowadzania systematycznego audytu bezpieczenstwa w projekcie React 19 + Supabase + Edge Functions.
+Skill do systematycznego audytu bezpieczenstwa. Protokol 6 skanow jest uniwersalny; szczegolowe komendy i przyklady w krokach pisane sa dla stacku React + Supabase — przed uzyciem ZAADAPTUJ je do stacku projektu.
+
+## Adaptacja do stacku — wykonaj PRZED skanami
+
+1. Ustal backend/stack: sprawdz `package.json` i `CLAUDE.md`.
+2. Zmapuj koncepty protokolu na stack projektu:
+
+| Koncept protokolu | Wariant Supabase (jak w krokach nizej) | Wariant Payload CMS / MongoDB | Inny backend |
+|---|---|---|---|
+| Autoryzacja na danych | RLS policies per tabela | `access` na kolekcjach/globalach (uwaga: `read: () => true` = publiczne), `overrideAccess: false` | middleware/guards na endpointach |
+| Query safety | `.rpc()` konkatenacja SQL | operatory Mongo z user input (`$where`, injection przez obiekt), zapytania przez Local API | parametryzacja SQL/ORM |
+| Klucz uprzywilejowany | `SERVICE_ROLE_KEY` tylko server-side, nigdy `VITE_*` | `PAYLOAD_SECRET`, `DATABASE_URL` — nigdy w kliencie ani `NEXT_PUBLIC_*` | odpowiednik: klucz admin/root |
+| Weryfikacja tozsamosci server-side | `getUser()` nie `getSession()` | `req.user` z Payload auth; nie ufaj payloadowi JWT bez weryfikacji | weryfikacja tokena na serwerze |
+| Error tracking PII | Sentry `beforeSend` | logger strukturalny bez PII | analogicznie |
+
+3. Krok protokolu nie ma odpowiednika w stacku (np. RLS w projekcie bez SQL) → odnotuj "nie dotyczy — [powod]" w Risk Matrix zamiast pomijac cicho.
+4. Zasoby `resources/owasp-react-supabase.md` i `auth-security-patterns.md` sa referencja dla wariantu Supabase — w innych stackach uzywaj ich jako inspiracji konceptow, nie dosłownych checklist.
 
 ## Kiedy Uzywac
 

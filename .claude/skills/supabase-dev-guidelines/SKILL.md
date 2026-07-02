@@ -1,9 +1,14 @@
 ---
 name: supabase-dev-guidelines
-description: Auth (Google/Facebook OAuth, email), Database (PostgreSQL, RLS policies, SECURITY DEFINER), Edge Functions, Realtime subscriptions. Uzywaj przy pracy z autentykacja, baza danych, migracjami, bezpieczenstwem.
+description: Auth (Google/Facebook OAuth, email), Database (PostgreSQL, RLS policies, SECURITY DEFINER), Edge Functions, Realtime subscriptions. Uzywaj przy pracy z autentykacja, baza danych, migracjami, bezpieczenstwem — TYLKO w projektach uzywajacych Supabase.
 ---
 
 # Supabase Development Guidelines
+
+## Gate stosowalności — sprawdź PRZED użyciem
+
+1. Sprawdź `package.json` pod kątem `@supabase/supabase-js` (lub katalog `supabase/` w repo).
+2. **Brak Supabase w projekcie** → NIE stosuj tych wytycznych. Poinformuj: "Projekt nie używa Supabase — skill nie ma zastosowania" i zakończ. Nie proponuj RLS policies, Edge Functions ani migracji SQL w projektach z innym backendem (np. Payload CMS/MongoDB ma własne wzorce: access control, hooks, Local API).
 
 ## Cel
 

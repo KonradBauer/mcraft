@@ -33,6 +33,11 @@ Autonomicznie wykonuje wszystkie fazy zadania: execute -> review -> fix -> naste
    - Przeczytaj `$1/*-zadania.md` — parsuj statusy checkboxow per faza:
      - Faza z WSZYSTKIMI zadaniami oznaczonymi jako ukonczone (`- [x]`) = faza UKONCZONA
      - Faza z JAKIMKOLWIEK zadaniem nieoznaczonym (`- [ ]`) = faza DO_WYKONANIA
+     - **Wyjatki w definicji ukonczenia:** checkboxy z markerem `[ZABLOKOWANE: ...]` oraz
+       `(reczne)` NIE licza sie do "niekompletnosci" fazy przy wyznaczaniu kolejki:
+       * `[ZABLOKOWANE]` → STOP autopilota (patrz Obsluga bledow) — wymaga czlowieka
+       * `(reczne)` → dopisz do `$1/known-issues.md` (sekcja "Zadania reczne") i traktuj faze
+         jako ukonczona jesli reszta checkboxow jest `- [x]`
    - **Ustaw `AKTUALNA_FAZA`** jako pierwsza niekompletna: `{numer: int, nazwa: string}`
    - **`AKTUALNA_FAZA` to jawny stan orkiestratora.** Kazdy agent (execute, review, fix) dostaje ten numer jako explicit parametr. Nie polegaj na tym ze skille same go wyliczaja.
 
@@ -122,7 +127,8 @@ Uzyj narzedzia Skill: Skill("dev-docs-review", args: "{$1} {AKTUALNA_FAZA.numer}
 Skill uruchomi 5 agentow review rownolegle (security, performance,
 architecture, test coverage, E2E browser verification).
 
-Nie pytaj uzytkownika "Czy wykonac poprawki?" — tylko wykonaj review i zwroc wyniki.
+Pomin koncowy handoff skilla (pytanie "Co dalej?") — tylko wykonaj review,
+zapisz raport i zwroc wyniki. Decyzje podejmuje orkiestrator autopilota.
 
 Po zakonczeniu zwroc USTRUKTURYZOWANY raport:
 - Severity gate: BLOKUJE / ZASTRZEZENIA / CZYSTE
@@ -238,7 +244,9 @@ opisu problemu w checklist i raporcie review:
 │
 │  AKCJA:
 │  1. Napraw kod zrodlowy
-│  2. Uruchom odpowiednie unit testy (np. `bun test path/to/test`)
+│  2. Uruchom odpowiednie testy — komendy wykryj z CLAUDE.md (Commands,
+│     wymagane prefixy env) i package.json/lockfile (package manager);
+│     nie zgaduj
 │  3. Odznacz checkbox w zadaniach (- [ ] -> - [x])
 │
 ├─ Typ B: BRAKUJACY TEST (Test:)
@@ -263,7 +271,9 @@ opisu problemu w checklist i raporcie review:
    1. Znajdz przyczyne (zwykle w kodzie UI/stylu/a11y/interakcji)
    2. Napraw przyczyne
    3. Re-uruchom weryfikacje wizualna PRZEZ agent-browser:
-      - Ustal URL aplikacji (zwykle http://localhost:5173 dla Vite)
+      - Ustal URL aplikacji: (a) CLAUDE.md, (b) package.json — `next`→:3000,
+        `vite`→:5173; sprawdz czy dev server dziala (curl status),
+        uruchom wg Commands z CLAUDE.md jesli nie
       - `agent-browser open <URL>` + `wait --load networkidle`
       - `agent-browser snapshot -i`
       - Wykonaj scenariusz z opisu checkboxa Weryfikacja:
@@ -391,8 +401,13 @@ Uzyj narzedzia Skill: Skill("dev-docs-complete", args: "{nazwa_zadania}").
 
 {nazwa_zadania} to nazwa folderu z $1 (ostatni segment sciezki).
 
-Jesli skill zapyta "Archiwizowac mimo to?" — odpowiedz TAK.
-Jesli skill zapyta o /dev-compound — NIE uruchamiaj go (zrobi to orkiestrator).
+Odpowiedzi na pytania skilla (podejmuj automatycznie):
+- "Archiwizowac mimo to?" (niedokonczone P2/reczne) → TAK, archiwizuj —
+  pozycje trafia do "Znane braki" w podsumowaniu
+- "Branch niezmergowany — archiwizowac?" → TAK, archiwizuj (merge nastapi po autopilocie)
+- Propagacja wnioskow do CLAUDE.md / .claude/rules/ → NIE — wymaga jawnej zgody usera;
+  wnioski zostaja w podsumowaniu
+- Jesli skill zapyta o /dev-compound → NIE uruchamiaj go (zrobi to orkiestrator)
 
 Nie pytaj uzytkownika o potwierdzenie — dzialaj autonomicznie.
 
@@ -408,11 +423,19 @@ Uruchom Agent (general-purpose, foreground) z promptem:
 ```
 Jestes czescia pipeline'u dev-autopilot. Dokumentujesz rozwiazane problemy do bazy wiedzy.
 
-Wywolaj skill /dev-compound (bez argumentow, tryb compact).
-Uzyj narzedzia Skill: Skill("dev-compound").
+WAZNE: nie widzisz historii sesji autopilota — kontekst problemu dostajesz ponizej.
+
+KONTEKST PIPELINE (przekaz jako argument do skilla):
+{orkiestrator wstawia tutaj: najciekawszy rozwiazany problem z cykli fix —
+opis findingu z review, root cause, co naprawiono; wybierz problem najbardziej
+rule-worthy z cykle_historia; jesli zero cykli fix we wszystkich fazach —
+POMIN krok 2c calkowicie i odnotuj "compound pominiety: brak nietrywialnych problemow"}
+
+Wywolaj skill /dev-compound z powyzszym kontekstem jako argumentem.
+Uzyj narzedzia Skill: Skill("dev-compound", args: "<kontekst problemu>").
 
 Skill automatycznie:
-- Wyciagnie kontekst z sesji i git diff
+- Uzupelni kontekst z git diff/log
 - Sklasyfikuje kategorie problemu
 - Zapisze dokumentacje w docs/solutions/<category>/
 - Oceni czy problem jest rule-worthy (min 2 z 5 kryteriow)
@@ -472,6 +495,8 @@ Problemy wymagajace uwagi: {lista lub "brak"}
 | Tylko P2 po 2 cyklach fix->review | GRACEFUL: zapisz P2 do `$1/known-issues.md`, kontynuuj do nastepnej fazy. |
 | Numer fazy z execute != AKTUALNA_FAZA | STOP. Zaloguj rozbieznosc. Wymaga recznej interwencji. |
 | Git conflict | STOP. Poinformuj uzytkownika o konflikcie i sciezce do pliku. |
+| Checkbox `[ZABLOKOWANE: ...]` w zadaniach po execute | STOP. Wylistuj zablokowane zadania z powodami (z kontekst.md sekcja "Blokady"). Wymaga czlowieka — NIE probuj obchodzic blokady kolejnymi cyklami. |
+| Zadania `(reczne)` w fazie | Nie blokuja: dopisz do known-issues.md sekcja "Zadania reczne", faza liczy sie jako ukonczona gdy reszta `- [x]`. Wylistuj w raporcie koncowym. |
 | Brak faz do wykonania | Przeskocz do Fazy 2 (complete/compound). |
 | Skill tool nie dziala w Agent | FALLBACK: Agent czyta `.claude/skills/{nazwa}/SKILL.md` i wykonuje instrukcje bezposrednio. |
 | E2E Agent 5 zwraca FAIL | Traktuj jako P2. Fix agent musi re-uruchomic agent-browser po naprawie kodu i zweryfikowac wizualnie przed odznaczeniem checkboxa. |

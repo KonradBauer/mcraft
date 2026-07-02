@@ -141,7 +141,7 @@ Dopasuj głębokość badania do specyficzności dokumentu — dokument referenc
 Kluczowe rozróżnienie to czy dryf jest **kosmetyczny** (referencje się przeniosły ale rozwiązanie jest to samo) czy **merytoryczny** (samo rozwiązanie się zmieniło):
 
 - **Terytorium Update** — ścieżki się przeniosły, klasy przemianowane, linki nieaktualne, metadane rozjechane, ale główne rekomendowane podejście nadal odpowiada temu jak kod działa. Napraw bezpośrednio.
-- **Terytorium Replace** — rekomendowane rozwiązanie jest sprzeczne z aktualnym kodem, podejście architektoniczne się zmieniło, lub wzorzec nie jest już preferowanym sposobem. Trzeba napisać nowy dokument. Dokument zastępczy używa formatu `/dev-compound`: frontmatter YAML (title, category, date, module, component, tags), opis problemu, root cause, aktualne rozwiązanie z przykładami kodu i zapobieganie.
+- **Terytorium Replace** — rekomendowane rozwiązanie jest sprzeczne z aktualnym kodem, podejście architektoniczne się zmieniło, lub wzorzec nie jest już preferowanym sposobem. Trzeba napisać nowy dokument. Dokument zastępczy używa DOKŁADNIE schematu `/dev-compound`: frontmatter YAML (`title`, `date`, `category`, `severity`, `stack`, `tags`, `status`, `last_verified`), sekcje Symptomy, Root Cause, Rozwiązanie z kodem, Komendy diagnostyczne, Zapobieganie, Powiązane, Kontekst. Nie wymyślaj innych pól frontmatter.
 
 **Granica:** jeśli przepisujesz sekcję rozwiązania lub zmieniasz to co dokument rekomenduje, zatrzymaj się — to Replace, nie Update.
 
@@ -153,7 +153,9 @@ Trzy wytyczne, które łatwo pomylić:
 2. **Sam wiek nie jest sygnałem przestarzałości.** 2-letni dokument, który nadal pasuje do aktualnego kodu, jest w porządku. Używaj wieku tylko jako zachęty do dokładniejszego sprawdzenia.
 3. **Sprawdź następców przed archiwizacją.** Przed rekomendowaniem Replace lub Archive, poszukaj nowszych dokumentów, pattern docs, PR-ów lub issues pokrywających tę samą przestrzeń problemu. Jeśli dowody na następcę istnieją, preferuj Replace nad Archive żeby czytelnicy byli kierowani do nowszych wskazówek.
 
-## Faza 1.5: Badanie dokumentów wzorcowych
+## Faza 1.5: Badanie dokumentów wzorcowych (warunkowa)
+
+**Jeśli katalog `docs/solutions/patterns/` nie istnieje lub jest pusty — pomiń tę fazę i przejdź do 1.7.**
 
 Po przejrzeniu dokumentów rozwiązań, zbadaj powiązane dokumenty wzorcowe pod `docs/solutions/patterns/`.
 
@@ -213,8 +215,10 @@ Używaj subagentów do izolacji kontekstu przy badaniu wielu artefaktów — nie
 
 Dwie role subagentów:
 
-1. **Subagenty badawcze** — tylko do odczytu. Nie mogą edytować plików, tworzyć następców ani archiwizować. Każdy zwraca: ścieżkę pliku, dowody, rekomendowaną akcję, pewność i otwarte pytania. Mogą działać równolegle gdy artefakty są niezależne.
-2. **Subagenty zastępujące** — piszą pojedynczy nowy dokument zastępujący przestarzały. Działają **jeden na raz, sekwencyjnie** (każdy subagent zastępujący może potrzebować przeczytać znaczną ilość kodu, a uruchomienie wielu równolegle ryzykuje wyczerpanie kontekstu). Orkiestrator obsługuje całą archiwizację i aktualizacje metadanych po zakończeniu każdego zastąpienia.
+1. **Subagenty badawcze** — `Agent(subagent_type: "Explore")`, tylko do odczytu. Nie mogą edytować plików, tworzyć następców ani archiwizować. Każdy zwraca: ścieżkę pliku, dowody, rekomendowaną akcję, pewność i otwarte pytania. Mogą działać równolegle gdy artefakty są niezależne. Prompt MUSI zawierać: treść lub ścieżkę badanego dokumentu + pytania weryfikacyjne (czy referencje istnieją, czy rozwiązanie pasuje do kodu).
+2. **Subagenty zastępujące** — `Agent(subagent_type: "general-purpose")`, piszą pojedynczy nowy dokument zastępujący przestarzały. Działają **jeden na raz, sekwencyjnie** (każdy może potrzebować przeczytać znaczną ilość kodu; wiele równolegle ryzykuje wyczerpanie kontekstu). Prompt MUSI zawierać: pełną treść starego dokumentu + podsumowanie dowodów + docelową ścieżkę + schemat frontmatter. Orkiestrator obsługuje całą archiwizację i aktualizacje metadanych po zakończeniu każdego zastąpienia.
+
+Subagent nie widzi tej rozmowy — wszystko co ma wiedzieć, przekaż w promptcie.
 
 Orkiestrator łączy wyniki badań, wykrywa sprzeczności, koordynuje subagenty zastępujące i wykonuje wszystkie operacje archiwizacji/metadanych centralnie. Oznacza niejednoznaczne przypadki jako stale. Jeśli dwa artefakty nakładają się lub omawiają ten sam problem, badaj je razem zamiast równolegle.
 
@@ -273,7 +277,7 @@ Wybierz **Archive** gdy:
 
 Akcja:
 
-- Przenieś plik do `docs/solutions/_archived/`, zachowując strukturę katalogów gdy pomocne
+- Przenieś plik do `docs/solutions/_archived/` przez `git mv` (zachowuje historię), zachowując strukturę katalogów gdy pomocne
 - Dodaj:
   - `archived_date: YYYY-MM-DD`
   - `archive_reason: [dlaczego zarchiwizowano]`
@@ -310,6 +314,7 @@ Wykonaj wszystkie akcje na podstawie klasyfikacji z Fazy 2:
 
 - Jednoznaczne Keep, Update, auto-Archive i Replace (z wystarczającymi dowodami) → wykonaj bezpośrednio
 - Niejednoznaczne przypadki → oznacz jako stale
+- Po zakończeniu wszystkich akcji: **commit** — `git add docs/solutions/ .claude/rules/learned-patterns.md` → message: `docs(solutions): refresh — [X] updated, [Y] replaced, [Z] archived`. Pomiń commit gdy zero zmian na dysku (same Keep).
 - Po zakończeniu wygeneruj raport (patrz Format raportu)
 
 ### Keep Flow
@@ -330,7 +335,7 @@ Przetwarzaj kandydatów Replace **jeden na raz, sekwencyjnie**. Każde zastępst
    - Pełną treść starego dokumentu
    - Podsumowanie dowodów z badania (co się zmieniło, co aktualny kod robi, dlaczego stare wskazówki są mylące)
    - Docelową ścieżkę i kategorię (ta sama kategoria co stary dokument chyba że sama kategoria się zmieniła)
-2. Subagent pisze nowy dokument według formatu `/dev-compound`: frontmatter YAML (title, category, date, module, component, tags), opis problemu, root cause, aktualne rozwiązanie z przykładami kodu i zapobieganie.
+2. Subagent pisze nowy dokument według DOKŁADNIE schematu `/dev-compound`: frontmatter YAML (`title`, `date`, `category`, `severity`, `stack`, `tags`, `status: verified`, `last_verified`), sekcje Symptomy, Root Cause, Rozwiązanie z kodem, Komendy diagnostyczne, Zapobieganie, Powiązane, Kontekst.
 3. Po zakończeniu pracy subagenta, orkiestrator:
    - Dodaje `superseded_by: [ścieżka nowego dokumentu]` do frontmatter starego dokumentu
    - Przenosi stary dokument do `docs/solutions/_archived/`

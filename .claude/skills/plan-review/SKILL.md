@@ -16,12 +16,14 @@ Szczegółowe prompty VP, kategorie problemów, definicje ważności i szablony 
 
 ## Przepływ pracy
 
-1. **Wczytaj plan** — załaduj plik planu z `$ARGUMENTS` (lub zapytaj użytkownika o ścieżkę, jeśli nie podano)
+1. **Wczytaj plan** — załaduj plik planu z `$ARGUMENTS`. Jeśli nie podano: wykonaj `Glob docs/plans/*-plan.md`, pokaż 3-5 najnowszych i zapytaj użytkownika który przeglądać
 2. **Wczytaj materiały referencyjne** — załaduj `${CLAUDE_SKILL_DIR}/agent-prompt.md` z promptami VP i formatem wyjściowym
 3. **Uruchom 3 agentów VP równolegle** — użyj narzędzia Agent, aby uruchomić wszystkich trzech w jednej wiadomości:
-   - VP Product (subagent_type: `Explore`) — wpływ na użytkownika, zakres, zależności, harmonogramy
-   - VP Engineering (subagent_type: `Explore`) — dług techniczny, anty-wzorce, architektura, regresje, bezpieczeństwo
-   - VP Design (subagent_type: `Explore`) — spójność UX, dostępność, zgodność z design systemem
+   - VP Product (subagent_type: `general-purpose`) — wpływ na użytkownika, zakres, zależności, harmonogramy
+   - VP Engineering (subagent_type: `general-purpose`) — dług techniczny, anty-wzorce, architektura, regresje, bezpieczeństwo
+   - VP Design (subagent_type: `general-purpose`) — spójność UX, dostępność, zgodność z design systemem
+
+   Typ `Explore` jest tu NIEPOPRAWNY — to agent do lokalizowania kodu, jawnie nieprzeznaczony do audytu dokumentów projektowych. Agent VP nie widzi tej rozmowy — pełna treść planu MUSI być w promptcie.
 4. **Konsolidacja wyników** — deduplikacja, ranking wg ważności (Krytyczny > Wysoki > Średni > Niski), odniesienia krzyżowe
 5. **Prezentacja wyników** — pokaż tabelę problemów krytycznych i tabelę wszystkich problemów (format w agent-prompt.md)
 6. **Zwróć rekomendacje** — zwróć pełne podsumowanie przeglądu jako tekst do głównej konwersacji

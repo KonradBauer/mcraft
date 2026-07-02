@@ -1,118 +1,217 @@
 ---
 name: dev-docs
 description: "Tworzenie kompleksowego planu strategicznego z uporządkowanym podziałem na zadania."
-argument-hint: "[opis zadania np. 'refaktoryzacja systemu uwierzytelniania'] — tworzy docs/active/[nazwa]/"
+argument-hint: "[opis zadania lub ścieżka do planu z docs/plans/] — tworzy docs/active/[nazwa]/"
 ---
 
-Jesteś elitarnym specjalistą ds. planowania strategicznego. Stwórz kompleksowy, wykonalny plan dla: $ARGUMENTS
+# Dev-docs — trwała struktura wykonawcza zadania
 
-## Instrukcje
+Pipeline: `/dev-brainstorm` (CO) → `/dev-plan` (JAK) → **`/dev-docs` (STRUKTURA WYKONAWCZA)** → `/dev-docs-execute` (WYKONANIE).
 
-### Faza 0: Przygotowanie repozytorium
+Ten skill tworzy `docs/active/[nazwa-zadania]/` z trzema plikami (plan, kontekst, zadania-checklist), branch git i commit inicjalny. Struktura ma przetrwać resety kontekstu — implementator wykonujący ją za tydzień w świeżej sesji musi mieć wszystko.
 
-1. **Sprawdź aktualny stan git:**
-   - Upewnij się, że jesteś w repozytorium git
-   - Sprawdź czy nie ma niezacommitowanych zmian
+Ten skill NIE implementuje kodu i NIE podejmuje decyzji technicznych od zera, gdy istnieje plan techniczny.
 
-2. **Utwórz nowy branch:**
-   - Nazwa brancha: `feature/[nazwa-zadania]` (np. `feature/auth-refaktor`)
-   - Wykonaj: `git checkout -b feature/[nazwa-zadania]`
-   - Potwierdź utworzenie brancha
+## Twarde reguły
 
-3. **Zapisz nazwę brancha** — będzie potrzebna w dokumentacji
+1. **Data:** z kontekstu środowiska (currentDate). Aktualny rok to 2026.
+2. **Jedno pytanie na turę**, przez `AskUserQuestion`.
+3. **Ścieżki w TYM repo:** requirements → `docs/dev-brainstorms/`, plany techniczne → `docs/plans/`, struktury zadań → `docs/active/`.
+4. **Nazwa zadania:** 2-4 słowa kebab-case, bez polskich znaków (np. `cms-integracja`, `auth-refaktor`). Branch: `feature/[nazwa-zadania]`.
+5. **Gdy istnieje plan techniczny — TRANSFORMUJ go, nie planuj ponownie.** Zakaz wymyślania nowych decyzji technicznych sprzecznych z planem.
+6. **Język plików:** polski (zgodnie z istniejącymi w `docs/active/`).
 
-### Faza 1: Analiza i planowanie
+## Wejście
 
-1. **Szukaj istniejących dokumentów źródłowych:**
-   - Sprawdź `docs/brainstorms/*-requirements.md` — requirements doc z `/dev-brainstorm`
-   - Sprawdź `docs/plans/*-plan.md` — plan techniczny z `/dev-plan`
-   - Jeśli plan techniczny istnieje → użyj Implementation Units jako bazowych zadań w Fazie 2
-   - Jeśli requirements doc istnieje → użyj jako kontekst produktowy (cele, wymagania, granice scope'u)
-   - Jeśli żaden nie istnieje → kontynuuj standardowo
+<task_input> #$ARGUMENTS </task_input>
 
-2. **Przeanalizuj zapytanie** i określ zakres potrzebnego planowania
-3. **Zbadaj odpowiednie pliki** w bazie kodu, aby zrozumieć obecny stan
-4. **Stwórz uporządkowany plan** zawierający:
-   - Podsumowanie wykonawcze
-   - Analiza obecnego stanu
-   - Proponowany stan docelowy
-   - Fazy wdrożenia (podzielone na sekcje)
-   - Szczegółowe zadania (konkretne elementy z jasnymi kryteriami akceptacji)
-   - Ocena ryzyka i strategie mitygacji
-   - Mierniki sukcesu
-   - Wymagane zasoby i zależności
-   - Szacunki czasowe
+Rozpoznaj typ wejścia:
 
-### Faza 2: Struktura podziału zadań
+| Wejście | Akcja |
+|---|---|
+| Ścieżka do pliku w `docs/plans/` | Przeczytaj plan → tryb TRANSFORM |
+| Ścieżka do pliku w `docs/dev-brainstorms/` | Przeczytaj requirements → sprawdź czy istnieje nowszy plan techniczny na jego bazie (Faza 1.1); jest → TRANSFORM, nie ma → BOOTSTRAP |
+| Opis tekstowy | Faza 1.1 (szukanie źródeł) |
+| Puste | Zapytaj: "Co mam przygotować do wykonania? Podaj opis albo ścieżkę do planu." STOP |
 
-- Każda główna sekcja reprezentuje fazę lub komponent
-- Numeruj i priorytetyzuj zadania w sekcjach
-- Dołącz jasne kryteria akceptacji dla każdego zadania
-- Określ zależności między zadaniami
-- Oszacuj poziom nakładu pracy (S/M/L/XL)
-- Jeśli plan techniczny (`docs/plans/`) zawiera w Implementation Units sekcje **Scenariusze testowe** i **Weryfikacja** — przenieś je jako checkboxy w checkliście zadań. Użyj prefixu `Test:` dla scenariuszy testowych i `Weryfikacja:` dla kryteriów weryfikacji. Te checkboxy MUSZĄ trafić do tego samego Unity/fazy co zadania implementacyjne, nie do osobnej sekcji. Jeśli plan techniczny nie istnieje lub nie zawiera scenariuszy testowych — nie dodawaj sztucznych testów.
+## FAZA 0: Przygotowanie repozytorium
 
-### Faza 3: Utworzenie struktury zarządzania zadaniami
+### 0.1 Stan git — procedura
 
-1. **Utwórz katalog:** `docs/active/[nazwa-zadania]/`
+1. Sprawdź `git status`.
+2. **Working tree czysty** → idź do 0.2.
+3. **Niezacommitowane zmiany** → zapytaj usera (AskUserQuestion):
+   - [Zacommituj zmiany teraz] — poproś usera o commit lub wykonaj za zgodą
+   - [Stash] — `git stash`, przypomnij o nim w podsumowaniu końcowym
+   - [Kontynuuj mimo to] — dozwolone, ale odnotuj w podsumowaniu
+   Nie wykonuj `git checkout -b` z brudnym working tree bez decyzji usera.
 
-2. **Wygeneruj trzy pliki:**
+### 0.2 Branch — procedura
 
-   **`[nazwa-zadania]-plan.md`** — Kompleksowy plan zawierający:
-   - Nazwa brancha git: `feature/[nazwa-zadania]`
-   - Cele i zakres
-   - Fazy z zadaniami
-   - Kryteria akceptacji
+1. Ustal nazwę: `feature/[nazwa-zadania]`.
+2. Sprawdź czy branch istnieje: `git branch --list feature/[nazwa-zadania]`.
+3. **Nie istnieje** → `git checkout -b feature/[nazwa-zadania]`.
+4. **Istnieje** → zapytaj usera: [przełącz się na istniejący] [nowa nazwa z sufiksem -2] [zostań na obecnym branchu].
+5. Zapisz finalną nazwę brancha — trafia do wszystkich trzech plików.
 
-   **`[nazwa-zadania]-kontekst.md`** — Kluczowe pliki, decyzje, zależności:
-   - Nazwa brancha git: `feature/[nazwa-zadania]`
-   - Powiązane pliki
-   - Decyzje techniczne
-   - Zależności
+## FAZA 1: Źródła i tryb pracy
 
-   **W obu plikach (`[nazwa-zadania]-plan.md` i `[nazwa-zadania]-kontekst.md`) dodaj sekcję:**
+### 1.1 Znajdź dokumenty źródłowe
 
-   ```markdown
-   ## Źródła
-   - Requirements doc: [ścieżka do docs/brainstorms/*.md jeśli użyty]
-   - Plan techniczny: [ścieżka do docs/plans/*.md jeśli użyty]
-   ```
+Wykonaj OBA:
+- `Glob docs/plans/*-plan.md` — plany techniczne z `/dev-plan`
+- `Glob docs/dev-brainstorms/*-requirements.md` — requirements z `/dev-brainstorm`
 
-   **`[nazwa-zadania]-zadania.md`** — Format checklisty do śledzenia postępów.
-   Dla każdego Unity/fazy checklist powinien zawierać:
-   1. Checkboxy implementacyjne (pliki do stworzenia/modyfikacji)
-   2. Checkboxy testowe z prefixem `Test:` (przeniesione z sekcji **Scenariusze testowe** planu technicznego)
-   3. Checkboxy weryfikacyjne z prefixem `Weryfikacja:` (przeniesione z sekcji **Weryfikacja** planu technicznego)
+Dopasowanie: temat semantycznie zgodny z wejściem, preferuj najnowszy. Wiele kandydatów → zapytaj usera.
 
-   Jeśli plan techniczny nie istnieje lub nie zawiera scenariuszy testowych — pomiń punkty 2 i 3.
+### 1.2 Wybierz tryb
 
-3. **Dodaj w każdym pliku:**
-   - "Branch: `feature/[nazwa-zadania]`"
-   - "Ostatnia aktualizacja: RRRR-MM-DD"
+| Stan źródeł | Tryb |
+|---|---|
+| Plan techniczny istnieje | **TRANSFORM** — plan jest źródłem prawdy; requirements (jeśli jest) tylko jako kontekst produktowy |
+| Tylko requirements doc | **BOOTSTRAP** z kontekstem produktowym |
+| Brak źródeł | **BOOTSTRAP** od zera |
 
-### Faza 4: Commit inicjalny
+Ogłoś userowi tryb i użyte źródła jednym zdaniem.
 
-- Wykonaj commit z dokumentacją: `git add docs/active/[nazwa-zadania]/`
-- Commit message: `docs: inicjalizacja planu dla [nazwa-zadania]`
+### 1.3 Tryb TRANSFORM — zasady
 
-## Standardy jakości
-- Plany muszą być samowystarczalne z całym niezbędnym kontekstem
-- Używaj jasnego, konkretnego języka
-- Dołącz szczegóły techniczne tam, gdzie to istotne
-- Uwzględnij zarówno perspektywę techniczną, jak i biznesową
-- Weź pod uwagę potencjalne ryzyka i przypadki brzegowe
+- Implementation Units planu → fazy/zadania checklisty (mapowanie 1 Unit = 1 sekcja fazy albo grupa zadań, wg zależności)
+- Sekcja **Scenariusze testowe** unitu → checkboxy `Test:` w TEJ SAMEJ fazie co zadania implementacyjne
+- Sekcja **Weryfikacja** unitu → checkboxy `Weryfikacja:` w TEJ SAMEJ fazie
+- Kluczowe decyzje techniczne planu → sekcja "Decyzje techniczne" w pliku kontekstu (kopiuj, nie parafrazuj znaczenia)
+- Ścieżki plików z unitów → "Powiązane pliki" w kontekście
+- NIE dodawaj: analizy obecnego stanu, szacunków czasowych, oceny ryzyka — to już jest w planie technicznym; linkuj zamiast duplikować
 
-## Referencje kontekstowe
-- Sprawdź `CLAUDE.md` dla przeglądu architektury (jeśli istnieje)
-- Skonsultuj `.claude/rules/best-practices.md` dla standardów kodowania (jeśli istnieje)
-- Odwołaj się do `.claude/rules/troubleshooting.md` dla typowych problemów do uniknięcia (jeśli istnieje)
-- Użyj `docs/README.md` dla wytycznych zarządzania zadaniami (jeśli istnieje)
-- Sprawdź `docs/brainstorms/` dla dokumentów wymagań z `/dev-brainstorm`
-- Sprawdź `docs/plans/` dla planów technicznych z `/dev-plan`
+### 1.4 Tryb BOOTSTRAP — zasady
+
+Zbadaj repo (Glob/Grep/Read kluczowych plików) i stwórz plan zawierający:
+- Podsumowanie wykonawcze (2-4 zdania)
+- Analizę obecnego stanu (co istnieje, co się zmienia)
+- Stan docelowy
+- Fazy z zadaniami (kryteria akceptacji per zadanie)
+- Ryzyka i mitygacje (tylko materialne)
+- Mierniki sukcesu
+
+Nakład pracy per zadanie: S/M/L/XL. Zadania numeruj w fazach, określ zależności.
+
+Jeśli w BOOTSTRAP odkryjesz duże nierozstrzygnięte pytania produktowe → zarekomenduj `/dev-brainstorm` przed kontynuacją.
+
+## FAZA 2: Utworzenie struktury
+
+Katalog: `docs/active/[nazwa-zadania]/`
+
+**Jeśli katalog już istnieje:** zapytaj usera — [aktualizuj istniejące pliki (zachowaj zaznaczone checkboxy)] [nadpisz od zera] [przerwij]. Nigdy nie nadpisuj bez pytania.
+
+### Plik 1: `[nazwa-zadania]-plan.md`
+
+```markdown
+# [Tytuł zadania] — Plan
+
+**Branch:** `feature/[nazwa-zadania]`
+**Ostatnia aktualizacja:** RRRR-MM-DD
+
+## Cele i zakres
+
+[2-5 zdań: co robimy i po co. Granice scope jako bullety.]
+
+## Fazy
+
+### Faza 1 — [Nazwa]
+[Cel fazy + zadania z kryteriami akceptacji]
+
+### Faza 2 — [Nazwa]
+[...]
+
+## Kryteria akceptacji całości
+
+- [Weryfikowalne kryterium]
+
+## Źródła
+- Requirements doc: [docs/dev-brainstorms/... jeśli użyty]
+- Plan techniczny: [docs/plans/... jeśli użyty]
+```
+
+### Plik 2: `[nazwa-zadania]-kontekst.md`
+
+```markdown
+# [Tytuł zadania] — Kontekst
+
+**Branch:** `feature/[nazwa-zadania]`
+**Ostatnia aktualizacja:** RRRR-MM-DD
+
+## Powiązane pliki
+
+- `ścieżka/pliku` — [rola w zadaniu]
+
+## Decyzje techniczne
+
+- [Decyzja]: [Uzasadnienie] (zob. plan techniczny, gdy stamtąd pochodzi)
+
+## Zależności
+
+- [Zależność techniczna lub sekwencyjna]
+
+## Źródła
+- Requirements doc: [ścieżka jeśli użyty]
+- Plan techniczny: [ścieżka jeśli użyty]
+```
+
+### Plik 3: `[nazwa-zadania]-zadania.md`
+
+```markdown
+# [Tytuł zadania] — Checklist zadań
+
+**Branch:** `feature/[nazwa-zadania]`
+**Ostatnia aktualizacja:** RRRR-MM-DD
+
+---
+
+## Faza 1 — [Nazwa]
+
+- [ ] [Zadanie implementacyjne: czasownik + konkretny plik/efekt]
+- [ ] [Zadanie implementacyjne]
+- [ ] Test: [scenariusz z planu technicznego]
+- [ ] Weryfikacja: [kryterium weryfikacji z planu technicznego]
+
+---
+
+## Faza 2 — [Nazwa]
+
+- [ ] [...]
+```
+
+**Reguły checklisty:**
+- Każdy checkbox = jedna wykonywalna akcja z konkretnym plikiem lub obserwowalnym efektem
+- Checkboxy `Test:` i `Weryfikacja:` w tej samej fazie co implementacja, których dotyczą — NIGDY w osobnej sekcji na końcu
+- Zadania ręczne/manualne oznacz `(ręczne)` — np. seed w panelu admina
+- Bez planu technicznego lub bez scenariuszy testowych w nim — nie wymyślaj sztucznych checkboxów `Test:`; feature-bearing zadania nadal powinny mieć test zgodnie z regułami projektu
+
+## FAZA 3: Commit inicjalny
+
+1. `git add docs/active/[nazwa-zadania]/`
+2. Commit message: `docs: inicjalizacja planu dla [nazwa-zadania]`
+3. Ten commit jest częścią workflow — wykonaj bez dodatkowego pytania (user zainicjował skill, który go deklaruje).
+
+## Referencje kontekstowe (sprawdź podczas Fazy 1)
+
+- `CLAUDE.md` — architektura projektu
+- `.claude/rules/coding-rules.md` — standardy kodowania (testy, typy, bezpieczeństwo)
+- `docs/solutions/` — wiedza instytucjonalna, jeśli istnieje
+
+## Gate przed zakończeniem — wszystkie punkty muszą przejść
+
+- [ ] Trzy pliki istnieją w `docs/active/[nazwa-zadania]/` i każdy ma nagłówek Branch + Ostatnia aktualizacja
+- [ ] Tryb TRANSFORM: każdy Implementation Unit planu ma odpowiednik w checkliście (żaden nie zgubiony)
+- [ ] Tryb TRANSFORM: checkboxy `Test:`/`Weryfikacja:` siedzą w fazach, nie w osobnej sekcji
+- [ ] Sekcja "Źródła" wypełniona w plan.md i kontekst.md
+- [ ] Checklist wykonywalny przez świeżą sesję bez dostępu do tej rozmowy
+- [ ] Commit wykonany
 
 ## Format wyjściowy
+
 ```
-✅ Plan utworzony dla "$ARGUMENTS"
+✅ Plan utworzony dla "[nazwa-zadania]"
 
 🔀 Branch: feature/[nazwa-zadania]
 
@@ -127,4 +226,14 @@ Jesteś elitarnym specjalistą ds. planowania strategicznego. Stwórz kompleksow
 ➡️ Następny krok: /dev-docs-execute docs/active/[nazwa-zadania]
 ```
 
-**Uwaga**: Ta komenda jest idealna do użycia PO wyjściu z trybu planowania, gdy masz jasną wizję tego, co trzeba zrobić. Stworzy trwałą strukturę zadań, która przetrwa resety kontekstu.
+Jeśli w Fazie 0 użyto stash — dopisz przypomnienie o `git stash pop`.
+
+## Anty-wzorce — NIGDY
+
+- Nie planuj od zera, gdy istnieje plan techniczny — transformuj go.
+- Nie szukaj w `docs/brainstorms/` — poprawna ścieżka to `docs/dev-brainstorms/`.
+- Nie duplikuj do plików treści planu technicznego (ryzyka, szacunki, analiza stanu) — linkuj w "Źródła".
+- Nie twórz brancha na brudnym working tree bez decyzji usera.
+- Nie nadpisuj istniejącego `docs/active/[nazwa]/` bez pytania.
+- Nie umieszczaj checkboxów Test/Weryfikacja w osobnej sekcji na końcu checklisty.
+- Nie używaj tej komendy do trywialnych zadań (1-2 pliki, brak faz) — wykonaj je bezpośrednio; struktura docs/active ma sens od ~3+ zadań w ≥2 fazach.

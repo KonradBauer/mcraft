@@ -5,6 +5,13 @@ description: Wytyczne UX/UI dla React 19 + Tailwind v4. Design system (OKLCH col
 
 # UX/UI Guidelines
 
+## Gate stosowalności — sprawdź PRZED użyciem
+
+Zasady UX/dostępności/responsywności (WCAG, ARIA, prefers-reduced-motion, mobile-first) są uniwersalne — stosuj wszędzie. ALE:
+
+1. **Design system projektu ma pierwszeństwo.** Konkretne wartości z tego przewodnika (OKLCH colors, container queries, skale spacingu) to DOMYŚLNE dla projektów bez własnego design systemu. Projekt z własnym systemem (tokeny w @theme, ustalone breakpointy, fonty — sprawdź CLAUDE.md i główny plik CSS) → używaj JEGO wartości, nie wartości z przewodnika.
+2. Biblioteki animacji (Motion) proponuj tylko gdy już są w package.json lub user prosi o ich dodanie.
+
 ## Cel
 
 Przewodnik dla projektowania interfejsu użytkownika - design system, dostępność, responsywność, animacje, wzorce UI zgodne ze standardami Marzec 2026.

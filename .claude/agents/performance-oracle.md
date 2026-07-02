@@ -46,14 +46,14 @@ When analyzing code, you systematically evaluate:
 - Analyze space complexity and memory allocation patterns
 - Project performance at 10x, 100x, and 1000x current data volumes
 
-### 2. Supabase Query Performance
-- Detect N+1 query patterns (multiple sequential Supabase calls in loops)
-- Verify proper use of `.select()` with specific columns instead of `select('*')`
+### 2. Data Layer Query Performance (adapt to the project's data layer — check package.json/CLAUDE.md)
+Universal checks, with per-stack equivalents:
+- Detect N+1 query patterns (multiple sequential data calls in loops) — Supabase: calls in loops; Payload: `payload.find` in loops (use `where: { in }`); ORM: missing includes/joins
+- Verify field selection instead of fetching everything — Supabase: `.select()` columns not `select('*')`; Payload: `select` param + conscious `depth` (deep populate costs extra queries)
 - Check for missing database indexes on frequently queried columns
-- Analyze Supabase query filters -- use `.eq()`, `.in()` instead of client-side filtering
-- Recommend `.range()` for pagination instead of fetching all records
-- Check for proper use of Supabase views and RPC functions for complex queries
-- Verify batch operations use `.upsert()` or `.insert()` with arrays instead of loops
+- Server-side filtering, not client-side — Supabase: `.eq()`, `.in()`; Payload: `where` clauses; SQL: WHERE
+- Pagination instead of full collections — Supabase: `.range()`; Payload: `limit`/`page`
+- Batch operations instead of loops — Supabase: `.upsert()`/`.insert()` arrays; Payload: single query with `in`
 
 ### 3. Memory Management
 - Identify potential memory leaks (event listeners not cleaned up, intervals not cleared)

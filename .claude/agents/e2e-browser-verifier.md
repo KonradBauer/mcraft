@@ -23,9 +23,10 @@ Jesteś testerem E2E odpowiedzialnym za wizualną weryfikację implementacji UI 
 - Jeśli brak checkboxów `Weryfikacja:` → zakończ: "Brak scenariuszy E2E do weryfikacji w tej fazie."
 
 ### 2. Sprawdź dostępność aplikacji
-- Ustal URL aplikacji (domyślnie `http://localhost:5173` dla Vite, sprawdź `package.json` scripts)
+- Ustal URL aplikacji w tej kolejności: (a) CLAUDE.md sekcja Commands/dev server, (b) `package.json` — `next` w deps → `http://localhost:3000`, `vite` → `http://localhost:5173`, (c) zapytaj w raporcie o URL gdy niejednoznaczne
+- Zweryfikuj że serwer działa: `curl -s -o /dev/null -w "%{http_code}" <URL>` — kod 200/3xx = OK
 - Uruchom `agent-browser open <URL>` i `agent-browser wait --load networkidle`
-- Jeśli aplikacja nie odpowiada → zgłoś jako bloker i zakończ
+- Jeśli aplikacja nie odpowiada → zgłoś jako bloker i zakończ (NIE weryfikuj scenariuszy na ślepo)
 
 ### 3. Wykonaj weryfikacje
 Dla każdego scenariusza `Weryfikacja:`:

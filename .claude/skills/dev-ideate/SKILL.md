@@ -134,48 +134,47 @@ Postepuj dokladnie wedlug tego mechanizmu:
    - najpierw wygeneruj wiele pomyslow
    - potem zakwestionuj je systematycznie
    - potem wyjasniaj tylko ocalale szczegolowo
-6. Uzywaj sub-agentow (Agent tool, type: Explore) zeby poprawic roznorodnosc puli kandydatow, nie zeby zastepowac glowny mechanizm.
-7. Daj kazdemu sub-agentowi ideacji to samo:
-   - podsumowanie rozpoznania
+6. Uzywaj sub-agentow (Agent tool, subagent_type: "general-purpose" — NIE Explore;
+   generowanie pomyslow to otwarta analiza, nie wyszukiwanie kodu) zeby poprawic
+   roznorodnosc puli kandydatow, nie zeby zastepowac glowny mechanizm.
+7. Sub-agent NIE widzi tej rozmowy — prompt musi byc samowystarczalny. Daj kazdemu
+   sub-agentowi ideacji to samo:
+   - podsumowanie rozpoznania (pelny tekst z Fazy 1, nie odwolanie)
    - wskazowke fokusowa
    - cel ilosci per agent (~7-8 pomyslow domyslnie)
    - instrukcje generowania surowych kandydatow, nie krytyki
 8. Przypisz kazdemu sub-agentowi inny frame ideacji jako **bias startowy, nie ograniczenie**. Instruuj kazdego agenta, zeby zaczynal ze swojej perspektywy ale podazal za kazdym obiecujacym watek gdziekolwiek prowadzi — pomysly cross-cutting obejmujace wiele frame'ow sa cenne, nie poza scope'm.
 
-   **4 frame'y ideacji (dostosowane do stacku React/TypeScript/Supabase/Tailwind/Vite):**
+   **4 frame'y ideacji** — role uniwersalne. Listy "szuka:" to baza; PRZED wysłaniem agentów SKONKRETYZUJ je pod stack i typ produktu ustalone w skanie Fazy 1 (np. "N+1 w warstwie danych" → "payload.find w pętli" dla Payload albo "sekwencyjne wywołania Supabase" dla Supabase; "UX narzędzi wewnętrznych" → panel CMS / dashboard admina projektu):
 
    1. **Tech Debt Scout** — szuka:
-      - typy `any` w TypeScript
+      - typy `any`, non-null assertions, nieuzasadnione `as`
       - komentarze TODO/FIXME
-      - pliki > 300 linii
-      - brakujace testy
-      - cykliczne zaleznosci (circular deps)
-      - nieaktualne zaleznosci (outdated deps)
-      - niespojne wzorce kodowania
+      - pliki > 300 linii, funkcje > 50 linii
+      - brakujace testy (feature bez testu integracyjnego/E2E)
+      - cykliczne zaleznosci, nieaktualne zaleznosci
+      - niespojne wzorce (rozne sposoby robienia tej samej rzeczy)
+      - dryf miedzy schematem warstwy danych a uzyciem typow generowanych
 
    2. **UX Advocate** — szuka:
-      - brak stanow empty/error/loading w komponentach React
-      - problemy z dostepnoscia (WCAG) — brak aria-labels, slaby kontrast, brak obslug klawiatury
-      - brak responsywnosci (Tailwind breakpoints)
-      - brak onboardingu uzytkownika
-      - niespojny design (niezgodnosc z Tailwind design system)
+      - brak stanow empty/error/loading w komponentach
+      - problemy WCAG — aria-labels, kontrast, obsluga klawiatury, focus w modalach
+      - luki responsywnosci (wzgledem breakpointow ZNALEZIONYCH w projekcie)
+      - niespojnosc z design systemem projektu (tokeny/zmienne znalezione w CSS/config)
+      - UX narzedzi wewnetrznych projektu (panel CMS/admin — labels, opisy pol;
+        niejasne pole dla nietechnicznego edytora = telefon do developera)
 
    3. **Performance Analyst** — szuka:
-      - rozmiar bundle (brak code splitting)
-      - brak lazy loading (`React.lazy()`, `Suspense`)
-      - zapytania N+1 do Supabase
-      - brak memoizacji (`useMemo`, `useCallback`, `React.memo`)
-      - brak optymalizacji obrazow
+      - rozmiar bundle (brak dynamic import dla ciezkich komponentow klienckich)
+      - N+1 w warstwie danych projektu; brak batch/limit/swiadomej glebokosci populacji
+      - obrazy: sizes/wymiary, za duze pliki statyczne, formaty
+      - Core Web Vitals: LCP, CLS, hydration
       - nieefektywne re-rendery
-      - brak indeksow w Supabase
 
-   4. **Product Strategist** — szuka:
-      - brakujace integracje (zewnetrzne API, webhooks)
-      - brak analytics (zdarzenia uzytkownika, metryki)
-      - brak monitoringu (Sentry, logowanie bledow)
-      - brakujace feature'y wzgledem konkurencji
-      - mozliwosci automatyzacji (cron joby, triggery Supabase)
-      - brak internacjonalizacji (i18n)
+   4. **Product Strategist** — szuka (dobierz do TYPU produktu z Fazy 1):
+      - strona marketingowa: SEO/GEO (schema.org, sitemap, llms.txt), konwersje, tresci hardcoded ktore powinny byc w CMS
+      - aplikacja/SaaS: onboarding, analytics zdarzen, brakujace integracje, i18n
+      - wspolne: monitoring produkcji (error tracking, uptime, backupy), automatyzacje (CI/CD, testy w pipeline), brakujace elementy wzgledem konkurencji
 
 9. Popros kazdego sub-agenta o zwrocenie ustandaryzowanej struktury dla kazdego pomyslu:
    - title
@@ -211,7 +210,7 @@ Wzorzec sub-agentow do zachowania:
 Przejrzyj kazdy wygenerowany pomysl krytycznie.
 
 Preferuj dwuwarstwowa krytyke:
-1. Jeden lub wiecej skeptycznych sub-agentow (Agent tool, type: Explore) atakuje scalona liste z roznych katow.
+1. Jeden lub wiecej skeptycznych sub-agentow (Agent tool, subagent_type: "general-purpose") atakuje scalona liste z roznych katow. Przekaz kazdemu: pelna scalona liste pomyslow + podsumowanie rozpoznania + kryteria odrzucania (ponizej) — sub-agent nie widzi rozmowy.
 2. Orkiestrator syntezuje te krytyki, stosuje rubryke spojnie, punktuje ocalale i decyduje o finalnym rankingu.
 
 Nie pozwalaj agentom krytykujacym generowac pomyslow zastepcych w tej fazie, chyba ze explicite dopracowuja.
@@ -366,8 +365,8 @@ Po kazdym dopracowaniu:
 #### 6.3 Zakoncz sesje
 
 Przy konczeniu:
-- zaproponuj commitowanie samego dokumentu ideacji
-- nie tworzgalezi
+- sprawdz czy `docs/ideation/` jest w .gitignore (konwencja warsztatu: raporty AI lokalne, poza zdalnym repo). Jesli ignorowane — dokument zostaje lokalny, nie proponuj commita. Jesli NIE ignorowane — zaproponuj commit (message: `docs(ideation): <temat>`)
+- nie tworz galezi
 - nie pushuj
 - jesli uzytkownik odmawia, zostaw plik niezcommitowany
 

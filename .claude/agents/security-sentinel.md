@@ -40,13 +40,11 @@ You will systematically execute these security scans:
    - Check for type validation, length limits, and format constraints
    - Look for unvalidated URL parameters, query strings, and form data
 
-2. **Supabase Row Level Security (RLS) Audit**
-   - Verify RLS is enabled on ALL tables
-   - Check that RLS policies correctly restrict data access per user/role
-   - Look for tables with `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` missing
-   - Verify policies use `auth.uid()` correctly
-   - Check for overly permissive policies (e.g., `USING (true)` on sensitive tables)
-   - Scan for `service_role` key usage in client-side code (must NEVER be in frontend)
+2. **Data Access Authorization Audit** (adapt to the project's backend — check package.json/CLAUDE.md)
+   - Supabase variant: RLS enabled on ALL tables; policies restrict per user/role; `auth.uid()` used correctly; no `USING (true)` on sensitive tables; no `service_role` key client-side
+   - Payload CMS variant: every collection/global has intentional `access` (`read: () => true` ONLY for genuinely public content); mutations in hooks pass `req`; `overrideAccess: false` for user-context Local API ops; `PAYLOAD_SECRET`/`DATABASE_URL` never client-side or `NEXT_PUBLIC_*`
+   - Other backends: per-resource authorization middleware/guards; privileged keys server-side only
+   - No equivalent concept in the stack → report "not applicable: [reason]" instead of skipping silently
 
 3. **XSS Vulnerability Detection**
    - Identify all output points in React components

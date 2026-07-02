@@ -1,38 +1,87 @@
 # Tech Stack Checklist
 
-Checklisty do code review dla każdej technologii w projekcie.
+> **[WARSTWA PROJEKTOWA]** Ten plik jest wygenerowany dla konkretnego projektu (mcraft). Przy przenoszeniu warsztatu do innego repo: zregeneruj checklisty wg CLAUDE.md i package.json docelowego projektu, zachowując strukturę sekcji (framework / CMS-backend / React / async / styling / TS / testy / security / performance / deployment / a11y). Sekcje React 19, Async, TypeScript i a11y są w większości uniwersalne.
+
+Checklisty do code review dla stacku tego projektu: **Next.js 16 (App Router) + React 19 + Payload CMS 3 + MongoDB + Tailwind v4 + TypeScript**. Testy: Vitest (integracyjne) + Playwright (E2E). Deployment: Docker + Coolify na VPS.
+
+Ładuj tylko sekcje odpowiadające zmienionym plikom.
+
+---
+
+## Next.js 16 (App Router)
+
+### Route groups i struktura
+- [ ] `(payload)` route group NIETKNIĘTE — zarządzane przez withPayload(), zero custom kodu tam
+- [ ] Strony frontendowe mają `export const dynamic = 'force-dynamic'` — NIE zmieniaj na `revalidate`/SSG (build w Dockerze nie ma dostępu do MongoDB)
+- [ ] Server components domyślnie; `'use client'` tylko dla interaktywnych wysp
+- [ ] Dane z CMS fetchowane w server components przez Payload Local API (`getPayload` + `payload.find`/`findGlobal`), nie przez fetch do własnego API
+
+### Granica server/client
+- [ ] Props przekazywane z server do client components są serializowalne (bez funkcji, bez instancji klas)
+- [ ] Server-rendered children przekazywane jako fragmenty do client providerów (wzorzec ModalProvider) — treść w initial HTML
+- [ ] Brak hooków w server components
+- [ ] Brak importu server-only kodu (payload config) w client components
+
+### Metadata i SEO
+- [ ] `metadata` export na nowych stronach (title, description, canonical, openGraph)
+- [ ] OG image wskazuje istniejący statyczny asset, nie dynamiczny route z hashem
+- [ ] Nowa publiczna strona dodana do `src/app/sitemap.ts`
+
+### Obrazy
+- [ ] `next/image` zamiast `<img>` (wyjątki uzasadnione komentarzem)
+- [ ] Obrazy `fill` mają prop `sizes` adekwatny do layoutu
+- [ ] Nowe ścieżki obrazów dodane do `images.localPatterns` w `next.config.ts`
+- [ ] Wzorzec projektu: `ImageWithSkeleton` dla obrazów z CMS, `ImageSlot` jako placeholder
+
+---
+
+## Payload CMS 3
+
+### Access control
+- [ ] Każda kolekcja/global ma przemyślane `access` — `read: () => true` TYLKO dla treści jawnie publicznych
+- [ ] Operacje create/update/delete ograniczone tam, gdzie kolekcja ma stały zestaw rekordów (wzorzec ServicePage: `create: () => false`)
+- [ ] `overrideAccess: false` przy operacjach Local API w imieniu użytkownika
+
+### Hooks
+- [ ] Zagnieżdżone operacje Local API w hookach dostają `req` (atomowość transakcji)
+- [ ] Flagi `req.context` zapobiegają nieskończonym pętlom hooków
+- [ ] Hooki nie robią fetchów w pętli po dokumentach (N+1)
+
+### Schema i typy
+- [ ] Po KAŻDEJ zmianie schematu: `pnpm generate:types` — i wygenerowany plik w commicie
+- [ ] `src/payload-types.ts` NIGDY nie edytowany ręcznie
+- [ ] Nowa kolekcja zarejestrowana w `payload.config.ts`
+- [ ] Pola relacji/upload obsługują oba kształty: `string | Dokument` (helper `mediaUrl`)
+
+### Upload
+- [ ] `staticDir` poza `public/` dla kolekcji upload (public/ jest nadpisywane przy budowie obrazu Docker)
+- [ ] Nowy `staticDir` = odpowiadający volume w `docker-compose.yml` + mkdir/chown w Dockerfile i entrypoint
+- [ ] `mimeTypes` ograniczone do potrzebnych typów
+
+### Zapytania
+- [ ] `depth` świadomie dobrany (nie domyślny głęboki populate "na wszelki wypadek")
+- [ ] `limit` na zapytaniach po kolekcjach mogących rosnąć
+- [ ] Batch query (`where: { field: { in: [...] } }`) zamiast find w pętli
 
 ---
 
 ## React 19
 
 ### Nowe API
-- [ ] `use()` zamiast `useEffect` + `useState` dla async data
-- [ ] `useFormStatus()` dla form loading states
+- [ ] `use()` zamiast `useEffect` + `useState` dla async data w client components
 - [ ] `useOptimistic()` dla optimistic updates
-- [ ] `useActionState()` dla form actions (client-side)
+- [ ] `useActionState()` / `useFormStatus()` dla form actions
 
 ### Usunięte/zmienione wzorce
 - [ ] Brak `forwardRef` — ref to zwykły prop w React 19
 - [ ] `<Context>` zamiast `<Context.Provider>`
-- [ ] Brak `useContext` gdzie można użyć `use(Context)` — pozwala na warunkowe użycie (w if/loop), czego useContext nie obsługuje
-
-### React Compiler (jeśli włączony)
-- [ ] Brak ręcznych `useMemo` (compiler optymalizuje automatycznie)
-- [ ] Brak ręcznych `useCallback` (compiler optymalizuje automatycznie)
-- [ ] Brak `React.memo` wrapperów (compiler decyduje o memoizacji)
+- [ ] `use(Context)` zamiast `useContext` gdy potrzebne warunkowe użycie
 
 ### Rendering
-- [ ] Suspense boundaries dla async components
-- [ ] Brak niepotrzebnych renderów
+- [ ] Suspense boundaries dla async client components
 - [ ] Stan na odpowiednim poziomie (lifting vs colocation)
-- [ ] Keys w listach są stabilne i unikalne
-
-### Forms
-- [ ] Native form actions gdzie możliwe
-- [ ] `formAction` prop na `<button>`
-- [ ] React Hook Form + zodResolver jako domyślne podejście
-- [ ] Native form actions jako alternatywa dla prostych formularzy
+- [ ] Keys w listach stabilne i unikalne (nie index przy reorderowalnych listach)
+- [ ] Brak hydration mismatch (Date.now(), Math.random(), window-checks w renderze)
 
 ---
 
@@ -40,223 +89,127 @@ Checklisty do code review dla każdej technologii w projekcie.
 
 ### useEffect cleanup
 - [ ] useEffect z async ma AbortController w cleanup
-- [ ] setTimeout/setInterval ma clearTimeout/clearInterval w useEffect return
+- [ ] setTimeout/setInterval ma clearTimeout/clearInterval w return
 - [ ] requestAnimationFrame loop sprawdza cancel flag
-- [ ] WebSocket / EventSource zamykany w cleanup
 - [ ] IntersectionObserver / MutationObserver disconnected w cleanup
-- [ ] Supabase realtime subscription unsubscribed w cleanup
+- [ ] Event listenery na window/document usuwane w cleanup
 
 ### State management
 - [ ] Więcej niż 1 boolean ładowania = discriminated union / state machine
-- [ ] Operacje wzajemnie wykluczające się mają guard (nie ładuj kolejnego preview jeśli poprzedni trwa)
-- [ ] Promise.allSettled dla równoległych operacji które mogą niezależnie failować
+- [ ] Operacje wzajemnie wykluczające się mają guard
+- [ ] Promise.allSettled dla równoległych operacji mogących niezależnie failować
 
 ### Async patterns
 - [ ] Promise.finally() do cleanup zamiast duplikacji w resolve/reject
-- [ ] Brak fire-and-forget promises (każdy promise obsłużony lub świadomie zignorowany z komentarzem)
-- [ ] Brak floating promises w event handlerach (`.catch()` lub `void`)
-
----
-
-## Supabase
-
-### RLS (Row Level Security)
-- [ ] Polityki RLS włączone na wszystkich tabelach
-- [ ] Polityki SELECT/INSERT/UPDATE/DELETE zdefiniowane osobno
-- [ ] Brak tabel z wyłączonym RLS w produkcji
-
-### Auth
-- [ ] Sprawdzenie `auth.uid()` w politykach RLS
-- [ ] Weryfikacja sesji przed operacjami na danych
-- [ ] Brak bezpośrednich operacji bez sprawdzenia auth
-
-### Error handling
-- [ ] Obsługa błędów z odpowiedzi Supabase (`error` sprawdzany po każdym zapytaniu)
-- [ ] Rozróżnienie błędów auth vs database vs network
-- [ ] Sensowne komunikaty błędów dla użytkownika
-
-### Typy
-- [ ] Typy TypeScript generowane ze schematu bazy (`supabase gen types`)
-- [ ] Typy używane w całej aplikacji (brak `any` przy operacjach DB)
-- [ ] `Database` type używany w kliencie Supabase
-
-### Edge Functions
-- [ ] Service role key używany tylko w Edge Functions (nigdy po stronie klienta)
-- [ ] Walidacja inputów w Edge Functions (Zod)
-- [ ] Proper error responses (status codes + JSON body)
-
----
-
-## Sentry
-
-### Capture
-- [ ] Wszystkie bloki `catch` raportują do Sentry (`Sentry.captureException`)
-- [ ] Proper error levels: `fatal` / `error` / `warning` używane adekwatnie
-- [ ] Brak zgłaszania oczekiwanych błędów (np. walidacja formularza)
-
-### GDPR / Prywatność
-- [ ] Maskowanie emaili w `beforeSend` callback
-- [ ] Brak danych wrażliwych w kontekście Sentry (hasła, tokeny, PII)
-- [ ] `beforeBreadcrumb` filtruje wrażliwe URL-e i dane
-
-### Error Boundary
-- [ ] `Sentry.ErrorBoundary` opakowuje aplikację
-- [ ] Fallback UI wyświetlany przy crashu
-- [ ] `componentStack` raportowany z błędem
-
-### Kontekst
-- [ ] `Sentry.setUser()` po zalogowaniu (tylko ID, bez PII)
-- [ ] `Sentry.setTag()` dla kluczowych metadanych (environment, feature)
-- [ ] Brak danych wrażliwych w `Sentry.setExtra()` / `Sentry.setContext()`
-
----
-
-## React Data Fetching (React Query)
-
-### useQuery
-- [ ] `useQuery` / `useSuspenseQuery` do pobierania danych (nie `useEffect` + `fetch`)
-- [ ] `queryKey` ma prawidłową strukturę (hierarchiczną, z parametrami)
-- [ ] `staleTime` skonfigurowane odpowiednio do typu danych
-- [ ] `queryFn` nie łamie zasad hooks
-
-### Stany
-- [ ] Loading state obsłużony (`isLoading` / `isPending`)
-- [ ] Error state obsłużony (`isError` + `error`)
-- [ ] Empty state obsłużony (dane puste ale nie error)
-- [ ] Placeholder/skeleton podczas ładowania
-
-### Mutacje
-- [ ] `useMutation` do operacji zapisu
-- [ ] `onSuccess` invaliduje powiązane queries (`queryClient.invalidateQueries`)
-- [ ] Optimistic updates gdzie UX tego wymaga (`onMutate` + `onError` rollback)
-- [ ] Error handling w `onError` callback
-
-### Performance
-- [ ] Deduplikacja zapytań (ten sam `queryKey` nie fetchuje wielokrotnie)
-- [ ] `enabled` flag do warunkowego fetchowania
-- [ ] `select` do transformacji danych (unikanie re-renderów)
+- [ ] Brak floating promises w event handlerach (`.catch()` lub `void` ze świadomością)
 
 ---
 
 ## Tailwind CSS 4
 
-### Konfiguracja (v4 breaking change)
-- [ ] Konfiguracja przez blok `@theme` w CSS (nie `tailwind.config.js`)
-- [ ] Zmienne CSS definiowane w `@theme { }` lub `:root { }`
-- [ ] Import Tailwind przez `@import "tailwindcss"` w CSS
-- [ ] Brak starego `tailwind.config.js` (lub świadoma migracja)
+### Konfiguracja (v4)
+- [ ] Konfiguracja przez blok `@theme` w `styles.css` (brak tailwind.config.js — to poprawne w v4)
+- [ ] Import przez `@import "tailwindcss"`
+
+### Konwencje TEGO projektu (nie flaguj jako błędy!)
+- [ ] Kolory przez tokeny z @theme (`bg-ink`, `text-light`, `bg-accent`, `bg-cream`) — NIE hex inline gdy token istnieje
+- [ ] Arbitrary values dla spacing/breakpointów (`px-[56px]`, `max-[980px]:hidden`) SĄ konwencją projektu — flaguj tylko hardcoded KOLORY omijające tokeny
+- [ ] Breakpointy projektu: `max-[980px]`, `max-[768px]`, `max-[700px]`, `max-[560px]` — nowy kod używa tych samych
+- [ ] Fonty przez zmienne: font-montserrat (nagłówki/UI), font-sans/Barlow (body)
 
 ### Klasy
-- [ ] Uporządkowane (prettier-plugin-tailwindcss)
-- [ ] Brak przestarzałych utility classes
-- [ ] Brak `@apply` — kompozycja w React zamiast tego
-- [ ] Unikanie arbitrary values (`w-[123px]`) — preferuj tokeny z design systemu
-
-### Theming
-- [ ] Zmienne CSS w bloku `@theme`
-- [ ] Dark mode obsłużony (`dark:`)
-- [ ] Spójne spacing, colors, typography
-- [ ] `field-sizing: content` dla auto-growing textarea (zamiast JS hacków)
-
-### Responsive
-- [ ] Mobile-first approach
-- [ ] Breakpointy używane konsekwentnie
-- [ ] Testowane na różnych rozmiarach
-
-### Komponenty
-- [ ] Radix UI stylowany spójnie
-- [ ] Hover/focus/active states zdefiniowane
-- [ ] Transitions dla interakcji
-
----
-
-## shadcn/ui / Radix UI
-
-### Użycie
-- [ ] Odpowiedni komponent (Dialog vs AlertDialog, etc.)
-- [ ] Prawidłowa kompozycja (Root, Trigger, Content)
-- [ ] Portal używany dla overlays
-
-### Accessibility
-- [ ] `aria-label` gdzie brak widocznego tekstu
-- [ ] `aria-describedby` dla opisów
-- [ ] Focus trap w modalach
-- [ ] Escape zamyka overlay
-
-### Styling
-- [ ] `data-state` używane do stylowania stanów
-- [ ] Animacje przez CSS/Tailwind
-- [ ] Spójne z resztą UI
-
-### Icons (Lucide)
-- [ ] Spójny rozmiar (np. `size={20}`)
-- [ ] `aria-hidden` lub `aria-label`
-- [ ] Stroke width konsekwentny
+- [ ] Brak `@apply` w kodzie aplikacyjnym — kompozycja w React
+- [ ] Brak przestarzałych klas v3 (`bg-opacity-*` → `bg-black/50`)
+- [ ] Hover/focus/active states zdefiniowane dla interaktywnych elementów
+- [ ] Em dashe ZABRONIONE w treściach widocznych dla użytkownika (JSX, metadata) — zwykły myślnik `-`
 
 ---
 
 ## TypeScript
 
 ### Typy
-- [ ] Brak `any` (użyj `unknown` jeśli trzeba)
-- [ ] Interfejsy/typy eksportowane gdzie potrzeba
-- [ ] Props komponentów typowane
-- [ ] Return types dla funkcji (explicit lub inferred)
+- [ ] Brak `any` (użyj `unknown` + type guard)
+- [ ] Props komponentów typowane interfejsem
+- [ ] Explicit return types dla eksportowanych funkcji
+- [ ] Typy z `@/payload-types` dla danych CMS (nie ręczne duplikaty)
 
 ### Strict mode
-- [ ] `strictNullChecks` respektowane
-- [ ] Brak `!` (non-null assertion) bez uzasadnienia
-- [ ] Optional chaining (`?.`) zamiast `&&`
+- [ ] Brak `!` (non-null assertion) — jawna obsługa null
+- [ ] Brak `as` poza DOM narrowing
+- [ ] Optional chaining zamiast łańcuchów `&&`
 
 ### Imports
-- [ ] Type imports (`import type { X }`)
+- [ ] `import type { X }` dla typów
+- [ ] Path alias `@/` używany konsekwentnie
 - [ ] Brak circular dependencies
-- [ ] Path aliases używane konsekwentnie (`@/`)
+- [ ] Grupowanie: stdlib → third-party → local
+
+---
+
+## Testy
+
+### Reguły twarde
+- [ ] Każdy test ma minimum 1 asercję
+- [ ] Mockowane TYLKO zewnętrzne serwisy, nie testowany kod
+- [ ] Asercje nie osłabione względem poprzedniej wersji (diff testów!)
+- [ ] Testy integracyjne używają fixtures z `tests/helpers/`, nie pełnych datasetów
+
+### Struktura
+- [ ] Arrange-Act-Assert w describe/it
+- [ ] Testowane ZACHOWANIE, nie implementacja (internal state)
+- [ ] Nowa funkcja = min. 1 happy path + 1 error case
+- [ ] E2E: seedowanie/cleanup przez `tests/helpers/seedUser.ts`
 
 ---
 
 ## Bezpieczeństwo
 
 ### Input
-- [ ] Walidacja Zod na operacjach zapisu
-- [ ] Sanityzacja danych użytkownika
-- [ ] Parametryzowane zapytania (Supabase domyślnie)
+- [ ] Walidacja każdego inputu na granicy API (Payload fields validation lub Zod w route handlers)
+- [ ] Brak dynamicznego wykonywania kodu z user input
+- [ ] Upload: mimeTypes + rozsądny limit rozmiaru
 
-### Auth/Authz
-- [ ] Sprawdzenie `supabase.auth.getUser()` przed operacją
-- [ ] Polityki RLS wymuszają dostęp per-user
-- [ ] Brak danych innych użytkowników (RLS + sprawdzenie w kodzie)
-- [ ] Sprawdzenie uprawnień przed operacją
+### Dane
+- [ ] Kolekcje Payload nie eksponują wrażliwych pól przez publiczne read
+- [ ] Error messages nie zdradzają internals (ścieżki, wersje, stack trace do klienta)
+- [ ] Brak logowania danych osobowych/sekretów
 
 ### Secrets
-- [ ] Brak hardcoded secrets
-- [ ] Env variables przez `import.meta.env`
-- [ ] `.env` w `.gitignore`
+- [ ] Brak hardcoded secrets/kluczy
+- [ ] Env przez `process.env`, `.env` w `.gitignore`
+- [ ] PAYLOAD_SECRET / DATABASE_URL nigdy w kodzie ani logach
 
 ### Output
-- [ ] Brak XSS (React domyślnie escapuje)
-- [ ] `dangerouslySetInnerHTML` tylko z sanityzowanym contentem (DOMPurify)
-- [ ] Error messages nie zdradzają internals
+- [ ] Brak XSS — surowy HTML wstrzykiwany do DOM wyłącznie po sanityzacji (np. DOMPurify); preferuj zwykły JSX
+- [ ] Security headers nietknięte w next.config.ts (chyba że zmiana świadoma)
 
 ---
 
 ## Wydajność
 
 ### Bundle
-- [ ] Dynamic imports dla dużych komponentów
-- [ ] `React.lazy()` z `<Suspense fallback={...}>` dla lazy loading
-- [ ] Tree shaking działa (named imports)
+- [ ] Dynamic import / React.lazy dla komponentów > 50KB
+- [ ] Nowa dependency uzasadniona (bundlephobia) i zgłoszona userowi
+- [ ] Named imports (tree shaking)
 
-### Images
-- [ ] `<img>` z `loading="lazy"` dla obrazów poniżej fold
-- [ ] `fetchpriority="high"` dla obrazów above-the-fold (LCP)
-- [ ] Width/height zdefiniowane (zapobieganie layout shift)
-- [ ] Formaty next-gen (WebP/AVIF) gdzie możliwe
+### Zapytania
+- [ ] O(n²)+ wymaga komentarza-uzasadnienia
+- [ ] Pętla z zapytaniem do Payload/DB = N+1 → batch/in
+- [ ] Pagination/limit zamiast pełnych kolekcji
 
-### Lists
-- [ ] Wirtualizacja dla długich list (>100 items)
-- [ ] Pagination/infinite scroll
-- [ ] Stable keys
+### Obrazy i LCP
+- [ ] `sizes` na fill images adekwatny (nie domyślne 100vw dla miniatur)
+- [ ] Lazy loading poniżej fold; priorytet dla hero/LCP
+- [ ] Rozmiary plików w `public/` sensowne (favicon ≤ ~100KB, nie 1MB)
+
+---
+
+## Docker / Deployment
+
+- [ ] Katalogi zapisywalne runtime (upload staticDir) = named volume + chown na usera aplikacji (nextjs)
+- [ ] Nic zapisywalnego w `public/` — nadpisywane przy budowie obrazu
+- [ ] Nowe env vars dodane do docker-compose.yml i .env.example
+- [ ] Zmiany w Dockerfile/entrypoint spójne (mkdir + chown w OBU miejscach gdy dotyczy)
 
 ---
 
@@ -265,19 +218,15 @@ Checklisty do code review dla każdej technologii w projekcie.
 ### Interactive elements
 - [ ] Touch targets min 44x44px
 - [ ] Focus visible (outline)
-- [ ] Keyboard navigation działa
+- [ ] Keyboard navigation działa (modale: Escape zamyka, focus trap)
 
 ### Semantics
 - [ ] Headings w hierarchii (h1 → h2 → h3)
-- [ ] Landmarks (`main`, `nav`, `aside`)
-- [ ] Labels dla form inputs
-
-### ARIA
-- [ ] `aria-label` dla icon buttons
-- [ ] `aria-live` dla dynamicznych treści
-- [ ] `role` gdzie semantyczny HTML nie wystarczy
+- [ ] Landmarks (`main`, `nav`, `footer`)
+- [ ] `aria-label` dla icon buttons; `aria-hidden` dla dekoracyjnych SVG
+- [ ] Alt na obrazach treściowych (z pola `alt` w Media)
 
 ### Visual
-- [ ] Kontrast WCAG 2.2 AA (4.5:1 text, 3:1 UI)
+- [ ] Kontrast WCAG 2.2 AA (4.5:1 tekst, 3:1 UI)
 - [ ] Nie tylko kolor przekazuje informację
 - [ ] Animacje respektują `prefers-reduced-motion`

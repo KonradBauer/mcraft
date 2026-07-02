@@ -6,173 +6,216 @@ argument-hint: "[pomysł na feature lub problem do zbadania]"
 
 # Brainstorm — walidacja pomysłu
 
-**Uwaga: Aktualny rok to 2026.** Używaj tego przy datowaniu dokumentów.
+Brainstorming odpowiada na pytanie **CO** budować. Poprzedza `/dev-plan`, który odpowiada na pytanie **JAK**. Trwałym wynikiem jest **dokument wymagań** w `docs/dev-brainstorms/` — na tyle konkretny, żeby planowanie nie musiało wymyślać zachowań produktu, granic scope'u ani kryteriów sukcesu.
 
-Brainstorming odpowiada na pytanie **CO** budować poprzez dialog. Poprzedza `/dev-plan`, który odpowiada na pytanie **JAK** to zbudować.
+Ten skill NIE implementuje kodu i NIE podejmuje decyzji technicznych. Eksploruje, doprecyzowuje i dokumentuje decyzje produktowe.
 
-Trwałym wynikiem tego workflow jest **dokument wymagań** (requirements doc). Dokument musi być na tyle konkretny, żeby planowanie nie musiało wymyślać zachowań produktu, granic scope'u ani kryteriów sukcesu.
+## Twarde reguły — obowiązują w każdej fazie
 
-Ten skill nie implementuje kodu. Eksploruje, doprecyzowuje i dokumentuje decyzje do późniejszego planowania lub wykonania.
+1. **Jedno pytanie na turę.** Nigdy nie łącz dwóch pytań w jednej wiadomości. Do pytań używaj narzędzia `AskUserQuestion`; jeśli niedostępne — numerowane opcje w chacie i czekaj na odpowiedź.
+2. **Nie pisz kodu, nie edytuj plików** poza `docs/dev-brainstorms/`.
+3. **Nie wymyślaj odpowiedzi za użytkownika.** Brak odpowiedzi = otwarte pytanie w dokumencie, nie założenie.
+4. **Decyzje produktowe rozstrzygaj tutaj, implementacyjne odraczaj** do `/dev-plan`. Rozróżnienie — patrz tabela niżej.
+5. **Data:** bierz aktualną datę z kontekstu środowiska (currentDate). Aktualny rok to 2026 — nie datuj dokumentów rokiem z wiedzy treningowej.
+6. **Język dokumentu:** taki jak język dotychczasowych plików w `docs/` (w tym projekcie: polski).
+7. **Single-select domyślnie.** Multi-select tylko dla list zbiorczych (cele, non-goals, kryteria sukcesu); gdy user wybierze >1 element i priorytet ma znaczenie — dopytaj który jest główny.
 
-## Główne zasady
+## Tabela rozróżnienia: produkt vs implementacja
 
-1. **Najpierw oceń scope** — dopasuj poziom formalności do rozmiaru i niejednoznaczności pracy.
-2. **Bądź partnerem do myślenia** — proponuj alternatywy, kwestionuj założenia, eksploruj "co jeśli" zamiast tylko wyciągać wymagania.
-3. **Rozstrzygaj decyzje produktowe tutaj** — zachowania użytkownika, granice scope'u i kryteria sukcesu należą do tego workflow. Szczegóły implementacji należą do planowania.
-4. **Nie wkładaj implementacji do requirements doc** — nie umieszczaj bibliotek, schematów, endpointów, layoutów plików ani designu kodu, chyba że brainstorm dotyczy decyzji technicznej/architektonicznej.
-5. **Dopasuj artefakt do potrzeb** — prosta praca dostaje kompaktowy doc lub krótkie potwierdzenie. Większa praca dostaje pełniejszy dokument. Nie dodawaj ceremoniału, który nie pomaga planowaniu.
-6. **YAGNI na koszt utrzymania, nie na wysiłek kodowania** — preferuj najprostsze podejście dające realną wartość. Unikaj spekulacyjnej złożoności, ale nie odrzucaj taniego polishu, który łatwo utrzymać.
+| Produktowe — rozstrzygaj TERAZ | Implementacyjne — odrocz do /dev-plan |
+|---|---|
+| Co użytkownik widzi, gdy lista jest pusta | Który komponent renderuje listę |
+| Czy operacja wymaga potwierdzenia | Jak wygląda modal potwierdzenia w kodzie |
+| Kto ma dostęp do funkcji | Jak zaimplementować sprawdzanie uprawnień |
+| Co się dzieje przy błędzie (z perspektywy usera) | Retry logic, kody błędów, format logów |
+| Limity: ile plików, jak duże, jakie typy | Walidacja MIME, biblioteka uploadu |
+| Kolejność kroków w flow użytkownika | Struktura routingu, nazwy endpointów |
 
-## Zasady interakcji
-
-1. **Jedno pytanie na raz** — nie łącz kilku niepowiązanych pytań w jednej wiadomości.
-2. **Preferuj single-select multiple choice** — użyj single-select przy wyborze jednego kierunku, jednego priorytetu lub następnego kroku.
-3. **Multi-select rzadko i świadomie** — używaj tylko dla kompatybilnych zbiorów (cele, ograniczenia, non-goals, kryteria sukcesu). Jeśli priorytetyzacja ma znaczenie, dopytaj który wybrany element jest główny.
-4. **Używaj narzędzia pytań platformy** — preferuj `AskUserQuestion` w Claude Code. W przeciwnym razie prezentuj numerowane opcje w chacie i czekaj na odpowiedź.
-
-## Wytyczne do outputu
-
-- **Zwięzłe outputy** — krótkie sekcje, zwięzłe bullet pointy, tylko tyle szczegółów ile potrzeba do następnej decyzji.
+Test samokontroli: jeśli zdanie zawiera nazwę biblioteki, endpointu, tabeli, pliku lub komponentu — to implementacja. Wyjątek: brainstorm inherentnie techniczny (wybór architektury/stacku jest samym tematem) — wtedy szczegóły techniczne są dozwolone, ale tylko w sekcji "Kluczowe decyzje".
 
 ## Opis feature'a
 
 <feature_description> #$ARGUMENTS </feature_description>
 
-**Jeśli opis powyżej jest pusty, zapytaj:** "Co chciałbyś zbadać? Opisz feature, problem lub usprawnienie, o którym myślisz."
+**Jeśli opis pusty:** zapytaj "Co chciałbyś zbadać? Opisz feature, problem lub usprawnienie." i ZATRZYMAJ SIĘ. Nie kontynuuj bez opisu.
 
-Nie kontynuuj dopóki nie masz opisu od użytkownika.
+## FAZA 0: Wejście i klasyfikacja
 
-## Przebieg
+### 0.0 Bootstrap projektu (CLAUDE.md + reguły treści)
 
-### Faza 0: Wznowienie, ocena i routing
+Wykonaj na KAŻDYM uruchomieniu, przed czymkolwiek innym:
 
-#### 0.1 Wznów istniejącą pracę gdy to sensowne
+1. Sprawdź czy `CLAUDE.md` istnieje w root projektu.
+2. **Nie istnieje** → uruchom `/init` (Skill tool) żeby go wygenerować. Poczekaj na zakończenie.
+3. Sprawdź czy CLAUDE.md zawiera poniższe reguły treści (szukaj sekcji o em dashach / polskich znakach). **Brakuje** → dopisz na końcu CLAUDE.md sekcję:
 
-Jeśli użytkownik odnosi się do istniejącego tematu brainstormu lub dokumentu, lub istnieje niedawny plik `*-requirements.md` w `docs/dev-brainstorms/`:
-- Przeczytaj dokument
-- Potwierdź z użytkownikiem: "Znalazłem istniejący requirements doc dla [temat]. Kontynuuję od tego, czy zaczynamy od nowa?"
-- Przy wznawianiu: streść aktualny stan, kontynuuj od istniejących decyzji i otwartych pytań, aktualizuj istniejący dokument zamiast tworzyć duplikat
+```markdown
+## Konwencje treści
 
-#### 0.2 Oceń czy brainstorming jest potrzebny
+- **Em dashe zabronione** - używaj zwykłego myślnika `-` zamiast `—` we wszystkich tekstach widocznych dla użytkownika (JSX, metadata, stringi, dokumentacja)
+- **Zawsze polskie znaki** - wszystkie teksty pisz z pełnymi polskimi znakami diakrytycznymi (ą, ć, ę, ł, ń, ó, ś, ź, ż); nigdy nie zastępuj ich odpowiednikami ASCII
+```
 
-**Wskaźniki jasnych wymagań:**
-- Podane konkretne kryteria akceptacji
-- Odwołanie do istniejących wzorców
-- Opisane dokładne oczekiwane zachowanie
-- Ograniczony, dobrze zdefiniowany scope
+4. Obie reguły już obecne → nic nie rób.
+5. **Gitignore warsztatu i raportów.** Sprawdź `.gitignore` w root; dopisz brakujące z poniższych wpisów (nie duplikuj istniejących):
 
-**Jeśli wymagania są już jasne:**
-Ogranicz interakcję. Potwierdź zrozumienie i przedstaw zwięzłe opcje następnych kroków zamiast wymuszać długi brainstorm. Pomiń fazę 1.1 i 1.2 — przejdź od razu do fazy 1.3 lub fazy 3.
+```gitignore
+# Warsztat Claude (lokalny, nie do zdalnego repo)
+.claude/
+# Raporty robocze AI
+docs/audits/
+docs/gemini/
+docs/ideation/
+```
 
-#### 0.3 Oceń scope
+   Uwaga: jeśli `.claude/` jest już trackowane w repo (sprawdź `git ls-files .claude | head -1`), sam wpis w .gitignore nie usunie go ze zdalnego — poinformuj usera, że pełne usunięcie wymaga `git rm -r --cached .claude/` + commit, i zapytaj czy wykonać.
 
-Na podstawie opisu feature'a i lekkiego skanu repo sklasyfikuj pracę:
-- **Lekka** — mała, dobrze ograniczona, mała niejednoznaczność
-- **Standardowa** — typowy feature lub bounded refactor z kilkoma decyzjami do podjęcia
-- **Głęboka** — cross-cutting, strategiczna lub bardzo niejednoznaczna
+6. Kontynuuj do 0.1.
 
-Jeśli scope jest niejasny, zadaj jedno celowane pytanie i kontynuuj.
+To jedyne dozwolone autonomiczne edycje CLAUDE.md i .gitignore w tym skillu — ograniczone do powyższych sekcji/wpisów.
 
-### Faza 1: Zrozum pomysł
+### 0.1 Wznowienie istniejącej pracy
 
-#### 1.1 Skan istniejącego kontekstu
+Wykonaj: `Glob docs/dev-brainstorms/*-requirements.md`.
 
-Przeskanuj repo przed merytorycznym brainstormingiem. Dopasuj głębokość do scope'u:
+Jeśli istnieje plik, którego temat pasuje do opisu ALBO zmodyfikowany w ciągu ostatnich 14 dni i user nawiązuje do wcześniejszej rozmowy:
+1. Przeczytaj dokument.
+2. Zapytaj (AskUserQuestion): "Znalazłem istniejący requirements doc dla [temat]. Kontynuować od niego czy zacząć od nowa?"
+3. Przy wznowieniu: streść stan w ≤5 bulletach, kontynuuj od otwartych pytań, AKTUALIZUJ istniejący plik (nie twórz nowego, nie zmieniaj daty w nazwie).
 
-**Lekka** — wyszukaj temat, sprawdź czy coś podobnego już istnieje, idź dalej.
+Jeśli nic nie pasuje — idź dalej bez pytania.
 
-**Standardowa i Głęboka** — dwa przejścia:
+### 0.2 Klasyfikacja scope — punktacja
 
-*Sprawdzenie ograniczeń* — sprawdź pliki instrukcji projektu (`CLAUDE.md`, coding rules) pod kątem ograniczeń workflow, produktu lub scope'u wpływających na brainstorm. Jeśli nic nie wnoszą, idź dalej.
+Policz punkty na podstawie opisu (przy wątpliwości licz punkt):
 
-*Skan tematu* — wyszukaj powiązane terminy. Przeczytaj najbardziej relevantny istniejący artefakt (brainstorm, plan, spec, skill, feature doc). Przejrzyj pobliskie przykłady pokrywające podobne zachowanie.
+| Kryterium | Punkty |
+|---|---|
+| Dotyka więcej niż ~3 plików/obszarów (szacunkowo) | +1 |
+| Brak kryteriów akceptacji w opisie | +1 |
+| Widzisz ≥2 istotnie różne podejścia | +1 |
+| Dotyka danych, API, uprawnień, płatności lub security | +1 |
+| Opis zawiera "nie wiem", "może", "jakoś", "coś w stylu" | +1 |
 
-Jeśli nic oczywistego nie pojawi się po krótkim skanie, powiedz o tym i kontynuuj. Nie dryfuj w planowanie techniczne — unikaj inspekcji testów, migracji, deploymentu czy niskopoziomowej architektury, chyba że brainstorm dotyczy decyzji technicznej.
+**Wynik:** 0-1 pkt → **Lekka** | 2-3 pkt → **Standardowa** | 4-5 pkt → **Głęboka**
 
-#### 1.2 Product Pressure Test
+Zapisz klasyfikację w pamięci roboczej — steruje budżetami w dalszych fazach. Jeśli klasyfikacja niemożliwa (opis zbyt lakoniczny), zadaj JEDNO doprecyzowujące pytanie i sklasyfikuj po odpowiedzi.
 
-Przed generowaniem podejść, zakwestionuj request żeby wyłapać błędne ujęcie problemu. Dopasuj głębokość do scope'u:
+### 0.3 Fast-path: wymagania już jasne
 
-**Lekka:**
-- Czy to rozwiązuje prawdziwy problem użytkownika?
-- Czy duplikujemy coś, co już to pokrywa?
-- Czy istnieje wyraźnie lepsze ujęcie przy niemal zerowym dodatkowym koszcie?
+Jeśli spełnione są WSZYSTKIE 4 warunki:
+- [ ] Opis zawiera konkretne kryteria akceptacji
+- [ ] Istnieje wzorzec w repo, do którego opis się odwołuje
+- [ ] Dokładne zachowanie jest opisane (co user widzi/robi)
+- [ ] Scope jest ograniczony i domknięty
 
-**Standardowa:**
-- Czy to właściwy problem, czy proxy dla ważniejszego?
-- Jaki wynik dla użytkownika lub biznesu naprawdę się liczy?
-- Co się stanie jeśli nic nie zrobimy?
-- Czy istnieje pobliskie ujęcie tworzące więcej wartości bez większego kosztu utrzymania? Jeśli tak, jaką złożoność dodaje?
-- Biorąc pod uwagę aktualny stan projektu, cel użytkownika i ograniczenia — jaki jest najwyżej dźwigniowy ruch teraz: request tak jak jest, przeformułowanie, jedno sąsiednie rozszerzenie, uproszczenie, czy nie robienie nic?
-- Preferuj ruchy kumulujące wartość, redukujące przyszły koszt utrzymania lub czyniące produkt istotnie bardziej użytecznym
-- Użyj wyniku do wyostrzenia rozmowy, nie do narzucania kierunku
+→ pomiń Fazy 1.1-1.2. Potwierdź zrozumienie w 3-5 bulletach, zapytaj "Dobrze rozumiem?" i po potwierdzeniu przejdź do Fazy 3.
 
-**Głęboka** — pytania standardowe plus:
-- Jaką trwałą zdolność to powinno stworzyć w ciągu 6-12 miesięcy?
-- Czy to przesuwa produkt w tym kierunku, czy to tylko lokalny plaster?
+Jeśli choć jeden warunek niespełniony — pełny przebieg.
 
-#### 1.3 Dialog
+## FAZA 1: Zrozumienie
 
-Używaj narzędzia pytań platformy gdy dostępne (patrz Zasady interakcji). W przeciwnym razie prezentuj numerowane opcje i czekaj na odpowiedź.
+### 1.1 Skan repo
 
-**Wytyczne:**
-- Pytaj **jedno na raz**
-- Preferuj multiple choice gdy istnieją naturalne opcje
-- Preferuj **single-select** przy wyborze jednego kierunku, priorytetu lub kroku
-- **Multi-select** tylko dla kompatybilnych zbiorów; jeśli priorytetyzacja ma znaczenie, dopytaj który jest główny
-- Zacznij szeroko (problem, użytkownicy, wartość) potem zawężaj (ograniczenia, wykluczenia, edge cases)
-- Doprecyzuj problem frame, zwaliduj założenia, zapytaj o kryteria sukcesu
-- Zrób wymagania wystarczająco konkretnymi, żeby planowanie nie musiało wymyślać zachowań
-- Surfuj zależności lub prerequisites tylko gdy materialnie wpływają na scope
-- Rozstrzygaj decyzje produktowe tutaj; zostaw wybory implementacji technicznych na planowanie
-- Przynoś pomysły, alternatywy i wyzwania zamiast tylko przeprowadzać wywiad
+Budżet zależny od scope:
 
-**Warunek wyjścia:** Kontynuuj aż pomysł jest jasny LUB użytkownik explicite chce przejść dalej.
+- **Lekka:** 1-2 wyszukiwania (Grep/Glob) tematu. Sprawdź czy coś podobnego już istnieje. Koniec.
+- **Standardowa / Głęboka:** (a) przeczytaj `CLAUDE.md` i reguły projektu pod kątem ograniczeń wpływających na temat; (b) Grep 2-4 powiązanych terminów; (c) przeczytaj JEDEN najbardziej relewantny istniejący artefakt (brainstorm, plan, feature doc).
 
-### Faza 2: Eksploruj podejścia
+Po skanie wypisz userowi 1-3 zdania: co znalazłeś albo "nic powiązanego w repo".
 
-Jeśli pozostaje wiele wiarygodnych kierunków, zaproponuj **2-3 konkretne podejścia** na podstawie researchu i rozmowy. W przeciwnym razie przedstaw rekomendowany kierunek bezpośrednio.
+**Zakazy:** nie czytaj testów, migracji, konfiguracji CI/CD ani niskopoziomowej architektury — chyba że brainstorm jest inherentnie techniczny.
 
-Gdy przydatne, dołącz jedną celowo ambitniejszą alternatywę:
-- Zidentyfikuj jakie sąsiednie rozszerzenie lub przeformułowanie najbardziej zwiększyłoby użyteczność, kumulowaną wartość lub trwałość bez nieproporcjonalnego kosztu utrzymania. Przedstaw jako challenger option obok baseline'u, nie jako domyślną opcję. Pomiń gdy praca jest już jawnie over-scoped.
+### 1.2 Pressure test — procedura wewnętrzna
 
-Dla każdego podejścia podaj:
-- Krótki opis (2-3 zdania)
-- Zalety i wady
-- Kluczowe ryzyka lub niewiadome
-- Kiedy jest najlepiej dopasowane
+Odpowiedz sobie (NIE wyświetlaj userowi eseju z odpowiedziami) na pytania właściwe dla scope:
 
-Prowadź z rekomendacją i wyjaśnij dlaczego. Preferuj prostsze rozwiązania gdy dodana złożoność tworzy realny koszt utrzymania, ale nie odrzucaj taniego polishu o wysokiej wartości.
+**Lekka:** Czy to rozwiązuje prawdziwy problem? Czy nie duplikuje czegoś istniejącego? Czy istnieje lepsze ujęcie przy zerowym dodatkowym koszcie?
 
-Jeśli jedno podejście jest wyraźnie najlepsze a alternatywy nie są sensowne, pomiń menu i przedstaw rekomendację bezpośrednio.
+**Standardowa (dodatkowo):** Czy to właściwy problem, czy proxy ważniejszego? Co się stanie, jeśli nic nie zrobimy? Czy sąsiednie ujęcie daje więcej wartości bez większego kosztu utrzymania?
 
-Gdy relevantne, zaznacz czy wybór to:
-- Reużycie istniejącego wzorca
-- Rozszerzenie istniejącej zdolności
-- Budowa czegoś zupełnie nowego
+**Głęboka (dodatkowo):** Jaką trwałą zdolność to tworzy w horyzoncie 6-12 miesięcy? Czy to kierunek produktu, czy lokalny plaster?
 
-### Faza 3: Zapisz wymagania
+Dla KAŻDEGO pytania przypisz jeden z trzech wyników i wykonaj akcję:
 
-Napisz lub zaktualizuj dokument wymagań tylko gdy rozmowa wyprodukowała trwałe decyzje warte zachowania.
+| Wynik | Akcja |
+|---|---|
+| **OK** | Kontynuuj, nic nie mów |
+| **WĄTPLIWOŚĆ** | Zanotuj; zadaj userowi jako jedno z pytań w Fazie 1.3 |
+| **RED FLAG** (duplikacja istniejącej funkcji, problem-proxy, wyraźnie lepszy frame za darmo) | PRZED dialogiem przedstaw userowi jako AskUserQuestion z opcjami: [kontynuuj jak jest] [zmień ujęcie na: ...] [porzuć temat] |
 
-Dokument powinien zachowywać się jak lekkie PRD bez ceremoniału PRD. Zawrzyj to czego planowanie potrzebuje do dobrego wykonania, i pomiń sekcje nie wnoszące wartości.
+Maksymalnie JEDNO pytanie red-flag na cały brainstorm — nie blokuj usera wielokrotnie. Wynik pressure testu wyostrzają rozmowę; decyzja zawsze należy do usera.
 
-Dokument wymagań służy definicji produktu i kontroli scope'u. **Nie** umieszczaj szczegółów implementacji (biblioteki, schematy, endpointy, layouty plików, struktura kodu) chyba że brainstorm jest inherentnie techniczny i te szczegóły same są przedmiotem decyzji.
+### 1.3 Dialog
 
-**Wymagana treść dla nietrywialnej pracy:**
-- Problem frame
-- Konkretne wymagania lub zamierzone zachowanie ze stabilnymi ID
-- Granice scope'u
-- Kryteria sukcesu
+**Budżet pytań:** Lekka ≤3, Standardowa ≤7, Głęboka ≤10. Przekroczenie dozwolone TYLKO gdy user aktywnie rozwija temat i sam generuje nowe wątki.
 
-**Dołącz gdy materialnie przydatne:**
-- Kluczowe decyzje i uzasadnienie
-- Zależności lub założenia
-- Otwarte pytania
-- Rozważone alternatywy
-- High-level kierunek techniczny tylko gdy praca jest inherentnie techniczna
+**Kolejność tematów** — zadawaj pytania tylko o tematy bez odpowiedzi, w tej kolejności:
+1. **Problem** — kto go ma, kiedy występuje
+2. **Wartość** — co się poprawia, gdy zadziała
+3. **Zachowanie** — co user widzi/robi, krok po kroku
+4. **Granice** — czego świadomie NIE robimy
+5. **Kryteria sukcesu** — po czym poznamy, że działa
+6. **Edge cases** — stany puste, błędy, limity (tylko Standardowa/Głęboka)
 
-**Struktura dokumentu:** Użyj tego szablonu i pomiń sekcje niepasujące do scope'u:
+**Zasady:**
+- Jedno pytanie na turę (twarda reguła nr 1 — obowiązuje też tutaj)
+- Zaczynaj szeroko, zawężaj
+- Przynoś pomysły i alternatywy, nie tylko przeprowadzaj wywiad — ale w formie opcji do wyboru, nie monologu
+- Zależności/prerequisites poruszaj tylko gdy materialnie wpływają na scope
+
+**Warunki STOP (dialog kończy się, gdy zachodzi KTÓRYKOLWIEK):**
+- Tematy 1-5 mają odpowiedzi
+- Budżet pytań wyczerpany
+- User sygnalizuje: "wystarczy", "dalej", "leć", "przejdźmy dalej"
+
+## FAZA 2: Eksploracja podejść
+
+**Warunek wejścia:** pozostają ≥2 wiarygodne kierunki. Jeśli jeden kierunek jest oczywisty — przedstaw go jako rekomendację (2-4 zdania + dlaczego) i przejdź do Fazy 3 bez menu opcji.
+
+Przy ≥2 kierunkach przedstaw 2-3 podejścia w tym formacie:
+
+```
+### Podejście A: <nazwa>
+Opis: <≤3 zdania>
+Zalety: <bullety>
+Wady: <bullety>
+Ryzyka/niewiadome: <bullety>
+Najlepsze gdy: <1 zdanie>
+```
+
+**Challenger option:** dołącz JEDNĄ celowo ambitniejszą alternatywę tylko gdy widzisz rozszerzenie o wysokiej wartości i niskim koszcie utrzymania. Oznacz ją jawnie jako "Challenger" — nigdy nie ustawiaj jej jako domyślnej. Pomiń, gdy praca już jest na granicy over-scope.
+
+Zawsze wskaż rekomendację + 1 zdanie uzasadnienia. Preferuj prostsze rozwiązania, gdy złożoność tworzy realny koszt utrzymania — ale nie ucinaj taniego polishu o wysokiej wartości.
+
+Gdy relewantne, oznacz wybór jako: reużycie istniejącego wzorca / rozszerzenie istniejącej zdolności / budowa od zera.
+
+Wybór podejścia = AskUserQuestion (single-select, rekomendacja jako pierwsza opcja z dopiskiem "(Rekomendowane)").
+
+## FAZA 3: Dokument wymagań
+
+### 3.1 Gate: czy pisać dokument
+
+| Warunek | Akcja |
+|---|---|
+| Scope Standardowa lub Głęboka | Pisz dokument |
+| Scope Lekka ORAZ ≥1 nietrywialna decyzja warta zachowania | Pisz dokument kompaktowy |
+| Scope Lekka, user potrzebował tylko potwierdzenia, zero trwałych decyzji | NIE pisz. Podsumuj w chacie (≤6 bulletów) i przejdź do Fazy 4 |
+
+### 3.2 Ścieżka i nazwa pliku
+
+```
+docs/dev-brainstorms/YYYY-MM-DD-<kebab-case-temat>-requirements.md
+```
+
+- Data = dzisiejsza (z currentDate)
+- Temat = 2-5 słów kebab-case, np. `2026-07-02-eksport-raportow-pdf-requirements.md`
+- Upewnij się, że katalog istnieje przed zapisem
+- Przy wznowieniu: aktualizuj istniejący plik, zachowaj oryginalną datę w nazwie
+
+### 3.3 Szablon
+
+Użyj szablonu; sekcje niepasujące do scope POMIŃ (nie zostawiaj pustych nagłówków):
 
 ```markdown
 ---
@@ -186,11 +229,11 @@ topic: <kebab-case-topic>
 [Kogo dotyczy, co się zmienia i dlaczego to ważne]
 
 ## Wymagania
-- R1. [Konkretne zachowanie lub wymaganie od strony użytkownika]
-- R2. [Konkretne zachowanie lub wymaganie od strony użytkownika]
+- R1. [Konkretne zachowanie od strony użytkownika]
+- R2. [Konkretne zachowanie od strony użytkownika]
 
 ## Kryteria sukcesu
-- [Po czym poznamy, że to rozwiązało właściwy problem]
+- [Weryfikowalne kryterium — musi dać się odpowiedzieć tak/nie]
 
 ## Granice scope'u
 - [Świadomy non-goal lub wykluczenie]
@@ -204,114 +247,154 @@ topic: <kebab-case-topic>
 ## Otwarte pytania
 
 ### Do rozwiązania przed planowaniem
-- [Dotyczy R1][Decyzja użytkownika] [Pytanie które musi być odpowiedziane przed planowaniem]
+- [Dotyczy R1][Decyzja użytkownika] [Pytanie blokujące planowanie]
 
 ### Odroczone do planowania
-- [Dotyczy R2][Techniczne] [Pytanie do odpowiedzenia podczas planowania lub eksploracji codebase]
-- [Dotyczy R2][Wymaga researchu] [Pytanie wymagające prawdopodobnie researchu podczas planowania]
+- [Dotyczy R2][Techniczne] [Pytanie do rozstrzygnięcia podczas planowania]
+- [Dotyczy R2][Wymaga researchu] [Pytanie wymagające researchu]
 
 ## Następne kroki
-[Jeśli `Do rozwiązania przed planowaniem` jest pusty: `→ /dev-plan` do planowania technicznego implementacji]
-[Jeśli `Do rozwiązania przed planowaniem` nie jest pusty: `→ Wznów /dev-brainstorm` żeby rozwiązać blokujące pytania]
+[→ /dev-plan gdy brak pytań blokujących | → Wznów /dev-brainstorm gdy są]
 ```
 
-Dla brainstormów **Standardowych** i **Głębokich** dokument wymagań jest zazwyczaj uzasadniony.
+**Reguły ID wymagań:**
+- Numery R1..Rn nadawaj raz, w kolejności powstania
+- NIGDY nie renumeruj — plan i review odwołują się do ID
+- Usunięte wymaganie oznacz `R3. [USUNIĘTE: powód]`, nie używaj numeru ponownie
+- ID stosuj zawsze w Standardowa/Głęboka; w bardzo małych docs (1-3 wymagania) zwykłe bullety są akceptowalne
 
-Dla brainstormów **Lekkich** ogranicz dokument. Pomiń tworzenie dokumentu gdy użytkownik potrzebuje tylko krótkiego potwierdzenia i żadne trwałe decyzje nie wymagają zachowania.
+**Klasyfikacja otwartych pytań:**
+- `Do rozwiązania przed planowaniem` — WYŁĄCZNIE decyzje produktowe, które user musi podjąć (test: czy odpowiedź zmienia zachowanie widoczne dla użytkownika?)
+- `Odroczone do planowania` — pytania techniczne i wymagające researchu; NIE wymuszaj ich rozstrzygania podczas brainstormu
+- Przenoszenie pytania do "Odroczone" to poprawne domknięcie, nie porażka
 
-Dla bardzo małych docs z 1-3 prostymi wymaganiami, zwykłe bullet pointy są akceptowalne. Dla docs **Standardowych** i **Głębokich** używaj stabilnych ID jak `R1`, `R2`, `R3` żeby planowanie i review mogły się do nich jednoznacznie odwoływać.
+### 3.4 Checklist przed zapisem — wszystkie punkty muszą przejść
 
-Gdy praca jest prosta, łącz sekcje zamiast je nadmuchiwać. Krótki requirements doc jest lepszy od rozdętego.
+- [ ] Każde R# opisuje zachowanie widoczne dla użytkownika/systemu, nie technologię
+- [ ] Zero nazw bibliotek, endpointów, schematów, plików (wyjątek: temat inherentnie techniczny → tylko w "Kluczowe decyzje")
+- [ ] Każde kryterium sukcesu jest weryfikowalne (odpowiedź tak/nie możliwa)
+- [ ] Standardowa/Głęboka: sekcja "Granice scope'u" zawiera ≥1 świadomy non-goal
+- [ ] Żadne pytanie techniczne nie siedzi w "Do rozwiązania przed planowaniem"
+- [ ] Żadne wymaganie nie zależy od czegoś oznaczonego jako out of scope
+- [ ] Gdyby brainstorm skończył się teraz — planowanie nie musi wymyślać zachowań produktu
 
-Przed finalizacją sprawdź:
-- Co planowanie musiałoby jeszcze wymyślić gdyby ten brainstorm się teraz skończył?
-- Czy jakieś wymagania zależą od czegoś uznanego za out of scope?
-- Czy jakieś nierozwiązane elementy to w rzeczywistości decyzje produktowe, nie pytania planistyczne?
-- Czy szczegóły implementacji wkradły się gdy nie powinny?
-- Czy istnieje tania zmiana, która uczyniłaby to materialnie bardziej użytecznym?
+Jeśli którykolwiek punkt FAIL → popraw dokument PRZED pokazaniem userowi. Nie zapisuj wersji failującej.
 
-Jeśli planowanie musiałoby wymyślić zachowania produktu, granice scope'u lub kryteria sukcesu — brainstorm nie jest jeszcze ukończony.
+### 3.5 Przykład minimalnego wypełnionego dokumentu
 
-Upewnij się że katalog `docs/dev-brainstorms/` istnieje przed zapisem.
+```markdown
+---
+date: 2026-07-02
+topic: eksport-raportow-pdf
+---
 
-Jeśli dokument zawiera otwarte pytania:
-- Używaj `Do rozwiązania przed planowaniem` tylko dla pytań które naprawdę blokują planowanie
-- Jeśli `Do rozwiązania przed planowaniem` jest niepusty, kontynuuj pracę nad tymi pytaniami domyślnie
-- Jeśli użytkownik explicite chce przejść dalej, przekonwertuj każdy pozostały element w explicite decyzję, założenie lub pytanie `Odroczone do planowania`
-- Nie wymuszaj rozstrzygania pytań technicznych podczas brainstormingu tylko żeby usunąć niepewność
-- Pytania techniczne lub wymagające walidacji/researchu umieszczaj pod `Odroczone do planowania`
-- Używaj tagów jak `[Wymaga researchu]` gdy planner powinien prawdopodobnie zbadać pytanie
-- Przenoś odroczone pytania explicite zamiast traktować je jako porażkę w ukończeniu doc
+# Eksport raportów do PDF
 
-### Faza 4: Handoff
+## Problem
+Klienci proszą o raporty mailem; obecnie robimy zrzuty ekranu ręcznie. Tracimy ~2h tygodniowo.
 
-#### 4.1 Przedstaw opcje następnych kroków
+## Wymagania
+- R1. Użytkownik może pobrać raport miesięczny jako PDF jednym kliknięciem z widoku raportu.
+- R2. PDF zawiera te same dane co widok na ekranie (wykresy jako obrazy, tabela wartości).
+- R3. Plik nazywa się `raport-YYYY-MM.pdf`.
 
-Przedstaw następne kroki używając narzędzia pytań platformy gdy dostępne. W przeciwnym razie prezentuj numerowane opcje w chacie i zakończ turę.
+## Kryteria sukcesu
+- Wygenerowanie PDF trwa poniżej 10 sekund dla typowego raportu.
+- Zero ręcznych zrzutów ekranu przy wysyłce raportów po wdrożeniu.
 
-Jeśli `Do rozwiązania przed planowaniem` zawiera elementy:
-- Zadaj blokujące pytania teraz, jedno na raz, domyślnie
-- Jeśli użytkownik explicite chce przejść dalej, najpierw przekonwertuj każdy pozostały element w explicite decyzję, założenie lub pytanie `Odroczone do planowania`
-- Jeśli użytkownik chce się zatrzymać, przedstaw handoff jako wstrzymany lub zablokowany
-- Nie oferuj `Przejdź do planowania` ani `Przejdź do pracy` gdy `Do rozwiązania przed planowaniem` jest niepusty
+## Granice scope'u
+- Bez automatycznej wysyłki mailem (osobny temat).
+- Bez konfigurowalnych szablonów PDF.
 
-**Pytanie gdy nie ma blokujących pytań:** "Brainstorm ukończony. Co chciałbyś zrobić dalej?"
+## Kluczowe decyzje
+- Eksport synchroniczny (bez kolejki): raporty są małe, kolejka to zbędna złożoność.
 
-**Pytanie gdy blokujące pytania pozostają i użytkownik chce pauzę:** "Brainstorm wstrzymany. Planowanie jest zablokowane do rozwiązania pozostałych pytań. Co chciałbyś zrobić dalej?"
+## Otwarte pytania
 
-Przedstaw tylko pasujące opcje:
-- **Przejdź do planowania (Rekomendowane)** — uruchom `/dev-plan` do planowania technicznego implementacji
-- **Przejdź bezpośrednio do pracy** — oferuj tylko gdy scope jest lekki, kryteria sukcesu jasne, granice scope'u jasne i nie pozostają istotne pytania techniczne
-- **Przejrzyj i dopracuj** — oferuj tylko gdy istnieje dokument wymagań do poprawy
-- **Zadaj więcej pytań** — kontynuuj doprecyzowywanie scope'u, preferencji lub edge cases
-- **Gotowe na teraz** — wróć później
+### Odroczone do planowania
+- [Dotyczy R2][Techniczne] Jak renderować wykresy do obrazu.
 
-Jeśli gate do bezpośredniej pracy nie jest spełniony, pomiń tę opcję.
+## Następne kroki
+→ /dev-plan
+```
 
-#### 4.2 Obsłuż wybraną opcję
+## FAZA 4: Handoff
 
-**Jeśli użytkownik wybiera "Przejdź do planowania (Rekomendowane)":**
+### 4.1 Drzewo decyzyjne
 
-Natychmiast uruchom `/dev-plan` w bieżącej sesji. Przekaż ścieżkę do requirements doc gdy istnieje; w przeciwnym razie przekaż zwięzłe podsumowanie sfinalizowanych decyzji brainstormu. Nie drukuj podsumowania końcowego.
+```
+CZY "Do rozwiązania przed planowaniem" zawiera elementy?
+├─ TAK → zadawaj te pytania teraz, jedno na turę (wróć do trybu Fazy 1.3)
+│        NIE oferuj opcji "Planowanie" ani "Praca"
+│        ├─ user odpowiada → aktualizuj doc, wróć do 4.1
+│        ├─ user chce przejść dalej mimo pytań → przekonwertuj KAŻDY element na:
+│        │    jawną decyzję / jawne założenie / pytanie "Odroczone do planowania",
+│        │    zaktualizuj doc, potem → gałąź NIE
+│        └─ user chce pauzę → podsumowanie "wstrzymany" (szablon niżej), koniec
+└─ NIE → AskUserQuestion: "Brainstorm ukończony. Co dalej?"
+         Opcje (pokazuj tylko pasujące):
+         1. Przejdź do planowania (Rekomendowane) — uruchom /dev-plan
+         2. Przejdź bezpośrednio do pracy — TYLKO gdy gate spełniony*
+         3. Przejrzyj i dopracuj — TYLKO gdy dokument istnieje
+         4. Zadaj więcej pytań
+         5. Gotowe na teraz
+```
 
-**Jeśli użytkownik wybiera "Przejdź bezpośrednio do pracy":**
+*Gate bezpośredniej pracy (wszystkie): scope Lekka + kryteria sukcesu jasne + granice jasne + brak istotnych otwartych pytań technicznych. Niespełniony → nie pokazuj opcji 2.
 
-Natychmiast uruchom `/dev-docs-execute` w bieżącej sesji używając sfinalizowanego outputu brainstormu jako kontekst. Nie drukuj podsumowania końcowego.
+### 4.2 Wykonanie wybranej opcji
 
-**Jeśli użytkownik wybiera "Zadaj więcej pytań":** Wróć do fazy 1.3 (Dialog) i kontynuuj zadawanie pytań jedno na raz. Sonduj głębiej edge cases, ograniczenia, preferencje lub niezbadane obszary. Kontynuuj aż użytkownik jest zadowolony, potem wróć do fazy 4.
+- **Planowanie:** uruchom `/dev-plan` (Skill tool) w bieżącej sesji. Argument: ścieżka requirements doc; gdy dokumentu brak — zwięzłe podsumowanie decyzji. NIE drukuj podsumowania końcowego.
+- **Praca:** uruchom `/dev-docs-execute` z outputem brainstormu jako kontekstem. NIE drukuj podsumowania końcowego.
+- **Dopracuj:** przeczytaj doc krytycznie, zaproponuj poprawki, zastosuj po akceptacji, wróć do 4.1.
+- **Więcej pytań:** wróć do Fazy 1.3 z budżetem +3 pytania, potem wróć do 4.1.
+- **Gotowe na teraz:** wydrukuj podsumowanie końcowe (niżej).
 
-**Jeśli użytkownik wybiera "Przejrzyj i dopracuj":**
+### 4.3 Szablony podsumowań końcowych
 
-Przeczytaj requirements doc krytycznie, zaproponuj poprawki i zastosuj je po akceptacji użytkownika. Po zakończeniu review, wróć do opcji fazy 4.
+Podsumowanie drukuj TYLKO gdy workflow się kończy lub pauzuje (nie przy powrotach do 4.1).
 
-#### 4.3 Podsumowanie końcowe
-
-Używaj podsumowania końcowego tylko gdy ten przebieg workflow się kończy lub przekazuje dalej, nie gdy wracasz do opcji fazy 4.
-
-Gdy ukończony i gotowy do planowania:
+Ukończony:
 
 ```text
 Brainstorm ukończony!
 
-Requirements doc: docs/dev-brainstorms/YYYY-MM-DD-<topic>-requirements.md  # jeśli został stworzony
+Requirements doc: docs/dev-brainstorms/YYYY-MM-DD-<topic>-requirements.md  # jeśli stworzony
 
 Kluczowe decyzje:
 - [Decyzja 1]
 - [Decyzja 2]
 
-Rekomendowany następny krok: `/dev-plan`
+Rekomendowany następny krok: /dev-plan
 ```
 
-Jeśli użytkownik pauzuje z niepustym `Do rozwiązania przed planowaniem`:
+Wstrzymany (niepuste pytania blokujące):
 
 ```text
 Brainstorm wstrzymany.
 
-Requirements doc: docs/dev-brainstorms/YYYY-MM-DD-<topic>-requirements.md  # jeśli został stworzony
+Requirements doc: docs/dev-brainstorms/YYYY-MM-DD-<topic>-requirements.md  # jeśli stworzony
 
-Planowanie jest zablokowane przez:
-- [Blokujące pytanie 1]
-- [Blokujące pytanie 2]
+Planowanie zablokowane przez:
+- [Pytanie 1]
+- [Pytanie 2]
 
-Wznów `/dev-brainstorm` gdy będziesz gotowy rozwiązać te pytania.
+Wznów /dev-brainstorm gdy będziesz gotowy je rozstrzygnąć.
 ```
+
+## Anty-wzorce — NIGDY
+
+- Nie zadawaj 2+ pytań w jednej turze.
+- Nie umieszczaj bibliotek, endpointów, schematów w wymaganiach (test z tabeli rozróżnienia).
+- Nie twórz dokumentu dla trywialnej prośby ("zmień kolor przycisku").
+- Nie zostawiaj pustych "Kryteriów sukcesu" w Standardowa/Głęboka.
+- Nie wymyślaj odpowiedzi za usera — brak odpowiedzi to otwarte pytanie.
+- Nie renumeruj R# po ich nadaniu.
+- Nie wyświetlaj userowi surowych rozważań pressure testu — tylko wnioski w formie pytań/opcji.
+- Nie dryfuj w planowanie techniczne — inspekcja testów/migracji/deploymentu należy do /dev-plan.
+
+## Subagenci (opcjonalnie)
+
+Główny przebieg jest interaktywny (dialog z userem) — subagenci nie mogą rozmawiać z userem, więc rdzeń zostaje w głównej sesji. Jedyne sensowne odciążenie:
+
+- **Skan repo (Faza 1.1) dla scope Głęboka:** agent `Explore` (breadth: "medium"). Wejście: temat brainstormu + 3-5 terminów. Wyjście: lista powiązanych plików/artefaktów + 3-zdaniowe streszczenie. Kryterium zakończenia: streszczenie dostarczone. Dla Lekkiej i Standardowej — skanuj samodzielnie, spawn się nie opłaca.

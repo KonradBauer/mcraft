@@ -1,6 +1,7 @@
 ---
 name: code-quality
 description: "Audyt jakości kodu: architektura (SOLID, circular deps), performance (Big O, N+1, scalability), prostota (YAGNI, LOC reduction), wzorce (patterns, anti-patterns, duplikacja). Stack-agnostic. Używaj przy audycie jakości, po implementacji dużych features, przy refaktoryzacji, ocenie tech debt."
+argument-hint: "[opcjonalnie: ścieżka modułu/katalogu lub nazwy przebiegów np. 'src/lib performance,simplicity']"
 ---
 
 # Code Quality Audit
@@ -19,6 +20,21 @@ Skill do przeprowadzania glebokiego audytu jakosci kodu. Stack-agnostic -- dzial
 **Roznica vs code-review:** Code review sprawdza konkretne zmiany (diff). Code quality audit analizuje glebiej -- architekture, skalowanosc, zlozonosc calych modulow. To nie guardrails (od tego jest `coding-rules.md`), to gleboka analiza.
 
 ---
+
+## Krok 0: Zakres i strategia wykonania
+
+**Zakres** — ustal PRZED analizą:
+1. Argument zawiera ścieżkę → audytuj ten katalog/moduł.
+2. Argument zawiera nazwy przebiegów (np. `performance,simplicity`) → uruchom tylko te.
+3. Brak argumentu → pokaż strukturę katalogów źródłowych (Glob poziom 1-2) i zapytaj użytkownika o zakres (AskUserQuestion). NIE audytuj całego repo bez potwierdzenia.
+4. Oszacuj rozmiar: policz pliki i przybliżone LOC w zakresie (`Glob` + rozmiary).
+
+**Strategia wykonania:**
+
+| Rozmiar zakresu | Strategia |
+|---|---|
+| ≤ ~15 plików / ~2000 LOC | Inline — wszystkie przebiegi w głównej sesji |
+| większy | 4 równoległe subagenty (`Agent`, subagent_type: `general-purpose`) — jeden per przebieg. Prompt każdego MUSI zawierać: zakres (lista plików/katalog), pełną sekcję "Co analizować"+"Jak przeprowadzić" danego przebiegu, klasyfikację problemów, format zwrotu findings. Subagent nie widzi tej rozmowy. Konsolidacja i raport — główna sesja. |
 
 ## Workflow -- 4 przebiegi analizy
 
@@ -114,25 +130,25 @@ Audyt sklada sie z 4 niezaleznych przebiegow. Kazdy ma inny fokus i moze byc uru
 Uzyj tego samego systemu co code-review, aby raporty byly spojne:
 
 ```
-[blocking] KRYTYCZNE -- wymaga natychmiastowej naprawy
+🔴 [blocking] KRYTYCZNE -- wymaga natychmiastowej naprawy
   - Circular dependencies blokujace rozwoj
   - Algorytm O(n^3) na danych produkcyjnych
   - Brak walidacji na granicy API
   - Wyciek pamieci w petli glownej
 
-[important] POWAZNE -- wymaga naprawy
+🟠 [important] POWAZNE -- wymaga naprawy
   - Naruszenie SRP (modul z 5+ odpowiedzialnosciami)
   - N+1 w gorących sciezkach
   - Zbedna abstrakcja komplikujaca kod
   - Niespojne wzorce miedzy modulami
 
-[nit] DROBNE -- zalecane
+🟡 [nit] DROBNE -- zalecane
   - Niespojne nazewnictwo
   - Brak early return (deep nesting)
   - Magic numbers bez named constants
   - Zbedne komentarze
 
-[suggestion] SUGESTIE -- opcjonalne
+🔵 [suggestion] SUGESTIE -- opcjonalne
   - Alternatywna architektura
   - Propozycja uproszczenia
   - Potencjalna optymalizacja (nie krytyczna)
@@ -189,6 +205,8 @@ Uzyj tego samego systemu co code-review, aby raporty byly spojne:
 - [ ] Wymaga zaplanowanej refaktoryzacji (tech debt sredni)
 - [ ] Wymaga znaczacej przebudowy (tech debt wysoki)
 ```
+
+**Zapis raportu:** przy audycie większym niż pojedynczy moduł zaproponuj zapis do `docs/audits/YYYY-MM-DD-<zakres>-quality-audit.md` (utwórz katalog gdy brak) — duży audyt nie powinien ginąć z sesją. Handoff: naprawy przez `/dev-plan` (refaktoryzacja planowana) albo `/dev-docs-execute` (punktowe poprawki); nie naprawiaj w tym skillu.
 
 ---
 

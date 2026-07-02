@@ -6,336 +6,263 @@ argument-hint: "[opcjonalnie: ścieżka do requirements doc lub opis feature'a]"
 
 # Stwórz plan techniczny
 
-**Uwaga: Aktualny rok to 2026.** Używaj tego przy datowaniu planów i wyszukiwaniu dokumentacji.
+`/dev-brainstorm` definiuje **CO** budować. `/dev-plan` definiuje **JAK**. `/dev-docs-execute` wykonuje plan.
 
-`/dev-brainstorm` definiuje **CO** budować. `/dev-plan` definiuje **JAK** to zbudować. `/dev-docs-execute` wykonuje plan.
+Ten workflow produkuje trwały plan implementacji w `docs/plans/`. Plan jest gotowy, gdy implementator może zacząć pewnie, bez potrzeby żeby plan pisał za niego kod.
 
-Ten workflow produkuje trwały plan implementacji. **Nie** implementuje kodu, nie uruchamia testów, nie uczy się z wyników runtime'u. Jeśli odpowiedź zależy od zmiany kodu i zobaczenia co się stanie, to należy do `/dev-docs-execute`, nie tutaj.
+## Twarde reguły — obowiązują w każdej fazie
 
-## Metoda interakcji
-
-Używaj narzędzia pytań platformy gdy dostępne. Przy zadawaniu pytań użytkownikowi preferuj blokujące narzędzie pytań platformy (`AskUserQuestion` w Claude Code). W przeciwnym razie prezentuj numerowane opcje w chacie i czekaj na odpowiedź.
-
-Zadawaj jedno pytanie na raz. Preferuj zwięzły single-select gdy istnieją naturalne opcje.
+1. **NIGDY nie koduj.** Nie implementuj, nie uruchamiaj testów, nie buduj aplikacji, nie badaj zachowania runtime. Jeśli odpowiedź wymaga zmiany kodu i zobaczenia efektu — to należy do `/dev-docs-execute`; odrocz jako niewiadomą implementacyjną.
+2. **Decyzje, nie kod.** Zapisuj podejście, granice, pliki, zależności, ryzyka, scenariusze testowe. Zero fenced bloków kodu implementacji (wyjątek: kształt kodu jest sam w sobie artefaktem designu). Zero komend git, commit messages, receptur komend testowych.
+3. **Jedno pytanie na turę.** Do pytań `AskUserQuestion`; bez niego — numerowane opcje i czekaj.
+4. **Źródło prawdy = requirements doc**, gdy istnieje. Nie wymyślaj zachowań produktu — to domena `/dev-brainstorm`.
+5. **Data:** z kontekstu środowiska (currentDate). Aktualny rok to 2026.
+6. **Język planu:** taki jak dotychczasowych plików w `docs/plans/` (w tym projekcie: polski; nazwy plików i tytuły typu `feat:` po angielsku, zgodnie z istniejącymi planami).
+7. **Ścieżki katalogów w TYM repo:** requirements docs → `docs/dev-brainstorms/`, plany → `docs/plans/`, wiedza instytucjonalna → `docs/solutions/`.
 
 ## Opis feature'a
 
 <feature_description> #$ARGUMENTS </feature_description>
 
-**Jeśli opis powyżej jest pusty:** przeszukaj `docs/brainstorms/` w poszukiwaniu plików `*-requirements.md`. Jeśli znajdziesz relevantny dokument, użyj go jako inputu. Jeśli nie znajdziesz, zapytaj: "Co chciałbyś zaplanować? Opisz feature, bug fix lub usprawnienie."
-
-Nie kontynuuj dopóki nie masz jasnego inputu do planowania.
+**Jeśli opis pusty:** wykonaj `Glob docs/dev-brainstorms/*-requirements.md`. Znaleziony relewantny dokument → użyj jako input. Brak → zapytaj: "Co chciałbyś zaplanować? Opisz feature, bug fix lub usprawnienie." i ZATRZYMAJ SIĘ.
 
-## Główne zasady
+## FAZA 0: Wejście, źródło i głębokość
 
-1. **Używaj wymagań jako źródła prawdy** — jeśli `/dev-brainstorm` wyprodukował requirements doc, planowanie powinno na nim bazować zamiast wymyślać zachowania od nowa.
-2. **Decyzje, nie kod** — zapisuj podejście, granice, pliki, zależności, ryzyka i scenariusze testowe. Nie pisz kodu implementacji ani sekwencji komend shellowych.
-3. **Research przed strukturowaniem** — eksploruj codebase, wiedzę instytucjonalną i guidance zewnętrzny gdy jest to uzasadnione, zanim sfinalizujesz plan.
-4. **Dopasuj rozmiar artefaktu** — mała praca dostaje kompaktowy plan. Duża praca dostaje więcej struktury. Filozofia pozostaje ta sama na każdym poziomie.
-5. **Oddziel planowanie od odkryć wykonawczych** — rozwiązuj pytania planistyczne tutaj. Explicite odraczaj niewiadome wykonawcze do implementacji.
-6. **Plan musi być przenośny** — plan powinien działać jako żywy dokument, artefakt do review lub ciało issue bez osadzania instrukcji specyficznych dla narzędzi.
-7. **Lekko sygnalizuj postawę wykonawczą gdy to ma znaczenie** — jeśli request, dokument źródłowy lub kontekst repo jasno implikują test-first, characterization-first lub inną niestandardową postawę wykonawczą, odzwierciedl to w planie jako lekki sygnał. Nie zamieniaj planu w krok-po-kroku choreografię wykonania.
+### 0.1 Wznowienie istniejącego planu
 
-## Pasek jakości planu
+Jeśli user wskazuje istniejący plan LUB `Glob docs/plans/*-plan.md` zwraca plik pasujący tematem, zmodyfikowany w ciągu 14 dni:
+1. Przeczytaj go.
+2. Zapytaj: aktualizować w miejscu czy tworzyć nowy?
+3. Przy aktualizacji: ZACHOWAJ zaznaczone checkboxy `- [x]`, rewiduj tylko sekcje wciąż relewantne, nie zmieniaj nazwy pliku.
 
-Każdy plan powinien zawierać:
-- Jasne ujęcie problemu i granicę scope'u
-- Konkretną traceability wymagań z powrotem do requestu lub dokumentu źródłowego
-- Dokładne ścieżki plików dla proponowanej pracy
-- Explicite ścieżki plików testowych dla feature-bearing implementation units
-- Decyzje z uzasadnieniem, nie tylko zadania
-- Istniejące wzorce lub referencje do kodu do naśladowania
-- Konkretne scenariusze testowe i oczekiwane wyniki weryfikacji
-- Jasne zależności i sekwencjonowanie
+### 0.2 Znajdź upstream requirements doc
 
-Plan jest gotowy gdy implementator może zacząć pewnie bez potrzeby żeby plan pisał za niego kod.
+Wykonaj `Glob docs/dev-brainstorms/*-requirements.md`.
 
-## Przebieg
+Dokument jest trafny, gdy: temat semantycznie pasuje do opisu ORAZ (stworzony w ciągu 30 dni LUB wyraźnie wciąż aktualny). Wiele trafnych → zapytaj usera który (AskUserQuestion).
 
-### Faza 0: Wznowienie, źródło i scope
+### 0.3 Przenieś treść źródła (gdy dokument istnieje)
 
-#### 0.1 Wznów istniejącą pracę nad planem gdy to sensowne
+1. Przeczytaj dokument W CAŁOŚCI.
+2. Ogłoś userowi: "Planuję na bazie: <ścieżka>".
+3. Przenieś do planu KAŻDĄ z sekcji źródła (jeśli w źródle występuje):
 
-Jeśli użytkownik odnosi się do istniejącego pliku planu lub istnieje oczywisty niedawny pasujący plan w `docs/plans/`:
-- Przeczytaj go
-- Potwierdź czy aktualizować go w miejscu czy stworzyć nowy plan
-- Przy aktualizacji: zachowaj zaznaczone checkboxy i zrewiduj tylko wciąż relevantne sekcje
+| Sekcja źródła | Trafia do planu jako |
+|---|---|
+| Problem | Ujęcie problemu |
+| Wymagania (R1..Rn) | Śledzenie wymagań — te same ID, nie renumeruj |
+| Kryteria sukcesu | Śledzenie wymagań / Weryfikacja unitów |
+| Granice scope'u | Granice scope'u |
+| Kluczowe decyzje | Kluczowe decyzje techniczne (z adnotacją `(zob. źródło)`) |
+| Zależności / Założenia | Ryzyka i zależności |
+| Otwarte pytania: blokujące | Faza 0.5 — rozstrzygnij PRZED planowaniem |
+| Otwarte pytania: odroczone | Faza 2 — lista pytań planistycznych |
 
-#### 0.2 Znajdź upstream requirements doc
+4. Gate: przed finalizacją planu (Faza 5) przeskanujesz źródło sekcja po sekcji — nic nie może być cicho pominięte.
 
-Przed zadawaniem pytań planistycznych przeszukaj `docs/brainstorms/` w poszukiwaniu plików pasujących do `*-requirements.md`.
+### 0.4 Fallback bez requirements doc
 
-**Kryteria trafności:** Requirements doc jest trafny jeśli:
-- Temat semantycznie pasuje do opisu feature'a
-- Został stworzony w ciągu ostatnich 30 dni (użyj rozsądku żeby nadpisać gdy dokument jest wyraźnie wciąż trafny lub wyraźnie nieaktualny)
-- Wydaje się pokrywać ten sam problem użytkownika lub scope
+Oceń: czy niejednoznaczność dotyczy produktu (zachowania usera, scope, wartość) czy techniki?
 
-Jeśli wiele dokumentów źródłowych pasuje, zapytaj którego użyć używając narzędzia pytań platformy gdy dostępne. W przeciwnym razie prezentuj numerowane opcje w chacie i czekaj na odpowiedź.
+- **Produktowa** → zarekomenduj `/dev-brainstorm`. User mimo to chce tu zostać → bootstrap.
+- **Techniczna lub brak** → planuj bezpośrednio.
 
-#### 0.3 Użyj dokumentu źródłowego jako głównego inputu
+**Planning bootstrap** (max 5 pytań, jedno na turę) musi ustalić: ujęcie problemu, zamierzone zachowanie, granice + non-goals, kryteria sukcesu, blokujące pytania/założenia. Jeśli bootstrap odkryje duże nierozwiązane pytania produktowe → ponownie zarekomenduj `/dev-brainstorm`; user odmawia → każdą lukę zapisz jako JAWNE założenie w planie i kontynuuj.
 
-Jeśli relevantny requirements doc istnieje:
-1. Przeczytaj go dokładnie
-2. Ogłoś że posłuży jako dokument źródłowy do planowania
-3. Przenieś dalej wszystko z następujących:
-   - Ujęcie problemu
-   - Wymagania i kryteria sukcesu
-   - Granice scope'u
-   - Kluczowe decyzje i uzasadnienie
-   - Zależności lub założenia
-   - Otwarte pytania, zachowując czy są blokujące czy odroczone
-4. Użyj dokumentu źródłowego jako głównego inputu do planowania i researchu
-5. Odwołuj się do ważnych przeniesionych decyzji w planie z `(zob. źródło: <ścieżka-źródła>)`
-6. Nie pomijaj cicho treści źródłowej — jeśli dokument źródłowy to omawiał, plan musi to zaadresować choćby krótko. Przed finalizacją przeskanuj każdą sekcję dokumentu źródłowego żeby zweryfikować że nic nie zostało pominięte.
+### 0.5 Rozstrzygnij blokery przed planowaniem
 
-Jeśli nie istnieje relevantny requirements doc, planowanie może kontynuować bezpośrednio z requestu użytkownika.
+Dla każdego pytania z `Do rozwiązania przed planowaniem` w źródle:
 
-#### 0.4 Fallback bez requirements doc
+- Pytanie faktycznie techniczne/architektoniczne/badawcze → przeklasyfikuj do listy pytań planistycznych (Faza 2).
+- Pytanie zmienia zachowanie produktu, scope lub kryteria sukcesu → to prawdziwy bloker. Przedstaw userowi (AskUserQuestion): [wznów /dev-brainstorm] [przekonwertuj na jawną decyzję/założenie i kontynuuj].
 
-Jeśli nie istnieje relevantny requirements doc:
-- Oceń czy request jest już wystarczająco jasny do bezpośredniego planowania technicznego
-- Jeśli niejednoznaczność dotyczy głównie ujęcia produktu, zachowań użytkownika lub definicji scope'u, zarekomenduj najpierw `/dev-brainstorm`
-- Jeśli użytkownik chce kontynuować tutaj, uruchom krótki planning bootstrap zamiast odmawiać
+NIE planuj z nierozwiązanymi prawdziwymi blokerami.
 
-Planning bootstrap powinien ustalić:
-- Ujęcie problemu
-- Zamierzone zachowanie
-- Granice scope'u i oczywiste non-goals
-- Kryteria sukcesu
-- Blokujące pytania lub założenia
+### 0.6 Głębokość planu — punktacja
 
-Bootstrap powinien być krótki. Istnieje żeby zachować wygodę bezpośredniego wejścia, nie żeby zastępować pełny brainstorm.
+Policz punkty (przy wątpliwości licz punkt):
 
-Jeśli bootstrap odkryje duże nierozwiązane pytania produktowe:
-- Zarekomenduj `/dev-brainstorm` ponownie
-- Jeśli użytkownik wciąż chce kontynuować, wymagaj explicite założeń przed kontynuacją
+| Kryterium | Punkty |
+|---|---|
+| Dotyka więcej niż ~3 plików/obszarów | +1 |
+| Wiele warstw (UI + API + dane) lub cross-cutting | +1 |
+| Widzisz ≥2 istotnie różne podejścia techniczne | +1 |
+| Dotyka danych, API, uprawnień, płatności, security lub migracji | +1 |
+| Docelowy obszar legacy / słabo przetestowany / historycznie kruchy | +1 |
 
-#### 0.5 Sklasyfikuj otwarte pytania przed planowaniem
+**Wynik:** 0-1 → **Lekka** | 2-3 → **Standardowa** | 4-5 → **Głęboka**
 
-Jeśli dokument źródłowy zawiera `Do rozwiązania przed planowaniem` lub podobne blokujące pytania:
-- Przejrzyj każde przed kontynuacją
-- Przeklasyfikuj do pracy planistycznej **tylko jeśli** jest to faktycznie pytanie techniczne, architektoniczne lub badawcze
-- Zachowaj jako bloker jeśli zmieniłoby zachowanie produktu, scope lub kryteria sukcesu
+Klasyfikacja steruje: liczbą unitów, sekcjami opcjonalnymi, agentami warunkowymi.
 
-Jeśli prawdziwe blokery produktowe pozostają:
-- Surfuj je jasno
-- Zapytaj użytkownika czy:
-  1. Wznowić `/dev-brainstorm` żeby je rozwiązać
-  2. Przekonwertować w explicite założenia lub decyzje i kontynuować
-- Nie kontynuuj planowania gdy prawdziwe blokery pozostają nierozwiązane
+## FAZA 1: Zbierz kontekst
 
-#### 0.6 Oceń głębokość planu
+### 1.0 Podsumowanie kontekstu planowania
 
-Sklasyfikuj pracę w jedną z tych głębokości:
+Przygotuj 1-2 akapity: problem, wymagania, kluczowe decyzje (ze źródła lub opisu). To input dla wszystkich agentów poniżej.
 
-- **Lekka** — mała, dobrze ograniczona, niska niejednoznaczność
-- **Standardowa** — normalny feature lub bounded refactor z kilkoma decyzjami technicznymi do udokumentowania
-- **Głęboka** — cross-cutting, strategiczna, high-risk lub bardzo niejednoznaczna praca implementacyjna
+### 1.1 Research lokalny (zawsze)
 
-Jeśli głębokość jest niejasna, zadaj jedno celowane pytanie i kontynuuj.
+Uruchom RÓWNOLEGLE (jedno wywołanie z dwoma Agent tool calls):
 
-### Faza 1: Zbierz kontekst
+- `Agent(subagent_type: "repo-research-analyst", prompt: <podsumowanie kontekstu> + "Zbadaj strukturę repo, konwencje i wzorce relewantne dla tego tematu")`
+- `Agent(subagent_type: "learnings-researcher", prompt: <podsumowanie kontekstu> + "Przeszukaj docs/solutions/ pod kątem powiązanych rozwiązań")`
 
-#### 1.1 Research lokalny (uruchamiany zawsze)
+Zbierz: wzorce/konwencje do naśladowania, relewantne pliki/moduły/testy, guidance z CLAUDE.md, wiedzę z `docs/solutions/`.
 
-Przygotuj zwięzłe podsumowanie kontekstu planowania (akapit lub dwa) jako input do agentów badawczych:
-- Jeśli dokument źródłowy istnieje, podsumuj ujęcie problemu, wymagania i kluczowe decyzje z tego dokumentu
-- W przeciwnym razie użyj bezpośrednio opisu feature'a
+**Gdy agent zwróci pusty/bezużyteczny wynik:** odnotuj "brak lokalnych wzorców" i kontynuuj — nie ponawiaj, nie blokuj.
 
-Uruchom tych agentów równolegle:
+### 1.1b Postawa wykonawcza (test-first itp.)
 
-- Agent tool (type: Explore) z promptem z `.claude/agents/repo-research-analyst.md` — przekaż podsumowanie kontekstu planowania
-- Agent tool (type: Explore) z promptem z `.claude/agents/learnings-researcher.md` — przekaż podsumowanie kontekstu planowania
+Ustaw sygnał postawy wykonawczej, gdy zachodzi KTÓRYKOLWIEK:
+- User jawnie prosi o TDD / test-first / characterization-first
+- Dokument źródłowy tego wymaga
+- Research pokazuje, że obszar docelowy jest legacy/kruchy → characterization coverage przed zmianą
 
-Zbierz:
-- Istniejące wzorce i konwencje do naśladowania
-- Relevantne pliki, moduły i testy
-- Guidance z CLAUDE.md które materialnie wpływa na plan
-- Wiedzę instytucjonalną z `docs/solutions/`
+Sygnał przenosisz później jako `Notatka wykonawcza` w relewantnych unitach — cicho, bez pytania usera. Pytaj TYLKO gdy postawa zmieniłaby sekwencjonowanie lub ryzyko całego planu i nie da się jej wywnioskować.
 
-#### 1.1b Wykryj sygnały postawy wykonawczej
+### 1.2 Decyzja o researchu zewnętrznym — tabela
 
-Zdecyduj czy plan powinien nieść lekki sygnał postawy wykonawczej.
+Przejdź wiersze od góry; pierwszy pasujący wygrywa:
 
-Szukaj sygnałów takich jak:
-- Użytkownik explicite prosi o TDD, test-first lub characterization-first
-- Dokument źródłowy wymaga test-first implementacji lub eksploracyjnego hardening'u legacy kodu
-- Research lokalny pokazuje że docelowy obszar jest legacy, słabo przetestowany lub historycznie kruchy, sugerując characterization coverage przed zmianą zachowania
+| Warunek | Decyzja |
+|---|---|
+| Temat: security, płatności, prywatność, zewnętrzne API, migracje danych, compliance | RESEARCH |
+| Brak lokalnych wzorców (wynik 1.1) ORAZ framework/biblioteka kluczowa dla podejścia | RESEARCH |
+| User jawnie eksploruje nieznany teren ("nie wiem jak to się robi") | RESEARCH |
+| Repo ma silny lokalny wzorzec dla tego problemu | POMIŃ |
+| User wskazał konkretne pliki/wzorce i zna zamierzony kształt | POMIŃ |
+| Żaden z powyższych | POMIŃ |
 
-Gdy sygnał jest jasny, przenieś go cicho w relevantnych implementation units.
+Ogłoś decyzję jednym zdaniem, np. "Repo ma solidne wzorce — pomijam research zewnętrzny." albo "Temat dotyczy płatności — sprawdzam aktualne best practices."
 
-Pytaj użytkownika tylko jeśli postawa materialnie zmieniłaby sekwencjonowanie lub ryzyko i nie może być odpowiedzialnie wywnioskowana.
+### 1.3 Research zewnętrzny (gdy RESEARCH)
 
-#### 1.2 Zdecyduj o researchu zewnętrznym
+Uruchom równolegle:
+- `Agent(subagent_type: "best-practices-researcher", prompt: <podsumowanie kontekstu>)`
+- `Agent(subagent_type: "framework-docs-researcher", prompt: <podsumowanie kontekstu> + nazwy frameworków/bibliotek)`
 
-Na podstawie dokumentu źródłowego, sygnałów użytkownika i wyników lokalnych zdecyduj czy research zewnętrzny dodaje wartość.
+### 1.4 Konsolidacja researchu
 
-**Czytaj między wierszami.** Zwróć uwagę na sygnały z dotychczasowej rozmowy:
-- **Znajomość użytkownika** — czy wskazuje na konkretne pliki lub wzorce? Prawdopodobnie dobrze zna codebase.
-- **Intencja użytkownika** — czy chce szybkości czy dokładności? Eksploracji czy wykonania?
-- **Ryzyko tematu** — bezpieczeństwo, płatności, zewnętrzne API wymagają więcej ostrożności niezależnie od sygnałów użytkownika.
-- **Poziom niepewności** — czy podejście jest jasne czy wciąż otwarte?
+Wypisz (w pamięci roboczej, do użycia w planie):
+- Wzorce codebase + ścieżki plików
+- Wiedza instytucjonalna
+- Referencje zewnętrzne (jeśli zebrane)
+- Powiązane issues/PR-y/prior art
+- Ograniczenia materialnie kształtujące plan
 
-**Zawsze skłaniaj się ku researchowi zewnętrznemu gdy:**
-- Temat jest high-risk: bezpieczeństwo, płatności, prywatność, zewnętrzne API, migracje, compliance
-- Codebase nie ma relevantnych lokalnych wzorców
-- Użytkownik eksploruje nieznany teren
+### 1.5 Analiza flow i edge-cases (warunkowa)
 
-**Pomiń research zewnętrzny gdy:**
-- Codebase już pokazuje silny lokalny wzorzec
-- Użytkownik już zna zamierzony kształt
-- Dodatkowy kontekst zewnętrzny dodałby mało praktycznej wartości
+TYLKO dla Standardowa/Głęboka LUB gdy kompletność user flow niejasna:
 
-Ogłoś decyzję krótko przed kontynuacją. Przykłady:
-- "Twój codebase ma solidne wzorce do tego. Kontynuuję bez researchu zewnętrznego."
-- "To dotyczy przetwarzania płatności, więc najpierw zbadamy aktualne best practices."
+- `Agent(subagent_type: "spec-flow-analyzer", prompt: <podsumowanie kontekstu> + <wyniki researchu>)`
 
-#### 1.3 Research zewnętrzny (warunkowy)
+Z outputu bierz wyłącznie: brakujące edge cases, przejścia stanów, luki w handoffach — te, które materialnie poprawiają plan.
 
-Jeśli krok 1.2 wskazuje że research zewnętrzny jest przydatny, uruchom tych agentów równolegle:
+## FAZA 2: Rozwiąż pytania planistyczne
 
-- Agent tool (type: Explore) z promptem z `.claude/agents/best-practices-researcher.md` — przekaż podsumowanie kontekstu planowania
-- Agent tool (type: Explore) z promptem z `.claude/agents/framework-docs-researcher.md` — przekaż podsumowanie kontekstu planowania
+Zbuduj listę pytań z: odroczonych pytań źródła + luk z researchu + decyzji technicznych koniecznych dla użytecznego planu.
 
-#### 1.4 Konsoliduj research
+Dla KAŻDEGO pytania przypisz kategorię:
 
-Podsumuj:
-- Relevantne wzorce codebase'u i ścieżki plików
-- Relevantną wiedzę instytucjonalną
-- Referencje zewnętrzne i best practices, jeśli zebrane
-- Powiązane issues, PR-y lub prior art
-- Ograniczenia które powinny materialnie kształtować plan
+| Kategoria | Test | Akcja |
+|---|---|---|
+| **Rozwiązywalne teraz** | Odpowiedź poznawalna z repo, dokumentacji lub wyboru usera | Rozstrzygnij; zapisz w "Rozwiązane podczas planowania" |
+| **Odroczone do implementacji** | Odpowiedź zależy od zmiany kodu / runtime / test failures | Zapisz w "Odroczone do implementacji" z powodem |
 
-#### 1.5 Analiza flow i edge-cases (warunkowa)
+**Budżet pytań do usera: max 5.** Pytaj TYLKO gdy odpowiedź materialnie wpływa na architekturę, scope, sekwencjonowanie lub ryzyko ORAZ nie da się jej odpowiedzialnie wywnioskować z repo/źródła. Pozostałe rozstrzygaj sam i dokumentuj uzasadnienie.
 
-Dla planów **Standardowych** lub **Głębokich**, lub gdy kompletność user flow jest wciąż niejasna, uruchom:
+## FAZA 3: Ustrukturyzuj plan
 
-- Agent tool (type: Explore) z promptem z `.claude/agents/spec-flow-analyzer.md` — przekaż podsumowanie kontekstu planowania i wyniki researchu
+### 3.1 Tytuł i nazwa pliku
 
-Użyj outputu do:
-- Identyfikacji brakujących edge cases, przejść stanów lub luk w handoff'ach
-- Zaostrzenia requirements trace lub strategii weryfikacji
-- Dodania tylko tych szczegółów flow które materialnie poprawiają plan
+- Tytuł konwencjonalny: `feat: Dodaj autentykację użytkowników` / `fix: Zapobiegaj podwójnemu submitowi`
+- Typ: `feat` | `fix` | `refactor`
+- Nazwa pliku: `docs/plans/YYYY-MM-DD-NNN-<type>-<opisowa-nazwa>-plan.md`
 
-### Faza 2: Rozwiąż pytania planistyczne
+**Procedura NNN (numeracja GLOBALNA, nie per-dzień):**
+1. `Glob docs/plans/*-plan.md`
+2. Wyciągnij najwyższy istniejący numer NNN ze WSZYSTKICH plików (niezależnie od daty)
+3. NNN = najwyższy + 1, zero-padded do 3 cyfr
+4. Przykład: istnieją `...-001-...`, `...-002-...`, `...-003-...` → nowy plan dostaje `004`
 
-Zbuduj listę pytań planistycznych z:
-- Odroczonych pytań z dokumentu źródłowego
-- Luk odkrytych w researchu repo lub zewnętrznym
-- Decyzji technicznych wymaganych do wyprodukowania użytecznego planu
+Opisowa nazwa: 3-5 słów kebab-case, po angielsku (zgodnie z istniejącymi planami). Zakazane: spacje, dwukropki, nazwy typu "new-feature".
 
-Dla każdego pytania zdecyduj czy powinno być:
-- **Rozwiązane podczas planowania** — odpowiedź jest poznawalna z kontekstu repo, dokumentacji lub wyboru użytkownika
-- **Odroczone do implementacji** — odpowiedź zależy od zmian w kodzie, zachowania runtime'owego lub odkryć w czasie wykonania
+### 3.2 Interesariusze (Standardowa/Głęboka)
 
-Pytaj użytkownika tylko gdy odpowiedź materialnie wpływa na architekturę, scope, sekwencjonowanie lub ryzyko i nie może być odpowiedzialnie wywnioskowana.
+Rozważ krótko: kogo dotyka zmiana (użytkownicy, developerzy, operacje). Praca cross-cutting → zanotuj dotknięte strony w "Wpływ systemowy".
 
-**Nie** uruchamiaj testów, nie buduj aplikacji, nie badaj zachowania runtime'owego w tej fazie. Celem jest solidny plan, nie częściowe wykonanie.
+### 3.3 Rozbij pracę na Implementation Units
 
-### Faza 3: Ustrukturyzuj plan
+Każdy unit = jedna znacząca zmiana, lądowalna jako atomowy commit.
 
-#### 3.1 Tytuł i nazewnictwo pliku
+**Liczba unitów wg głębokości:** Lekka 2-4 | Standardowa 3-6 | Głęboka 4-8 (grupuj w fazy, gdy poprawia czytelność).
 
-- Stwórz jasny, wyszukiwalny tytuł w konwencjonalnym formacie jak `feat: Dodaj autentykację użytkowników` lub `fix: Zapobiegaj podwójnemu submitowi checkout`
-- Określ typ planu: `feat`, `fix` lub `refactor`
-- Zbuduj nazwę pliku według konwencji repozytorium: `docs/plans/YYYY-MM-DD-NNN-<type>-<descriptive-name>-plan.md`
-  - Stwórz `docs/plans/` jeśli nie istnieje
-  - Sprawdź istniejące pliki na dzisiejszą datę żeby określić następny numer sekwencyjny (zero-padded do 3 cyfr, zaczynając od 001)
-  - Nazwa opisowa powinna być zwięzła (3-5 słów) i w kebab-case
-  - Przykłady: `2026-01-15-001-feat-user-authentication-flow-plan.md`, `2026-02-03-002-fix-checkout-race-condition-plan.md`
-  - Unikaj: brakujących numerów sekwencyjnych, niejasnych nazw jak "new-feature", nieprawidłowych znaków (dwukropki, spacje)
+Dobry unit: skupiony na jednym komponencie/zachowaniu/seamie, dotyka małego klastra plików, uporządkowany wg zależności, wykonywalny bez pre-pisania kodu, z checkboxem `- [ ]`.
 
-#### 3.2 Świadomość interesariuszy i wpływu
+Zły unit: micro-krok 2-5 min | obejmuje wiele niepowiązanych problemów | tak niejasny, że implementator musi sam wymyślić plan.
 
-Dla planów **Standardowych** lub **Głębokich** krótko rozważ kogo dotyczy ta zmiana — użytkownicy końcowi, developerzy, operacje, inne zespoły — i jak to powinno kształtować plan. Dla pracy cross-cutting zanotuj dotknięte strony w sekcji Wpływ systemowy.
+### 3.4 Definicja każdego unitu — wymagane pola
 
-#### 3.3 Rozbij pracę na Implementation Units
-
-Rozbij pracę na logiczne implementation units. Każdy unit powinien reprezentować jedną znaczącą zmianę którą implementator mógłby typowo wylądować jako atomowy commit.
-
-Dobre unity:
-- Skupione na jednym komponencie, zachowaniu lub seam integracyjnym
-- Zazwyczaj dotykające małego klastra powiązanych plików
-- Uporządkowane według zależności
-- Wystarczająco konkretne do wykonania bez pre-pisania kodu
-- Oznaczone składnią checkbox do śledzenia postępu
-
-Unikaj:
-- 2-5 minutowych micro-kroków
-- Unitów obejmujących wiele niepowiązanych problemów
-- Unitów tak niejasnych że implementator wciąż musi wymyślić plan
-
-#### 3.4 Zdefiniuj każdy Implementation Unit
-
-Dla każdego unitu dołącz:
-- **Cel** — co ten unit osiąga
-- **Wymagania** — które wymagania lub kryteria sukcesu realizuje
+- **Cel** — co osiąga
+- **Wymagania** — które R# realizuje
 - **Zależności** — co musi istnieć wcześniej
-- **Pliki** — dokładne ścieżki plików do stworzenia, modyfikacji lub testowania
-- **Podejście** — kluczowe decyzje, przepływ danych, granice komponentów lub notatki integracyjne
-- **Notatka wykonawcza** — opcjonalna, tylko gdy unit korzysta z niestandardowej postawy wykonawczej jak test-first lub characterization-first
-- **Wzorce do naśladowania** — istniejący kod lub konwencje do odwzorowania
-- **Scenariusze testowe** — konkretne zachowania, edge cases i ścieżki awarii do pokrycia. Rozróżniaj typy: `[Unit]` dla testów kodu, `[E2E]` dla scenariuszy do weryfikacji w przeglądarce przez `/agent-browser`
-- **Weryfikacja** — jak implementator powinien wiedzieć że unit jest ukończony, wyrażona jako oczekiwane wyniki a nie skrypty komend shellowych
+- **Pliki** — DOKŁADNE ścieżki: Stwórz / Modyfikuj / Test
+- **Podejście** — kluczowe decyzje, przepływ danych, granice
+- **Notatka wykonawcza** — opcjonalna; tylko przy niestandardowej postawie (test-first, characterization-first)
+- **Wzorce do naśladowania** — istniejący kod/konwencje
+- **Scenariusze testowe** — konkretne zachowania i edge cases; typy: `[Unit]` dla testów kodu, `[E2E]` dla weryfikacji w przeglądarce przez `/agent-browser`
+- **Weryfikacja** — oczekiwane wyniki (nie skrypty komend)
 
-Każdy feature-bearing unit powinien zawierać ścieżkę pliku testowego w `**Pliki:**`. Dla unitów modyfikujących komponenty UI lub ścieżki użytkownika — dołącz scenariusze `[E2E]` opisujące flow do przetestowania przez `/agent-browser` (otwórz URL, zrób snapshot, kliknij X, sprawdź Y, zrób screenshot).
+**Reguły twarde:**
+- Każdy feature-bearing unit MUSI mieć ścieżkę pliku testowego w **Pliki**
+- Unit modyfikujący UI lub ścieżkę użytkownika MUSI mieć ≥1 scenariusz `[E2E]` (format: otwórz URL, kliknij X, sprawdź Y)
+- Nie rozwijaj unitów w substepy RED/GREEN/REFACTOR
 
-Używaj `Notatka wykonawcza` oszczędnie. Dobre użycia:
-- `Notatka wykonawcza: Zacznij od failing integration testu dla kontraktu request/response.`
-- `Notatka wykonawcza: Dodaj characterization coverage przed modyfikacją tego legacy parsera.`
-- `Notatka wykonawcza: Implementuj nowe zachowanie domenowe test-first.`
+**Przykład wypełnionego unitu (wzór):**
 
-Nie rozwijaj unitów w literalne substepy `RED/GREEN/REFACTOR`.
+```markdown
+- [ ] **Unit 2: Endpoint eksportu PDF**
 
-#### 3.5 Trzymaj niewiadome planistyczne i implementacyjne oddzielnie
+**Cel:** Serwer generuje PDF raportu na żądanie.
 
-Jeśli coś jest ważne ale jeszcze niepoznawalne, zapisz to explicite pod odroczonymi notatkami implementacyjnymi zamiast udawać że rozwiązujesz to w planie.
+**Wymagania:** R1, R2
 
-Przykłady:
-- Dokładne nazwy metod lub helperów
-- Finalne szczegóły SQL lub zapytań po dotknięciu prawdziwego kodu
-- Zachowanie runtime'owe zależne od zobaczenia faktycznych test failures
-- Refaktory które mogą stać się niepotrzebne po rozpoczęciu implementacji
+**Zależności:** Unit 1 (model danych raportu)
 
-### Faza 4: Napisz plan
+**Pliki:**
+- Stwórz: `src/app/api/reports/[id]/pdf/route.ts`
+- Modyfikuj: `src/lib/reportData.ts`
+- Test (unit): `tests/int/report-pdf.int.spec.ts`
 
-Używaj jednej filozofii planowania na wszystkich głębokościach. Zmieniaj ilość szczegółów, nie granicę między planowaniem a wykonaniem.
+**Podejście:**
+- Render synchroniczny w route handlerze; raporty małe, kolejka to zbędna złożoność (zob. źródło).
 
-#### 4.1 Guidance głębokości planu
+**Wzorce do naśladowania:**
+- `src/app/api/seed/route.ts` — struktura route handlera w tym repo
 
-**Lekka**
-- Plan powinien być kompaktowy
-- Zazwyczaj 2-4 implementation units
-- Pomiń opcjonalne sekcje które dodają mało wartości
+**Scenariusze testowe:**
+- [Unit] Żądanie z poprawnym id zwraca 200 i content-type application/pdf
+- [Unit] Nieistniejący raport zwraca 404 w formacie { data, error }
+- [E2E] Otwórz /raporty/123, kliknij "Pobierz PDF", sprawdź że pobrany plik nazywa się raport-2026-07.pdf
 
-**Standardowa**
-- Użyj pełnego core template
-- Zazwyczaj 3-6 implementation units
-- Dołącz ryzyka, odroczone pytania i wpływ systemowy gdy relevantne
+**Weryfikacja:**
+- Testy integracyjne przechodzą; pobrany PDF zawiera te same wartości co widok.
+```
 
-**Głęboka**
-- Użyj pełnego core template plus opcjonalne sekcje analizy
-- Zazwyczaj 4-8 implementation units
-- Grupuj unity w fazy gdy to poprawia klarowność
-- Dołącz rozważane alternatywy, wpływ na dokumentację i głębsze traktowanie ryzyk gdy uzasadnione
+### 3.5 Niewiadome planistyczne vs implementacyjne
 
-#### 4.1b Opcjonalne rozszerzenia Deep planu
+Ważne, ale jeszcze niepoznawalne → zapisz JAWNIE w "Odroczone do implementacji". Nie udawaj rozstrzygnięcia. Typowe odroczenia: dokładne nazwy metod/helperów, finalne szczegóły zapytań SQL, zachowanie runtime zależne od test failures, refaktory mogące stać się zbędnymi.
 
-Dla wystarczająco dużej, ryzykownej lub cross-cutting pracy, dodaj sekcje które genuinely pomagają:
-- **Rozważane alternatywy**
-- **Metryki sukcesu**
-- **Zależności / Wymagania wstępne**
-- **Analiza ryzyk i mitygacja**
-- **Fazowe dostarczanie**
-- **Plan dokumentacji**
-- **Notatki operacyjne / rolloutowe**
-- **Przyszłe rozważania** tylko gdy materialnie wpływają na obecny design
+## FAZA 4: Napisz plan
 
-Nie dodawaj tych sekcji jako boilerplate. Dołączaj je tylko gdy poprawiają jakość wykonania lub alignment interesariuszy.
+Jedna filozofia na wszystkich głębokościach — zmienia się ilość szczegółów, nie granica plan/wykonanie.
 
-#### 4.2 Core Plan Template
+**Sekcje wg głębokości:**
+- **Lekka:** core template minus sekcje opcjonalne, które nic nie wnoszą
+- **Standardowa:** pełny core template; ryzyka, odroczone pytania, wpływ systemowy gdy relewantne
+- **Głęboka:** core template + sekcje rozszerzone (niżej), tylko te które genuinely pomagają — nie jako boilerplate
 
-Pomiń wyraźnie niepasujące opcjonalne sekcje, szczególnie dla planów Lekkich.
+### 4.1 Core Plan Template
 
 ```markdown
 ---
@@ -343,7 +270,7 @@ title: [Tytuł planu]
 type: [feat|fix|refactor]
 status: active
 date: YYYY-MM-DD
-origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy planujesz z requirements doc
+origin: docs/dev-brainstorms/YYYY-MM-DD-<topic>-requirements.md  # gdy planujesz z requirements doc
 ---
 
 # [Tytuł planu]
@@ -354,7 +281,7 @@ origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy plan
 
 ## Ujęcie problemu
 
-[Podsumuj problem użytkownika/biznesowy i kontekst. Odwołaj się do dokumentu źródłowego gdy jest.]
+[Problem użytkownika/biznesowy i kontekst. Odwołaj do źródła gdy jest.]
 
 ## Śledzenie wymagań
 
@@ -373,11 +300,11 @@ origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy plan
 
 ### Wiedza instytucjonalna
 
-- [Relevantny insight z `docs/solutions/`]
+- [Relevantny insight z docs/solutions/]
 
 ### Referencje zewnętrzne
 
-- [Relevantne zewnętrzne docs lub źródło best-practice, jeśli użyte]
+- [Zewnętrzne docs lub best-practice, jeśli użyte]
 
 ## Kluczowe decyzje techniczne
 
@@ -391,28 +318,28 @@ origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy plan
 
 ### Odroczone do implementacji
 
-- [Pytanie lub niewiadoma]: [Dlaczego jest świadomie odroczone]
+- [Pytanie lub niewiadoma]: [Dlaczego świadomie odroczone]
 
 ## Implementation Units
 
 - [ ] **Unit 1: [Nazwa]**
 
-**Cel:** [Co ten unit osiąga]
+**Cel:** [Co osiąga]
 
 **Wymagania:** [R1, R2]
 
-**Zależności:** [Brak / Unit 1 / zewnętrzny prerequisite]
+**Zależności:** [Brak / Unit N / zewnętrzny prerequisite]
 
 **Pliki:**
 - Stwórz: `ścieżka/do/nowego_pliku`
 - Modyfikuj: `ścieżka/do/istniejącego_pliku`
 - Test (unit): `ścieżka/do/pliku_testowego`
-- Test (e2e): `Scenariusz: [opis flow do weryfikacji przez /agent-browser]`
+- Test (e2e): `Scenariusz: [flow do weryfikacji przez /agent-browser]`
 
 **Podejście:**
 - [Kluczowa decyzja designu lub sekwencjonowania]
 
-**Notatka wykonawcza:** [Opcjonalny sygnał postawy test-first, characterization-first lub innej]
+**Notatka wykonawcza:** [Opcjonalny sygnał test-first / characterization-first]
 
 **Wzorce do naśladowania:**
 - [Istniejący plik, klasa lub wzorzec]
@@ -420,18 +347,18 @@ origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy plan
 **Scenariusze testowe:**
 - [Unit] [Konkretny scenariusz z oczekiwanym zachowaniem]
 - [Unit] [Edge case lub ścieżka awarii]
-- [E2E] [Flow do weryfikacji przez /agent-browser: otwórz URL, kliknij X, sprawdź Y]
+- [E2E] [Flow: otwórz URL, kliknij X, sprawdź Y]
 
 **Weryfikacja:**
-- [Wynik który powinien być prawdziwy gdy unit jest ukończony]
+- [Wynik prawdziwy gdy unit ukończony]
 
 ## Wpływ systemowy
 
-- **Graf interakcji:** [Jakie callbacki, middleware, observery lub entry pointy mogą być dotknięte]
-- **Propagacja błędów:** [Jak awarie powinny podróżować między warstwami]
-- **Ryzyka cyklu życia stanu:** [Częściowy zapis, cache, duplikaty lub problemy cleanup]
-- **Parytet surface API:** [Inne interfejsy które mogą wymagać tej samej zmiany]
-- **Pokrycie integracyjne:** [Scenariusze cross-layer których unit testy same nie udowodnią]
+- **Graf interakcji:** [Dotknięte callbacki, middleware, observery, entry pointy]
+- **Propagacja błędów:** [Jak awarie podróżują między warstwami]
+- **Ryzyka cyklu życia stanu:** [Częściowy zapis, cache, duplikaty, cleanup]
+- **Parytet surface API:** [Inne interfejsy wymagające tej samej zmiany]
+- **Pokrycie integracyjne:** [Scenariusze cross-layer nieudowadnialne unit testami]
 
 ## Ryzyka i zależności
 
@@ -439,115 +366,83 @@ origin: docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md  # dołącz gdy plan
 
 ## Dokumentacja / Notatki operacyjne
 
-- [Docs, rollout, monitoring lub wpływ na support gdy relevantne]
+- [Docs, rollout, monitoring, support gdy relewantne]
 
 ## Źródła i referencje
 
-- **Dokument źródłowy:** [docs/brainstorms/YYYY-MM-DD-<topic>-requirements.md](ścieżka)
+- **Dokument źródłowy:** [docs/dev-brainstorms/...-requirements.md](ścieżka)
 - Powiązany kod: [ścieżka lub symbol]
 - Powiązane PR/issues: #[numer]
 - Zewnętrzne docs: [url]
 ```
 
-Dla większych planów `Głębokich` rozszerzaj core template tylko gdy to przydatne sekcjami takimi jak:
+### 4.1b Sekcje rozszerzone (tylko Głęboka, tylko gdy pomagają)
 
-```markdown
-## Rozważane alternatywy
+`## Rozważane alternatywy` (podejście: dlaczego odrzucone) | `## Metryki sukcesu` | `## Zależności / Wymagania wstępne` | `## Analiza ryzyk i mitygacja` | `## Fazowe dostarczanie` (Faza 1/2: co i dlaczego w tej kolejności) | `## Plan dokumentacji` | `## Notatki operacyjne / rolloutowe`
 
-- [Podejście]: [Dlaczego odrzucone lub niewybrane]
+### 4.2 Zasady pisania planu
 
-## Metryki sukcesu
+- Ścieżki + referencje do klas/komponentów zamiast kruchych numerów linii
+- Diagramy mermaid TYLKO gdy proza byłaby trudna do prześledzenia: ERD dla zmian modelu danych, sekwencja dla interakcji multi-service, stany dla cyklu życia, flowchart dla złożonych rozgałęzień
+- Nie udawaj, że pytanie wykonawcze jest rozstrzygnięte, żeby plan wyglądał na kompletny
 
-- [Jak poznamy że to rozwiązało zamierzony problem]
+## FAZA 5: Review, zapis, handoff
 
-## Zależności / Wymagania wstępne
+### 5.1 Gate przed zapisem — wszystkie punkty muszą przejść
 
-- [Zależność techniczna, organizacyjna lub rolloutowa]
+- [ ] Plan nie wymyśla zachowań produktu (te definiuje brainstorm/źródło)
+- [ ] Każda główna decyzja ugruntowana w źródle lub researchu
+- [ ] Każdy unit: konkretny, uporządkowany wg zależności, gotowy do implementacji
+- [ ] Każdy feature-bearing unit ma ścieżkę pliku testowego
+- [ ] Unity UI mają scenariusze `[E2E]`
+- [ ] Sygnał postawy wykonawczej (jeśli był) przeniesiony w `Notatkach wykonawczych`
+- [ ] Scenariusze testowe konkretne, ale nie są kodem testowym
+- [ ] Odroczone elementy jawne, nie ukryte jako fałszywa pewność
+- [ ] GDY jest źródło: przeskanowano KAŻDĄ sekcję źródła — podejście pasuje do intencji, scope i kryteria zachowane, blokery rozwiązane/założone/odesłane, nic cicho nie pominięto
 
-## Analiza ryzyk i mitygacja
+Punkt FAIL → popraw plan PRZED zapisem.
 
-- [Ryzyko]: [Mitygacja]
+### 5.2 Zapisz plik
 
-## Fazowe dostarczanie
+**WYMAGANE: zapis na dysk przed prezentowaniem opcji.**
 
-### Faza 1
-- [Co ląduje pierwsze i dlaczego]
+1. Upewnij się, że `docs/plans/` istnieje.
+2. Write → `docs/plans/YYYY-MM-DD-NNN-<type>-<nazwa>-plan.md`
+3. Potwierdź: `Plan zapisany do docs/plans/<nazwa-pliku>`
 
-### Faza 2
-- [Co następuje i dlaczego]
+**Tryb pipeline:** wywołany z automatycznego workflow lub kontekstu `disable-model-invocation` → pomiń pytania interaktywne, podejmij wybory automatycznie, zapisz plan.
 
-## Plan dokumentacji
+### 5.3 Handoff
 
-- [Docs lub runbooki do aktualizacji]
+AskUserQuestion: "Plan gotowy w `docs/plans/<nazwa>`. Co dalej?"
 
-## Notatki operacyjne / rolloutowe
+Opcje:
+1. **Uruchom `/dev-docs`** (Rekomendowane) — podział na zadania
+2. **Uruchom `/dev-docs-execute`** — od razu implementacja
+3. **Otwórz plan w edytorze** — review pliku
+4. **Gotowe na teraz**
 
-- [Monitoring, migracja, feature flag lub rozważania rolloutowe]
-```
+Wykonanie: `/dev-docs` i `/dev-docs-execute` uruchamiaj przez Skill tool ze ścieżką planu jako argumentem. "Otwórz" → mechanizm platformy. Wolny tekst → potraktuj jako prośbę o rewizję, zastosuj, wróć do opcji.
 
-#### 4.3 Zasady planowania
+## Anty-wzorce — NIGDY
 
-- Preferuj ścieżki plus referencje do klas/komponentów/wzorców nad kruche numery linii
-- Implementation units powinny być checkable składnią `- [ ]` do śledzenia postępu
-- Nie dołączaj fenced bloków kodu implementacji chyba że plan sam dotyczy kształtu kodu jako artefaktu designu
-- Nie dołączaj komend git, commit messages ani dokładnych receptur komend testowych
-- Nie rozwijaj implementation units w micro-step instrukcje `RED/GREEN/REFACTOR`
-- Nie udawaj że pytanie wykonawcze jest rozstrzygnięte tylko żeby plan wyglądał na kompletny
-- Dołączaj diagramy mermaid gdy wyjaśniają relacje lub flow które sama proza uczyniłaby trudnymi do prześledzenia — ERD dla zmian modelu danych, diagramy sekwencji dla interakcji multi-service, diagramy stanu dla przejść cyklu życia, flowcharty dla złożonej logiki rozgałęzień
+- Nie koduj, nie uruchamiaj testów, nie buduj — to `/dev-docs-execute`.
+- Nie szukaj requirements w `docs/brainstorms/` — poprawna ścieżka to `docs/dev-brainstorms/`.
+- Nie numeruj NNN per-dzień — numeracja jest globalna w `docs/plans/`.
+- Nie renumeruj R# przejętych ze źródła.
+- Nie pomijaj cicho sekcji dokumentu źródłowego.
+- Nie zadawaj userowi >5 pytań planistycznych — rozstrzygaj sam z uzasadnieniem.
+- Nie wypełniaj wszystkich sekcji opcjonalnych jako boilerplate.
+- Nie wstawiaj kodu implementacji, komend git ani receptur testowych do planu.
 
-### Faza 5: Finalny review, zapis pliku i handoff
+## Subagenci
 
-#### 5.1 Review przed zapisem
+| Agent | Faza | Warunek | Wejście | Wyjście |
+|---|---|---|---|---|
+| `repo-research-analyst` | 1.1 | zawsze | podsumowanie kontekstu | wzorce, konwencje, pliki |
+| `learnings-researcher` | 1.1 | zawsze | podsumowanie kontekstu | insighty z docs/solutions/ |
+| `best-practices-researcher` | 1.3 | decyzja RESEARCH (tabela 1.2) | podsumowanie kontekstu | best practices |
+| `framework-docs-researcher` | 1.3 | decyzja RESEARCH | kontekst + nazwy frameworków | docs, ograniczenia wersji |
+| `spec-flow-analyzer` | 1.5 | Standardowa/Głęboka lub niejasny flow | kontekst + research | edge cases, luki flow |
 
-Przed finalizacją sprawdź:
-- Plan nie wymyśla zachowań produktu które powinny być zdefiniowane w `/dev-brainstorm`
-- Jeśli nie było dokumentu źródłowego, bounded planning bootstrap ustalił wystarczająco dużo jasności produktowej żeby planować odpowiedzialnie
-- Każda główna decyzja jest ugruntowana w dokumencie źródłowym lub researchu
-- Każdy implementation unit jest konkretny, uporządkowany według zależności i gotowy do implementacji
-- Jeśli postawa test-first lub characterization-first była explicite lub silnie implikowana, relevantne unity niosą ją dalej z lekką `Notatką wykonawczą`
-- Scenariusze testowe są konkretne bez stawania się kodem testowym
-- Odroczone elementy są explicite i nie ukryte jako fałszywa pewność
-
-Jeśli plan pochodzi z requirements doc, przeczytaj ponownie ten dokument i zweryfikuj:
-- Wybrane podejście wciąż pasuje do intencji produktu
-- Granice scope'u i kryteria sukcesu są zachowane
-- Blokujące pytania zostały rozwiązane, explicite założone lub odesłane do `/dev-brainstorm`
-- Każda sekcja dokumentu źródłowego jest zaadresowana w planie — przeskanuj każdą sekcję żeby potwierdzić że nic nie zostało cicho pominięte
-
-#### 5.2 Zapisz plik planu
-
-**WYMAGANE: Zapisz plik planu na dysk przed prezentowaniem jakichkolwiek opcji.**
-
-Użyj `mkdir -p docs/plans/` przed zapisem. Następnie użyj narzędzia Write żeby zapisać kompletny plan do:
-
-```text
-docs/plans/YYYY-MM-DD-NNN-<type>-<descriptive-name>-plan.md
-```
-
-Potwierdź:
-
-```text
-Plan zapisany do docs/plans/[nazwa-pliku]
-```
-
-**Tryb pipeline:** Jeśli wywołany z automatycznego workflow lub kontekstu `disable-model-invocation`, pomiń interaktywne pytania. Podejmij potrzebne wybory automatycznie i kontynuuj do zapisu planu.
-
-#### 5.3 Opcje po wygenerowaniu
-
-Po zapisie pliku prezentuj opcje używając narzędzia pytań platformy gdy dostępne. W przeciwnym razie prezentuj numerowane opcje w chacie i czekaj na odpowiedź.
-
-**Pytanie:** "Plan gotowy w `docs/plans/YYYY-MM-DD-NNN-<type>-<name>-plan.md`. Co chciałbyś zrobić dalej?"
-
-**Opcje:**
-1. **Otwórz plan w edytorze** — otwórz plik planu do review
-2. **Uruchom `/dev-docs`** (Rekomendowane) — rozpocznij planowanie implementacji z tym planem
-3. **Uruchom `/dev-docs-execute`** — rozpocznij implementację tego planu
-4. **Gotowe na teraz** — wróć później
-
-Na podstawie wyboru:
-- **Otwórz plan w edytorze** -> Otwórz `docs/plans/<nazwa_pliku>.md` używając mechanizmu otwierania plików platformy (np. `open` na macOS)
-- **`/dev-docs`** -> Uruchom `/dev-docs` ze ścieżką do planu
-- **`/dev-docs-execute`** -> Uruchom `/dev-docs-execute` ze ścieżką do planu
-- **Inne** -> Przyjmij wolny tekst do rewizji i wróć do opcji
-
-NIGDY NIE KODUJ! Badaj, decyduj i zapisz plan.
+Agenci 1.1 i 1.3 zawsze parami równolegle. Porażka/pusty wynik agenta → odnotuj i kontynuuj bez niego.

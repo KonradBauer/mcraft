@@ -7,6 +7,14 @@ description: Automatyzacja przeglądarki przez CLI agent-browser. Nawigacja, for
 
 CLI do automatyzacji Chrome/Chromium przez CDP. Instalacja: `npm i -g agent-browser && agent-browser install`.
 
+## Kontekst projektu dla E2E — wykryj PRZED testami
+
+1. **URL dev servera:** (a) CLAUDE.md, (b) `package.json`: `next`→`http://localhost:3000`, `vite`→`http://localhost:5173`, (c) inne — sprawdź skrypt dev. Przed startem: `curl -s -o /dev/null -w "%{http_code}" <URL>/`; nie działa → uruchom wg Commands w CLAUDE.md.
+2. **Testowe credentials:** szukaj w `tests/helpers/` (seedery), `test.env`, CLAUDE.md. Używaj TYLKO lokalnie. NIGDY nie loguj się przez agent-browser na produkcję danymi produkcyjnymi.
+3. **Viewporty do testów responsywności:** odczytaj breakpointy projektu (grep `max-w|max-\[|@media|breakpoint` w głównym CSS/config) i ustaw viewporty tuż pod nimi. Domyślne, gdy brak własnych: `1440 900` (desktop), `768 1024` (tablet), `375 812` (mobile). Przykład dla breakpointów 980/768/560: `1440 900` / `900 1024` / `375 812`.
+4. **Screenshoty z weryfikacji faz** (checkboxy `Weryfikacja:` w /dev-docs-review) zapisuj do folderu zadania: `agent-browser screenshot --screenshot-dir docs/active/<zadanie>/`
+5. Strony SSR/`force-dynamic` → zmiana treści w CMS widoczna po reload, bez rebuilda; strony statyczne → wymagany rebuild.
+
 ## Setup Check
 
 ```bash

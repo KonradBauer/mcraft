@@ -32,6 +32,7 @@ Dla każdego skilla w `skill-rules.json` sprawdź:
 ### Krok 3: Walidacja techniczna
 
 1. Sprawdź czy `skill-rules.json` jest poprawnym JSON-em: `jq . .claude/skills/skill-rules.json`
+   (brak jq → fallback: `node -e "JSON.parse(require('fs').readFileSync('.claude/skills/skill-rules.json','utf8')); console.log('OK')"`)
 2. Sprawdź czy hook istnieje: `.claude/hooks/skill-activation-prompt.sh`
 3. Sprawdź czy hook jest zarejestrowany w `.claude/settings.json` pod `UserPromptSubmit`
 
@@ -67,6 +68,7 @@ Jeśli tak — napraw automatycznie:
 - Dodaj brakujące wpisy do `skill-rules.json` (z rozsądnymi keywords z SKILL.md)
 - Usuń martwe wpisy
 - Popraw zbyt ogólne keywords
+- Po naprawach: ponownie zwaliduj JSON (Krok 3.1) — plik z błędem składni wyłącza CAŁĄ auto-aktywację
 
 ## Zasady doboru keywords
 

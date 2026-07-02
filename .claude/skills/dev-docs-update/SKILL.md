@@ -6,22 +6,27 @@ argument-hint: "[ścieżka-do-folderu] [opcjonalnie: co zaktualizować]"
 
 Zbliżamy się do limitu kontekstu. Zaktualizuj dokumentację deweloperską, aby zapewnić płynną kontynuację po resecie kontekstu.
 
+## Zakres
+
+Zadanie = `$1`. **Puste $1** → `Glob docs/active/*/`: jeden katalog → użyj go; wiele → aktualizuj TYLKO to, nad którym trwała praca w tej sesji (rozpoznasz po kontekście rozmowy); niejednoznaczne → zapytaj. Nie aktualizuj mechanicznie wszystkich zadań.
+
 ## Wymagane aktualizacje
 
 ### 0. Zabezpieczenie stanu git
 Przed aktualizacją dokumentacji:
 
 1. **Zapisz aktualny branch:** `git branch --show-current`
-2. **Sprawdź niezacommitowane zmiany:** `git status --short`
+2. **Sprawdź niezacommitowane zmiany:** `git status --short` — PRZEJRZYJ listę
 3. **Jeśli są zmiany — wykonaj commit WIP:**
 ```bash
-   git add .
+   git add -A -- ':!*.log' ':!*.tmp'   # staguj po przejrzeniu statusu; wyklucz pliki robocze/śmieciowe widoczne w statusie
    git commit -m "wip([nazwa-zadania]): stan przed resetem kontekstu"
 ```
+   Plik w statusie wygląda na przypadkowy artefakt (dump, screenshot poza docs/, plik testowy w root) → NIE staguj go; wypisz w podsumowaniu.
 4. **Zapisz hash ostatniego commita:** `git rev-parse --short HEAD`
 
-### 1. Aktualizacja dokumentacji aktywnych zadań
-Dla każdego zadania w `docs/active/[nazwa-zadania]/`:
+### 1. Aktualizacja dokumentacji zadania
+Dla zadania z sekcji Zakres (`docs/active/[nazwa-zadania]/`):
 
 **Zaktualizuj `[nazwa-zadania]-plan.md`:**
 - Weryfikacja aktualności planu względem wykonanych prac
@@ -38,8 +43,8 @@ Dla każdego zadania w `docs/active/[nazwa-zadania]/`:
 - Znacznik "Ostatnia aktualizacja: RRRR-MM-DD"
 
 **Zaktualizuj `[nazwa-zadania]-zadania.md`:**
-- Oznacz ukończone zadania jako ✅
-- Dodaj nowo odkryte zadania
+- Oznacz ukończone zadania jako `- [x]` (emoji ✅ tylko w nagłówku w pełni ukończonej fazy — konwencja ekosystemu)
+- Dodaj nowo odkryte zadania (z dopiskiem `(odkryte podczas sesji)`)
 - Zaktualizuj status zadań w toku
 - Zmień priorytety jeśli potrzeba
 - Znacznik "Ostatnia aktualizacja: RRRR-MM-DD"

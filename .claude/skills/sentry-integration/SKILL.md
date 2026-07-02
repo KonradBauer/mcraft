@@ -1,9 +1,16 @@
 ---
 name: sentry-integration
-description: Sentry error tracking i performance monitoring dla React + Supabase Edge Functions. Aktywuje się przy pracy z błędami, monitoringiem, captureException, error boundary, śledzeniem błędów, diagnostyką, loggerem, Edge Functions, crash, awaria, wydajność, raportowanie błędów, exception, wyjątek.
+description: Sentry error tracking i performance monitoring dla React + Supabase Edge Functions. Używaj przy integracji lub konfiguracji Sentry, captureException, Sentry.ErrorBoundary, beforeSend, source maps upload — TYLKO w projektach z zainstalowanym @sentry/*. Nie aktywuj przy ogólnym debugowaniu błędów w projektach bez Sentry.
 ---
 
 # Sentry Integration Guidelines
+
+## Gate stosowalności — sprawdź PRZED użyciem
+
+1. Sprawdź `package.json` pod kątem pakietów `@sentry/*`.
+2. **Brak Sentry** → NIE stosuj tych wytycznych do ogólnej obsługi błędów. Dwie ścieżki:
+   - User chce WPROWADZIĆ Sentry do projektu → OK, użyj sekcji instalacji/konfiguracji.
+   - User debuguje błędy, a projekt nie ma i nie planuje Sentry → poinformuj, że skill nie ma zastosowania; obsługę błędów rób wg reguł projektu (structured logging, typed errors).
 
 Kompleksowy przewodnik integracji Sentry error tracking i performance monitoring dla projektu React + Supabase Edge Functions.
 

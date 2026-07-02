@@ -89,26 +89,20 @@ Proponuj zamiast nakazywać. Daj autorowi wybór.
 
 Struktura dla złożonych komentarzy:
 ````markdown
-**Kontekst:** Widzę że używasz `useEffect` do fetchowania danych.
+**Kontekst:** Widzę że client component fetchuje dane CMS w `useEffect`.
 
-**Problem:** `useEffect` + `useState` do fetch nie obsługuje cache,
-dedup, retry ani background refetch. Użyj React Query.
+**Problem:** W tym projekcie dane z Payload przychodzą przez server
+components (Local API) — fetch w useEffect traci SSR treści, dodaje
+drugi render i race conditions.
 
 **Propozycja:**
 ```typescript
-// useSuspenseQuery + Suspense — preferowane
-function UserProfile({ id }: Props) {
-  const { data: user } = useSuspenseQuery({
-    queryKey: ["users", id],
-    queryFn: () => getUser(id),
-  });
-  return <div>{user.name}</div>;
-}
+// page.tsx (server component)
+const payload = await getPayload({ config })
+const { docs } = await payload.find({ collection: 'stat-tiles', sort: 'order' })
+return <TilesMarquee tiles={docs} />
 
-// Użycie:
-<Suspense fallback={<ProfileSkeleton />}>
-  <UserProfile id={userId} />
-</Suspense>
+// TilesMarquee zostaje 'use client', ale dostaje dane jako props
 ```
 
 Daj znać jeśli potrzebujesz pomocy z migracją.
@@ -152,17 +146,17 @@ Musi być naprawione przed merge. Używaj dla:
 - Bugów powodujących crash
 - Wycieków danych
 - Złamania wymagań krytycznych
-- Brak RLS policies na tabelach Supabase
-- Brak captureException w catch blokach
+- Payload: publiczne read na kolekcji z danymi wrażliwymi
+- Payload: mutacje w hookach bez `req` (łamią atomowość transakcji)
 ````markdown
-🔴 [blocking] **src/actions/payment.ts:45**
-SQL injection vulnerability — input nie jest walidowany.
-Użyj prepared statement lub Zod validation.
+🔴 [blocking] **src/app/api/inquiry/route.ts:12**
+Brak walidacji inputu — body trafia prosto do payload.create.
+Dodaj walidację (Zod lub field validation) na granicy API.
 ````
 ````markdown
-🔴 [blocking] **supabase/migrations/001_users.sql**
-Tabela `users` nie ma włączonego RLS — dane wszystkich użytkowników są publicznie dostępne.
-Dodaj `ALTER TABLE users ENABLE ROW LEVEL SECURITY` i odpowiednie polityki.
+🔴 [blocking] **src/collections/Inquiries.ts:8**
+`read: () => true` na kolekcji z e-mailami klientów — dane publicznie
+dostępne przez /api/inquiries. Ogranicz read do zalogowanych.
 ````
 
 ### 🟠 [important] — Wymaga poprawy
@@ -173,14 +167,14 @@ Powinno być naprawione, ale można dyskutować. Używaj dla:
 - Brakujących edge cases
 - Problemów z dostępnością
 ````markdown
-🟠 [important] **src/components/UserList.tsx:23**
-N+1 query — fetchujesz użytkowników w pętli.
-Rozważ `supabase batch operations` lub query z `with` relacją.
+🟠 [important] **src/lib/servicePageData.ts:23**
+N+1 query — payload.find w pętli po projectIds.
+Jedno zapytanie z `where: { id: { in: projectIds } }`.
 ````
 ````markdown
-🟠 [important] **src/hooks/useData.ts:12**
-useEffect do fetchowania danych — użyj
-React Query (`useQuery` / `useSuspenseQuery`).
+🟠 [important] **src/components/mcraft/Tiles.tsx:12**
+useEffect do fetchowania danych CMS w client component —
+przenieś fetch do server component i przekaż jako props.
 ````
 
 ### 🟡 [nit] — Drobiazg
@@ -218,9 +212,9 @@ zamiast JS hacka do auto-growing textarea.
 
 Wyjaśnienie bez wymaganej akcji:
 ````markdown
-💡 [learning] **src/hooks/useItems.ts:5**
-FYI: React Query domyślnie cache'uje dane na 0ms (staleTime).
-Ustaw `staleTime: 5 * 60 * 1000` dla rzadko zmieniających się danych.
+💡 [learning] **src/app/(frontend)/page.tsx:15**
+FYI: `depth: 1` w payload.find populuje relacje o jeden poziom —
+głębsze depth kosztuje dodatkowe zapytania; dobieraj do realnej potrzeby.
 ````
 
 ### 🎉 [praise] — Pochwała
@@ -231,8 +225,9 @@ Doceniaj dobre rozwiązania:
 Świetne użycie `useOptimistic()` — UX jest znacznie lepszy!
 ````
 ````markdown
-🎉 [praise] **src/lib/supabase.ts**
-Czysta konfiguracja klienta z typami. Widać przemyślane podejście.
+🎉 [praise] **src/lib/mediaUrl.ts**
+Czysty helper obsługujący oba kształty pola relacji (string | Media).
+Dobra ochrona przed crashem przy depth: 0.
 ````
 
 ---
