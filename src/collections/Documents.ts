@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 export const Documents: CollectionConfig = {
   slug: 'documents',
-  labels: { singular: 'CV (Hero)', plural: 'CV (Hero)' },
+  labels: { singular: 'Dokument', plural: 'Dokumenty' },
   access: {
     read: () => true,
     create: () => true,
