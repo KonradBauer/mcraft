@@ -107,7 +107,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           src={heroBackground}
           fill
           sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: 'center' }}
+          style={{ objectFit: 'cover', objectPosition: '33%' }}
           alt=""
           priority
           className="z-0"
