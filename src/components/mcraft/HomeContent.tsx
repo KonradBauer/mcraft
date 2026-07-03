@@ -152,7 +152,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
             <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
-                <span className={`${eyebrow} mb-[22px]`}>Dr inż.</span>
+                <span className={`${eyebrow} mb-[22px] text-[18px]`}>Dr inż.</span>
                 <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
                   Michał<br />Macherzyński
                 </h1>
@@ -165,23 +165,27 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 </ModalTrigger>
               </div>
 
-              <div className="flex flex-col justify-start mr-[8%] max-[980px]:hidden">
-                <div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie</div>
-                  <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Praktyka</div>
-                </div>
-                <div className="mt-4">
-                  <hr className="border-[#ccc] mb-4" />
-                  <p className="relative text-lg font-bold leading-[1.75] text-[#56544e] pl-5">
-                    <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'"'}</span>
-                    Doświadczeniem buduję
-                    <br />
-                    most pomiędzy teorią
-                    <br />
-                    a praktyką.
-                    <span className="ml-1 text-3xl font-bold text-[#00A887]">{'"'}</span>
-                  </p>
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6">
+                <div className="flex flex-col justify-start mr-[8%] max-[980px]:hidden">
+                  <div>
+                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
+                    <div
+                      className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie
+                    </div>
+                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Praktyka</div>
+                  </div>
+                  <div className="mt-4">
+                    <hr className="border-[#ccc] mb-4" />
+                    <p className="relative text-lg font-bold leading-[1.75] text-[#56544e] pl-5">
+                      <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'"'}</span>
+                      Doświadczeniem buduję
+                      <br />
+                      most pomiędzy teorią
+                      <br />
+                      a praktyką.
+                      <span className="ml-1 text-3xl font-bold text-[#00A887]">{'"'}</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -189,8 +193,10 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         </div>
 
         {/* Mobile/tablet bottom CTA */}
-        <div className="hidden max-[980px]:flex absolute bottom-[36px] left-0 right-0 z-[4] flex-col items-start px-5 gap-[14px]">
-          <p className="font-montserrat font-light text-[11px] tracking-[0.22em] uppercase text-white whitespace-pre-line leading-[1.9]">
+        <div
+          className="hidden max-[980px]:flex absolute bottom-[36px] left-0 right-0 z-[4] flex-col items-start px-5 gap-[14px]">
+          <p
+            className="font-montserrat font-light text-[11px] tracking-[0.22em] uppercase text-white whitespace-pre-line leading-[1.9]">
             {heroSubtitle}
           </p>
           <ModalTrigger modalKey="cv" className={cvBtnMobileClass}>
@@ -203,10 +209,12 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
       <section className="bg-cream relative pt-24 pb-[78px]" id="about">
         <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern z-[2]" />
         <div className={wrap}>
-          <div className="grid [grid-template-columns:minmax(250px,0.7fr)_1.3fr] gap-[36px] items-stretch max-[700px]:grid-cols-1 max-[700px]:gap-8">
+          <div
+            className="grid [grid-template-columns:minmax(250px,0.7fr)_1.3fr] gap-[36px] items-stretch max-[700px]:grid-cols-1 max-[700px]:gap-8">
 
             <div className="relative p-[18px] h-full max-[700px]:aspect-[4/3]">
-              <span className="absolute top-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-l border-accent pointer-events-none" />
+              <span
+                className="absolute top-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-l border-accent pointer-events-none" />
               <span className="absolute top-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-t border-r border-accent pointer-events-none" />
               <span className="absolute bottom-0 left-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-l border-accent pointer-events-none" />
               <span className="absolute bottom-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-r border-accent pointer-events-none" />
