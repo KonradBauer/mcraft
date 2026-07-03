@@ -122,6 +122,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
             alt="Dr inż. Michał Macherzyński"
             width={390}
             height={620}
+            sizes="(max-width: 980px) 290px, 390px"
             className="h-[620px] w-auto max-[980px]:h-[460px] shrink-0"
             priority
           />
