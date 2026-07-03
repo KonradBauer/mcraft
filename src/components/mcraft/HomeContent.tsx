@@ -165,8 +165,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 </ModalTrigger>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6">
-                <div className="flex flex-col justify-start mr-[8%] max-[980px]:hidden">
+              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6 max-[980px]:hidden">
+                <div className="flex flex-col justify-start mr-[8%]">
                   <div>
                     <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
                     <div
@@ -275,7 +275,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 >
                   {/* Background */}
                   {thumbUrl ? (
-                    <div className="absolute inset-0">
+                    <div className="absolute inset-0 max-[980px]:hidden">
                       <ImageWithSkeleton
                         src={thumbUrl}
                         alt={displayName}
@@ -283,11 +283,10 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                         sizes="(max-width: 980px) 100vw, 33vw"
                       />
                     </div>
-                  ) : (
-                    <div className="absolute inset-0 bg-ink-2 flex items-center justify-center">
-                      <span className="text-accent/60">{AREA_ICONS[slug]}</span>
-                    </div>
-                  )}
+                  ) : null}
+                  <div className={`absolute inset-0 bg-ink-2 flex items-center justify-center ${thumbUrl ? 'hidden max-[980px]:flex' : ''}`}>
+                    <span className="text-accent/60">{AREA_ICONS[slug]}</span>
+                  </div>
                   {/* Gradient scrim */}
                   <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
                   {/* Text frame */}
