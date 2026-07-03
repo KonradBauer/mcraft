@@ -88,7 +88,7 @@ export function SubpageLayout({
         <div className={wrap}>
           <div>
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
-            <ul className="flex flex-col gap-4">
+            <ul className="grid grid-rows-3 grid-flow-col auto-cols-fr gap-x-8 gap-y-4 max-[700px]:grid-flow-row max-[700px]:grid-rows-none max-[700px]:auto-cols-auto max-[700px]:grid-cols-1">
               {items.map((item, i) => (
                 <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
                   <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
