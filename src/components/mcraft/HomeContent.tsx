@@ -210,7 +210,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         <div className="absolute top-[46px] left-[34px] w-[120px] h-[90px] opacity-50 dots-pattern z-[2]" />
         <div className={wrap}>
           <div
-            className="grid [grid-template-columns:minmax(220px,0.4fr)_1.6fr] gap-[36px] items-start max-[700px]:grid-cols-1 max-[700px]:gap-8">
+            className="grid [grid-template-columns:minmax(250px,0.55fr)_1.45fr] gap-[36px] items-start max-[700px]:grid-cols-1 max-[700px]:gap-8">
 
             <div className="relative p-[18px] aspect-[3/4] max-[700px]:aspect-[4/3]">
               <span
