@@ -114,14 +114,6 @@ export const ServicePage: CollectionConfig = {
           label: 'Opis punktu (opcjonalny, krótki - widoczny na karcie)',
           type: 'textarea',
         },
-        {
-          name: 'modalDescription',
-          label: 'Rozwinięty opis (w oknie modal po kliknięciu)',
-          type: 'textarea',
-          admin: {
-            description: 'Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.',
-          },
-        },
       ],
     },
     {

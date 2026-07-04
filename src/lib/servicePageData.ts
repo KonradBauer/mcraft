@@ -22,7 +22,6 @@ export function toSubpageLayoutProps(
           icon: s.icon ?? null,
           text: s.text,
           description: s.description ?? null,
-          modalDescription: s.modalDescription ?? null,
         }))
       : fallback.items,
   }
