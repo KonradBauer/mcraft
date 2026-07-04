@@ -313,6 +313,10 @@ export interface ServicePage {
           | null;
         text: string;
         description?: string | null;
+        /**
+         * Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.
+         */
+        modalDescription?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -549,6 +553,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
         icon?: T;
         text?: T;
         description?: T;
+        modalDescription?: T;
         id?: T;
       };
   thumbnailTitle?: T;

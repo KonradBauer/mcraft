@@ -113,6 +113,18 @@ export const ServicePage: CollectionConfig = {
           name: 'description',
           label: 'Opis punktu (opcjonalny, krótki - widoczny na karcie)',
           type: 'textarea',
+          admin: {
+            condition: (data) => data?.slug === 'nadzor-spawalniczy',
+          },
+        },
+        {
+          name: 'modalDescription',
+          label: 'Rozwinięty opis (w oknie modal po kliknięciu)',
+          type: 'textarea',
+          admin: {
+            condition: (data) => data?.slug === 'nadzor-spawalniczy',
+            description: 'Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.',
+          },
         },
       ],
     },
