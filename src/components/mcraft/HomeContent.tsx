@@ -96,34 +96,33 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
   const bioText = about.bioText ?? 'Główny Spawalnik oraz Kierownik Projektów B+R w ZUGIL S.A. Od ponad 18 lat związany ze spawalnictwem i konstrukcjami stalowymi. Krótka prezentacja, doświadczenie i wartości - pełny opis zostanie wczytany z zasobów.'
 
-  const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[90px] max-[980px]:hidden border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
+  const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[clamp(30px,4.69vw,90px)] max-[980px]:hidden border border-[#3A3A3A] px-[26px] py-[clamp(12px,0.89vw,17px)] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
   const cvBtnMobileClass = 'inline-flex items-center gap-[30px] border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
 
   return (
     <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles}>
       {/* ====== HERO ====== */}
-      <header className="relative bg-ink text-light min-h-[680px] max-[980px]:min-h-[100svh] overflow-hidden" id="top">
+      <header className="relative w-full bg-ink text-light aspect-[48/17] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
         <Image
           src={heroBackground}
           fill
           sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: '33%' }}
           alt=""
           priority
-          className="z-0"
+          className="z-0 object-cover object-[33%]"
         />
 
         <div className="absolute inset-0 z-[1] pointer-events-none max-[980px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
         <div className="hidden max-[980px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute bottom-0 z-[2] pointer-events-none shrink-0 left-1/2 -translate-x-[55%] max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
+        <div className="absolute inset-y-0 z-[2] pointer-events-none shrink-0 left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
             width={390}
             height={620}
             sizes="(max-width: 980px) 290px, 390px"
-            className="h-[620px] w-auto max-[980px]:h-[460px] shrink-0"
+            className="h-full w-auto max-[980px]:h-[460px] shrink-0"
             priority
           />
         </div>
@@ -139,7 +138,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
 
         <div className="relative z-[5]">
           <div className={wrap}>
-            <nav className="flex items-center justify-between py-[30px]">
+            <nav className="flex items-center justify-between py-[clamp(14px,1.56vw,30px)]">
               <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
               <div className="flex gap-[38px] max-[980px]:hidden">
                 <a href="#about" className={`${navLink} text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[22px] after:h-0.5 after:bg-accent`}>O mnie</a>
@@ -150,14 +149,14 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
               <MobileNav links={HOME_NAV_LINKS} />
             </nav>
 
-            <div className="flex items-start justify-between pt-[56px] pb-[90px] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
+            <div className="flex items-start justify-between pt-[clamp(24px,2.92vw,56px)] pb-[clamp(30px,4.69vw,90px)] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
-                <span className={`${eyebrow} mb-[22px] text-[18px]`}>Dr inż.</span>
-                <h1 className="font-light text-[62px] leading-[1.02] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
+                <span className={`${eyebrow} mb-[clamp(10px,1.15vw,22px)] text-[clamp(12px,0.94vw,18px)]`}>Dr inż.</span>
+                <h1 className="font-light text-[clamp(30px,3.23vw,62px)] leading-[1.05] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
                   Michał<br />Macherzyński
                 </h1>
-                <div className="w-16 h-0.5 bg-accent mt-[34px] mb-[26px] max-[980px]:mt-[18px] max-[980px]:mb-[14px]" />
-                <div className="font-montserrat font-light text-[22px] tracking-[0.22em] uppercase text-light leading-[1.5] whitespace-pre-line max-[980px]:hidden">
+                <div className="w-16 h-0.5 bg-accent mt-[clamp(16px,1.77vw,34px)] mb-[clamp(12px,1.35vw,26px)] max-[980px]:mt-[18px] max-[980px]:mb-[14px]" />
+                <div className="font-montserrat font-light text-[clamp(14px,1.15vw,22px)] tracking-[0.22em] uppercase text-light leading-[1.4] whitespace-pre-line max-[980px]:hidden">
                   {heroSubtitle}
                 </div>
                 <ModalTrigger modalKey="cv" className={cvBtnClass}>
@@ -165,7 +164,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 </ModalTrigger>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6 max-[980px]:hidden">
+              <div className="hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6 max-[980px]:hidden">
                 <div className="flex flex-col justify-start mr-[8%]">
                   <div>
                     <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
