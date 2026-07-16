@@ -308,7 +308,7 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
     document.body.style.position = ''
     document.body.style.top = ''
     document.body.style.width = ''
-    window.scrollTo(0, y)
+    window.scrollTo({ top: y, behavior: 'instant' })
     setTimeout(() => { setIsOpen(false); setModalKey(null); setIsClosing(false) }, 250)
   }, [])
 
