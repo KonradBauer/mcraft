@@ -30,7 +30,7 @@ export interface HomeContentProps {
 /* ─── reusable class strings ─── */
 const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58]'
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
-const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200'
+const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase relative transition-colors duration-200'
 
 const HOME_NAV_LINKS = [
   { href: '#about', label: 'O mnie' },
@@ -102,7 +102,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
   return (
     <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles}>
       {/* ====== HERO ====== */}
-      <header className="relative w-full bg-ink text-light aspect-[48/17] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
+      <header className="relative w-full bg-ink text-light aspect-[48/18] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
         <Image
           src={heroBackground}
           fill
@@ -115,14 +115,14 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
         <div className="absolute inset-0 z-[1] pointer-events-none max-[980px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
         <div className="hidden max-[980px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute inset-y-0 z-[2] pointer-events-none shrink-0 left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
+        <div className="absolute inset-y-0 z-[2] pointer-events-none shrink-0 flex items-end left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt="Dr inż. Michał Macherzyński"
             width={390}
             height={620}
             sizes="(max-width: 980px) 290px, 390px"
-            className="h-full w-auto max-[980px]:h-[460px] shrink-0"
+            className="h-[92%] w-auto max-[980px]:h-[420px] shrink-0"
             priority
           />
         </div>
@@ -140,8 +140,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           <div className={wrap}>
             <nav className="flex items-center justify-between py-[clamp(14px,1.56vw,30px)]">
               <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
-              <div className="flex gap-[38px] max-[980px]:hidden">
-                <a href="#about" className={`${navLink} text-black after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-[22px] after:h-0.5 after:bg-accent`}>O mnie</a>
+              <div className="flex items-center gap-[24px] max-[980px]:hidden rounded-2xl bg-white/30 backdrop-blur-md px-1.5 py-px">
+                <a href="#about" className={`${navLink} text-black`}>O mnie</a>
                 <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>Obszary</a>
                 <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} />
                 <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
