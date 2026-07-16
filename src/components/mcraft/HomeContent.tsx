@@ -90,7 +90,7 @@ const AREA_DEFAULTS = [
 export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: HomeContentProps) {
   const areaBySlug = Object.fromEntries(areas.map((a) => [a.slug, a]))
 
-  const heroBackground = mediaUrl(hero.backgroundImage) ?? '/hero-tlo.png'
+  const heroBackground = mediaUrl(hero.backgroundImage) ?? '/hero-tlo-v2.png'
   const heroPersonPhoto = mediaUrl(hero.personPhoto) ?? '/hero-michal.png'
   const heroSubtitle = hero.subtitle ?? 'Inżynier spawalnik\nIWE / IWI / VT2 / PT2'
   const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
