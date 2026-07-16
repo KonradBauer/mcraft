@@ -275,6 +275,7 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
   const [opacity, setOpacity] = useState(0)
   const [isClosing, setIsClosing] = useState(false)
   const lastOrigin = useRef({ dx: 0, dy: 0 })
+  const scrollYRef = useRef(0)
 
   const openModal = useCallback((key: ModalKey, el: HTMLElement, content?: ScopeModalContent) => {
     const r = el.getBoundingClientRect()
@@ -286,7 +287,11 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
     setTransform(`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.12)`)
     setOpacity(0)
     setIsOpen(true)
+    scrollYRef.current = window.scrollY
     document.body.style.overflow = 'hidden'
+    document.body.style.position = 'fixed'
+    document.body.style.top = `-${scrollYRef.current}px`
+    document.body.style.width = '100%'
     requestAnimationFrame(() => requestAnimationFrame(() => {
       setTransform('translate(-50%, -50%) scale(1)')
       setOpacity(1)
@@ -298,7 +303,12 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
     setIsClosing(true)
     setTransform(`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.12)`)
     setOpacity(0)
+    const y = scrollYRef.current
     document.body.style.overflow = ''
+    document.body.style.position = ''
+    document.body.style.top = ''
+    document.body.style.width = ''
+    window.scrollTo(0, y)
     setTimeout(() => { setIsOpen(false); setModalKey(null); setIsClosing(false) }, 250)
   }, [])
 
