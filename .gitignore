@@ -51,3 +51,10 @@ node_modules/
 /playwright/.cache/
 compound-engineering-plugin-main/
 .DS_Store
+
+# Warsztat Claude (lokalny, nie do zdalnego repo)
+.claude/
+# Raporty robocze AI
+docs/audits/
+docs/gemini/
+docs/ideation/
