@@ -38,6 +38,13 @@
   button { font-family: inherit; }
 }
 
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
 /* Complex background patterns that can't be expressed as single Tailwind utilities */
 @layer components {
   .blueprint-bg {
