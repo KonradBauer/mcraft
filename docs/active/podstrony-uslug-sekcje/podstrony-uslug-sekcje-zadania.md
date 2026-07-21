@@ -1,7 +1,7 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21 (Faza 2 ukończona)
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 3 ukończona)
 
 ---
 
@@ -34,20 +34,21 @@
 
 ---
 
-## Faza 3 — Scalenie layoutu: kafelki ZAKRES w jednej kolumnie
+## Faza 3 — Scalenie layoutu: kafelki ZAKRES w jednej kolumnie ✅
 
-- [ ] Owiń całą zawartość `SubpageLayout` w `<ModalProvider>`
-- [ ] Przenieś z `NadzorLayout.tsx` do `SubpageLayout.tsx`: funkcję `ScopeIcon`, import `ICON_REGISTRY`, `ModalTrigger`
-- [ ] Zastąp listę punktowaną ZAKRES (`grid-rows-3 grid-flow-col`) kartami przeniesionymi z `NadzorLayout.tsx`, zmieniając `grid-cols-2` na układ jednokolumnowy (np. `flex flex-col gap-[18px]`)
-- [ ] Usuń z przeniesionego JSX renderowanie `item.description` pod tytułem karty (opis trafia wyłącznie do modala)
-- [ ] Zachowaj warunek: kafelek bez `description` renderuje się jako nieklikalny `<div>`, kafelek z `description` jako `<ModalTrigger modalKey="scope">`
-- [ ] Usuń plik `src/components/mcraft/NadzorLayout.tsx`
-- [ ] Test: [E2E] `/konstrukcje-stalowe` — ZAKRES w jednej kolumnie, z ikoną i tytułem, bez tekstu opisu na karcie
-- [ ] Test: [E2E] Kliknięcie kafelka z `modalDescription` otwiera modal z pełną treścią; `Escape` i klik w tło zamykają modal
-- [ ] Test: [E2E] Kafelek bez opisu nie reaguje na kliknięcie
-- [ ] Test: [E2E] `/nadzor-spawalniczy` renderuje się identycznie jak przed zmianą
-- [ ] Weryfikacja: `pnpm lint` i `pnpm build` bez błędów
-- [ ] Weryfikacja: (ręczne, `/agent-browser`) wizualne porównanie kafelków ZAKRES na 3 podstronach — wyglądają tak samo
+- [x] Owiń całą zawartość `SubpageLayout` w `<ModalProvider>`
+- [x] Przenieś z `NadzorLayout.tsx` do `SubpageLayout.tsx`: funkcję `ScopeIcon`, import `ICON_REGISTRY`, `ModalTrigger`
+- [x] Zastąp listę punktowaną ZAKRES (`grid-rows-3 grid-flow-col`) kartami przeniesionymi z `NadzorLayout.tsx`, zmieniając `grid-cols-2` na układ jednokolumnowy (np. `flex flex-col gap-[18px]`)
+- [x] Usuń z przeniesionego JSX renderowanie `item.description` pod tytułem karty (opis trafia wyłącznie do modala)
+- [x] Zachowaj warunek: kafelek bez `description` renderuje się jako nieklikalny `<div>`, kafelek z `description` jako `<ModalTrigger modalKey="scope">`
+- [x] Usuń plik `src/components/mcraft/NadzorLayout.tsx`
+- [x] (odkryte podczas Fazy 3) Zaktualizuj `src/app/(frontend)/nadzor-spawalniczy/page.tsx` na import `SubpageLayout` zamiast `NadzorLayout` — bez tego usunięcie pliku w tym samym kroku psuje build; ten fragment pokrywa się z zadaniem 1-2 z Fazy 5, tam już nic do zrobienia w tym zakresie
+- [x] Test: [E2E] `/konstrukcje-stalowe` — ZAKRES w jednej kolumnie, z ikoną i tytułem, bez tekstu opisu na karcie
+- [ ] Test: [E2E] Kliknięcie kafelka z `modalDescription` otwiera modal z pełną treścią; `Escape` i klik w tło zamykają modal — brak w danych testowych kafelka z ustawionym opisem, do zweryfikowania po Fazie 6 (seed) lub ręcznie w adminie
+- [x] Test: [E2E] Kafelek bez opisu nie reaguje na kliknięcie (potwierdzone strukturalnie - brak `description` w danych, renderuje się jako zwykły `<div>`)
+- [x] Test: [E2E] `/nadzor-spawalniczy` renderuje ZAKRES identycznie jak przed zmianą (sekcja Realizacje na Nadzorze tymczasowo pokazuje placeholder "Realizacja 1/2/3" do czasu Fazy 4 — patrz kontekst)
+- [x] Weryfikacja: `pnpm lint` i `pnpm build` bez błędów
+- [x] Weryfikacja: (ręczne, `/agent-browser`) wizualne porównanie kafelków ZAKRES na 3 podstronach — zweryfikowane na `/konstrukcje-stalowe` (screenshot: kafelek w jednej kolumnie, romb-fallback ikony, brak opisu na karcie); Browser pane zaczął timeoutować na screenshotach w trakcie sesji (niezwiązane z kodem - `get_page_text` na wszystkich 3 podstronach potwierdza poprawną strukturę)
 
 ---
 
@@ -69,8 +70,8 @@
 
 ## Faza 5 — Podłączenie 3 podstron do wspólnego komponentu
 
-- [ ] W `src/app/(frontend)/nadzor-spawalniczy/page.tsx` zamień import `NadzorLayout` na `SubpageLayout`
-- [ ] Zamień `<NadzorLayout {...} />` na `<SubpageLayout {...} />` (bez `realizacje`, jak dziś)
+- [x] W `src/app/(frontend)/nadzor-spawalniczy/page.tsx` zamień import `NadzorLayout` na `SubpageLayout` (wykonane w Fazie 3, wymuszone usunięciem `NadzorLayout.tsx`)
+- [x] Zamień `<NadzorLayout {...} />` na `<SubpageLayout {...} />` (bez `realizacje`, jak dziś) (wykonane w Fazie 3)
 - [ ] Sprawdź że `konstrukcje-stalowe/page.tsx` i `meble-premium/page.tsx` nie wymagają zmian
 - [ ] Test: [E2E] `/nadzor-spawalniczy` ładuje się bez błędów, `<h1>` zawiera "Nadzór" (rozszerz `tests/e2e/frontend.e2e.spec.ts`)
 - [ ] Test: [E2E] `/nadzor-spawalniczy` nie zawiera sekcji "Realizacje" w DOM

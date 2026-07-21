@@ -157,7 +157,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 3: Scalenie layoutu - kafelki ZAKRES w jednej kolumnie, `ModalProvider`, usunięcie `NadzorLayout.tsx`**
+- [x] **Unit 3: Scalenie layoutu - kafelki ZAKRES w jednej kolumnie, `ModalProvider`, usunięcie `NadzorLayout.tsx`**
 
 **Cel:** Sekcja ZAKRES na wszystkich 3 podstronach wygląda i zachowuje się identycznie: kafelki z ikoną i tytułem, bez opisu na karcie, klik otwiera modal.
 

@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { NadzorLayout } from '@/components/mcraft/NadzorLayout'
+import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
 import { toSubpageLayoutProps } from '@/lib/servicePageData'
 
 export const metadata: Metadata = {
@@ -39,5 +39,5 @@ export default async function NadzorSpawalniczyPage() {
     limit: 1,
   })
 
-  return <NadzorLayout {...toSubpageLayoutProps(docs[0], FALLBACK)} />
+  return <SubpageLayout {...toSubpageLayoutProps(docs[0], FALLBACK)} />
 }

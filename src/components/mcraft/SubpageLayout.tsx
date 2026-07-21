@@ -1,9 +1,18 @@
 import Link from 'next/link'
 import React from 'react'
+import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+import { ModalProvider } from './ModalProvider'
+import { ModalTrigger } from './ModalTrigger'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
+
+function ScopeIcon({ icon }: { icon?: string | null }) {
+  const Icon = icon ? ICON_REGISTRY[icon] : null
+  if (!Icon) return <span className="w-[28px] h-[28px] bg-accent rotate-45 flex-none" />
+  return <Icon size={56} strokeWidth={1.4} className="text-accent flex-none" />
+}
 
 export interface SubpageLayoutProps {
   eyebrow?: string | null
@@ -44,7 +53,7 @@ export function SubpageLayout({
   ctaLabel = 'Zainteresowany współpracą?',
 }: SubpageLayoutProps) {
   return (
-    <>
+    <ModalProvider>
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
@@ -90,14 +99,37 @@ export function SubpageLayout({
         <div className={wrap}>
           <div>
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
-            <ul className="grid grid-rows-3 grid-flow-col auto-cols-fr gap-x-8 gap-y-4 max-[700px]:grid-flow-row max-[700px]:grid-rows-none max-[700px]:auto-cols-auto max-[700px]:grid-cols-1">
-              {items.map((item, i) => (
-                <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
-                  <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
-                  <span>{item.text}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="flex flex-col gap-[18px]">
+              {items.map((item, i) => {
+                const cardClass = 'relative flex items-center gap-5 bg-white border border-[#e8e3d9] p-[28px]'
+                const content = (
+                  <>
+                    <span className="absolute top-0 left-0 w-[22px] h-[22px] border-t border-l border-accent pointer-events-none" />
+                    <ScopeIcon icon={item.icon} />
+                    <span className="block font-montserrat font-semibold text-[17px] text-dark-text leading-[1.4]">
+                      {item.text}
+                    </span>
+                  </>
+                )
+
+                if (!item.description) {
+                  return <div key={i} className={cardClass}>{content}</div>
+                }
+
+                return (
+                  <ModalTrigger
+                    key={i}
+                    modalKey="scope"
+                    asDiv
+                    ariaLabel={item.text}
+                    content={{ title: item.text, description: item.modalDescription || item.description }}
+                    className={`${cardClass} cursor-pointer transition-colors duration-200 hover:border-accent`}
+                  >
+                    {content}
+                  </ModalTrigger>
+                )
+              })}
+            </div>
           </div>
 
           {/* Realizacje */}
@@ -203,6 +235,6 @@ export function SubpageLayout({
           </div>
         </div>
       </footer>
-    </>
+    </ModalProvider>
   )
 }
