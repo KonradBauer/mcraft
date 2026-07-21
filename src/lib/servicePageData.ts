@@ -12,6 +12,8 @@ export function toSubpageLayoutProps(
 ): SubpageLayoutProps {
   if (!page) return fallback
 
+  const audienceItems = page.audienceItems?.filter((item) => item.text) ?? []
+
   return {
     eyebrow: page.eyebrow ?? fallback.eyebrow,
     title: page.title ?? fallback.title,
@@ -25,6 +27,15 @@ export function toSubpageLayoutProps(
           modalDescription: s.modalDescription ?? null,
         }))
       : fallback.items,
+    audience: audienceItems.length
+      ? { title: page.audienceTitle ?? 'Dla kogo?', items: audienceItems.map((item) => ({ text: item.text })) }
+      : null,
+    additionalSections: (page.additionalSections ?? [])
+      .map((section) => ({
+        title: section.title,
+        items: (section.items ?? []).filter((item) => item.text).map((item) => ({ text: item.text })),
+      }))
+      .filter((section) => section.items.length > 0),
   }
 }
 

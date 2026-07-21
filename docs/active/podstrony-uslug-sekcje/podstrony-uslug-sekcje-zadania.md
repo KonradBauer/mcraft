@@ -1,7 +1,7 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21 (Faza 1 ukończona)
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 2 ukończona)
 
 ---
 
@@ -20,17 +20,17 @@
 
 ---
 
-## Faza 2 — Mapowanie danych i typy
+## Faza 2 — Mapowanie danych i typy ✅
 
-- [ ] W `src/components/mcraft/SubpageLayout.tsx` rozszerz `SubpageLayoutProps['items']` o `icon?: string | null`
-- [ ] Dodaj do `SubpageLayoutProps`: `audience?: { title: string; items: { text: string }[] } | null`
-- [ ] Dodaj do `SubpageLayoutProps`: `additionalSections?: { title: string; items: { text: string }[] }[]`
-- [ ] W `src/lib/servicePageData.ts`, w `toSubpageLayoutProps()`: zmapuj `page.audienceTitle`/`page.audienceItems` na `audience` (`null` gdy `audienceItems` puste/brak)
-- [ ] W `toSubpageLayoutProps()`: zmapuj `page.additionalSections` na `additionalSections`, filtrując sekcje bez punktów listy
-- [ ] Test: [Unit] `toSubpageLayoutProps` z `audienceItems: []` zwraca `audience: null`
-- [ ] Test: [Unit] `toSubpageLayoutProps` z wypełnionymi `additionalSections` zwraca poprawną liczbę sekcji i punktów
-- [ ] Test: [Unit] `toSubpageLayoutProps(undefined, fallback)` nadal zwraca `fallback` bez błędu (regresja)
-- [ ] Weryfikacja: TypeScript kompiluje się bez błędów na `SubpageLayoutProps` i `toSubpageLayoutProps`
+- [x] W `src/components/mcraft/SubpageLayout.tsx` rozszerz `SubpageLayoutProps['items']` o `icon?: string | null`
+- [x] Dodaj do `SubpageLayoutProps`: `audience?: { title: string; items: { text: string }[] } | null`
+- [x] Dodaj do `SubpageLayoutProps`: `additionalSections?: { title: string; items: { text: string }[] }[]`
+- [x] W `src/lib/servicePageData.ts`, w `toSubpageLayoutProps()`: zmapuj `page.audienceTitle`/`page.audienceItems` na `audience` (`null` gdy `audienceItems` puste/brak)
+- [x] W `toSubpageLayoutProps()`: zmapuj `page.additionalSections` na `additionalSections`, filtrując sekcje bez punktów listy
+- [x] Test: [Unit] `toSubpageLayoutProps` z `audienceItems: []` zwraca `audience: null`
+- [x] Test: [Unit] `toSubpageLayoutProps` z wypełnionymi `additionalSections` zwraca poprawną liczbę sekcji i punktów
+- [x] Test: [Unit] `toSubpageLayoutProps(undefined, fallback)` nadal zwraca `fallback` bez błędu (regresja)
+- [x] Weryfikacja: TypeScript kompiluje się bez błędów na `SubpageLayoutProps` i `toSubpageLayoutProps`
 
 ---
 

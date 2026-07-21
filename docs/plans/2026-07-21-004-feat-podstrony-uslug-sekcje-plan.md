@@ -126,7 +126,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 2: Aktualizacja mapowania danych i typów (`servicePageData.ts`)**
+- [x] **Unit 2: Aktualizacja mapowania danych i typów (`servicePageData.ts`)**
 
 **Cel:** Dane z nowych pól Payload docierają do komponentu frontendowego w gotowym do renderowania kształcie.
 

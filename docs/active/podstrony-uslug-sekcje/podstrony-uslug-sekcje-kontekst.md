@@ -44,6 +44,7 @@
 ## Notatki z sesji
 
 - **Faza 1 (2026-07-21):** ukończona. Schema `ServicePage` rozszerzona, `admin.condition` usunięty z `icon`/`description`/`modalDescription`, `pnpm generate:types` przeszedł czysto. 3 zadania `(ręczne)` (weryfikacja w panelu admina) czekają na użytkownika — nie były częścią automatycznej weryfikacji tej fazy.
+- **Faza 2 (2026-07-21):** ukończona. `SubpageLayoutProps` rozszerzone o `icon`, `audience`, `additionalSections`; `toSubpageLayoutProps()` mapuje nowe pola z filtrowaniem pustych sekcji/punktów. Testy jednostkowe w `tests/int/servicePageData.int.spec.ts` (6 przypadków, nie wymagają MongoDB — czysta transformacja danych) — rozszerzone ponad checklistę o 2 dodatkowe przypadki brzegowe (brak `audienceItems` w ogóle, filtrowanie sekcji dodatkowych bez punktów) dla lepszego pokrycia tej samej logiki filtrującej.
 
 ## Źródła
 
