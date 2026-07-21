@@ -60,7 +60,7 @@
 - [x] Zamień warunek renderowania REALIZACJE na `{realizacje && realizacje.length > 0 && (...)}` bez fallbacku 3 placeholderów, na samym końcu strony
 - [x] Sprawdź i usuń nieużywany kod fallbacku placeholderów Realizacji (zachowano `ImageSlot` dla kart bez `thumbnailUrl` — inne użycie)
 - [x] Test: [Unit] `SubpageLayout` z `audience: null` nie renderuje nagłówka "Dla kogo?" (`tests/int/SubpageLayout.int.spec.tsx`, 4 przypadki)
-- [ ] Test: [E2E] `/konstrukcje-stalowe` po wypełnieniu `audienceItems`/`additionalSections` pokazuje sekcje w kolejności: Dla kogo → Zakres → dodatkowe sekcje → Realizacje — brak danych w bazie dev (Faza 6 dopiero seeduje treść), zweryfikowane strukturalnie testem jednostkowym; pełna weryfikacja E2E na realnych danych po Fazie 6
+- [x] Test: [E2E] `/konstrukcje-stalowe` po wypełnieniu `audienceItems`/`additionalSections` pokazuje sekcje w kolejności: Dla kogo → Zakres → dodatkowe sekcje → Realizacje — zweryfikowane w Fazie 6 po seedzie: `get_page_text` potwierdził dokładnie tę kolejność na realnych danych
 - [x] Test: [E2E] `/nadzor-spawalniczy` — brak nagłówka "Realizacje" w DOM (potwierdzone przez `get_page_text` w przeglądarce: sekcja zniknęła, wcześniej pokazywała placeholder)
 - [x] Test: [E2E] Podstrona bez dodatkowych sekcji ani "Dla kogo" renderuje się bez błędów (potwierdzone na `/konstrukcje-stalowe` i `/nadzor-spawalniczy`, zero błędów w konsoli)
 - [x] Weryfikacja: `pnpm lint` i `pnpm build` bez błędów
