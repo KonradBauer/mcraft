@@ -321,6 +321,31 @@ export interface ServicePage {
       }[]
     | null;
   /**
+   * Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.
+   */
+  audienceTitle?: string | null;
+  audienceItems?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Dowolna liczba dodatkowych sekcji treści, renderowanych między Zakresem a Realizacjami.
+   */
+  additionalSections?:
+    | {
+        title: string;
+        items?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej
    */
   thumbnailTitle?: string | null;
@@ -554,6 +579,25 @@ export interface ServicePagesSelect<T extends boolean = true> {
         text?: T;
         description?: T;
         modalDescription?: T;
+        id?: T;
+      };
+  audienceTitle?: T;
+  audienceItems?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  additionalSections?:
+    | T
+    | {
+        title?: T;
+        items?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
         id?: T;
       };
   thumbnailTitle?: T;

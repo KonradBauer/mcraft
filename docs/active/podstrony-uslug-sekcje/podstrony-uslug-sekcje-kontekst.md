@@ -39,7 +39,11 @@
 - Sekwencja ścisła: Faza 1 → Faza 2 → Faza 3 → Faza 4 → Faza 5 (każda zależy od poprzedniej).
 - Faza 6 zależy tylko od Fazy 1 (nowe pola muszą istnieć w schemacie), może iść równolegle z Fazami 2-5.
 - Po każdej zmianie schematu w Fazie 1: `pnpm generate:types` (Windows: `$env:NODE_OPTIONS="--use-system-ca"; pnpm generate:types`) musi przejść przed rozpoczęciem Fazy 2.
-- Zagnieżdżony `array` w `array` (`additionalSections.items`) to pierwszy taki przypadek w tym repo — zweryfikować działanie w adminie zaraz po Fazie 1, zanim reszta zadania na tym buduje.
+- Zagnieżdżony `array` w `array` (`additionalSections.items`) to pierwszy taki przypadek w tym repo — **potwierdzone w Fazie 1**: `pnpm generate:types` wygenerował poprawny zagnieżdżony typ (`additionalSections: { title: string; items?: { text: string; id?: string|null }[] | null; id?: string|null }[]`) bez żadnych problemów. Ryzyko z planu nie zmaterializowało się.
+
+## Notatki z sesji
+
+- **Faza 1 (2026-07-21):** ukończona. Schema `ServicePage` rozszerzona, `admin.condition` usunięty z `icon`/`description`/`modalDescription`, `pnpm generate:types` przeszedł czysto. 3 zadania `(ręczne)` (weryfikacja w panelu admina) czekają na użytkownika — nie były częścią automatycznej weryfikacji tej fazy.
 
 ## Źródła
 

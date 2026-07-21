@@ -97,7 +97,6 @@ export const ServicePage: CollectionConfig = {
             { label: 'Zap',            value: 'Zap' },
           ],
           admin: {
-            condition: (data) => data?.slug === 'nadzor-spawalniczy',
             components: {
               Field: '@/components/admin/IconPickerField',
             },
@@ -113,18 +112,78 @@ export const ServicePage: CollectionConfig = {
           name: 'description',
           label: 'Opis punktu (opcjonalny, krótki - widoczny na karcie)',
           type: 'textarea',
-          admin: {
-            condition: (data) => data?.slug === 'nadzor-spawalniczy',
-          },
         },
         {
           name: 'modalDescription',
           label: 'Rozwinięty opis (w oknie modal po kliknięciu)',
           type: 'textarea',
           admin: {
-            condition: (data) => data?.slug === 'nadzor-spawalniczy',
             description: 'Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.',
           },
+        },
+      ],
+    },
+    {
+      name: 'audienceTitle',
+      label: 'Tytuł sekcji "Dla kogo?"',
+      type: 'text',
+      defaultValue: 'Dla kogo?',
+      admin: {
+        description: 'Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.',
+      },
+    },
+    {
+      name: 'audienceItems',
+      label: 'Punkty listy "Dla kogo?"',
+      type: 'array',
+      admin: {
+        components: {
+          RowLabel: '@/components/admin/ScopeItemRowLabel',
+        },
+      },
+      fields: [
+        {
+          name: 'text',
+          label: 'Treść punktu',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      name: 'additionalSections',
+      label: 'Dodatkowe sekcje (tytuł + lista)',
+      type: 'array',
+      admin: {
+        description: 'Dowolna liczba dodatkowych sekcji treści, renderowanych między Zakresem a Realizacjami.',
+        components: {
+          RowLabel: '@/components/admin/AdditionalSectionRowLabel',
+        },
+      },
+      fields: [
+        {
+          name: 'title',
+          label: 'Tytuł sekcji',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'items',
+          label: 'Punkty listy',
+          type: 'array',
+          admin: {
+            components: {
+              RowLabel: '@/components/admin/ScopeItemRowLabel',
+            },
+          },
+          fields: [
+            {
+              name: 'text',
+              label: 'Treść punktu',
+              type: 'text',
+              required: true,
+            },
+          ],
         },
       ],
     },

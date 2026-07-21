@@ -90,7 +90,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 1: Nowe pola na `ServicePage` - "Dla kogo?" i "Dodatkowe sekcje", odsłonięcie pól ZAKRES dla wszystkich podstron**
+- [x] **Unit 1: Nowe pola na `ServicePage` - "Dla kogo?" i "Dodatkowe sekcje", odsłonięcie pól ZAKRES dla wszystkich podstron**
 
 **Cel:** Panel admina Payload udostępnia pola potrzebne do R1, R4, R9 i usuwa ograniczenie, które dziś chowa ikonę/opis ZAKRES dla Konstrukcje Stalowe i Meble Premium.
 

@@ -1,22 +1,22 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 1 ukończona)
 
 ---
 
-## Faza 1 — Schema Payload: nowe pola i odsłonięcie ZAKRES
+## Faza 1 — Schema Payload: nowe pola i odsłonięcie ZAKRES ✅
 
-- [ ] W `src/collections/ServicePage.ts` usuń `admin.condition: (data) => data?.slug === 'nadzor-spawalniczy'` z pól `icon`, `description`, `modalDescription` wewnątrz `scopeItems`
-- [ ] Dodaj pole `audienceTitle` (`text`, `defaultValue: 'Dla kogo?'`) do `src/collections/ServicePage.ts`
-- [ ] Dodaj pole `audienceItems` (`array`, fields: `[{ name: 'text', type: 'text', required: true }]`) z `admin.components.RowLabel: '@/components/admin/ScopeItemRowLabel'`
-- [ ] Dodaj pole `additionalSections` (`array`, fields: `title` (text, required) + `items` (array `{text}` z RowLabel `ScopeItemRowLabel`)) z własnym `admin.components.RowLabel: '@/components/admin/AdditionalSectionRowLabel'`
-- [ ] Stwórz `src/components/admin/AdditionalSectionRowLabel.tsx` (kopia wzorca `ScopeItemRowLabel.tsx`, czyta `data?.title` zamiast `data?.text`, fallback `Sekcja N`)
-- [ ] Uruchom `pnpm generate:types` (Windows: `$env:NODE_OPTIONS="--use-system-ca"; pnpm generate:types`)
+- [x] W `src/collections/ServicePage.ts` usuń `admin.condition: (data) => data?.slug === 'nadzor-spawalniczy'` z pól `icon`, `description`, `modalDescription` wewnątrz `scopeItems`
+- [x] Dodaj pole `audienceTitle` (`text`, `defaultValue: 'Dla kogo?'`) do `src/collections/ServicePage.ts`
+- [x] Dodaj pole `audienceItems` (`array`, fields: `[{ name: 'text', type: 'text', required: true }]`) z `admin.components.RowLabel: '@/components/admin/ScopeItemRowLabel'`
+- [x] Dodaj pole `additionalSections` (`array`, fields: `title` (text, required) + `items` (array `{text}` z RowLabel `ScopeItemRowLabel`)) z własnym `admin.components.RowLabel: '@/components/admin/AdditionalSectionRowLabel'`
+- [x] Stwórz `src/components/admin/AdditionalSectionRowLabel.tsx` (kopia wzorca `ScopeItemRowLabel.tsx`, czyta `data?.title` zamiast `data?.text`, fallback `Sekcja N`)
+- [x] Uruchom `pnpm generate:types` (Windows: `$env:NODE_OPTIONS="--use-system-ca"; pnpm generate:types`)
 - [ ] Test: (ręczne) w panelu admina, edycja dokumentu `konstrukcje-stalowe` — pola `Ikonka`, `Opis punktu`, `Rozwinięty opis` w `scopeItems` są widoczne
 - [ ] Test: (ręczne) dodanie wiersza do `additionalSections` z tytułem "Test" i jednym punktem listy — zapis się powodzi, RowLabel pokazuje "Test"
 - [ ] Test: (ręczne) pusta sekcja `additionalSections` bez tytułu — walidacja Payload blokuje zapis
-- [ ] Weryfikacja: `pnpm generate:types` kończy się bez błędów, `ServicePage` w `payload-types.ts` zawiera `audienceTitle`, `audienceItems`, `additionalSections`
+- [x] Weryfikacja: `pnpm generate:types` kończy się bez błędów, `ServicePage` w `payload-types.ts` zawiera `audienceTitle`, `audienceItems`, `additionalSections`
 
 ---
 
