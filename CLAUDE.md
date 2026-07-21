@@ -144,4 +144,5 @@ The hero on `≤980px` shows a mobile layout: `min-h-[100svh]`, photo at full op
 
 ## Konwencje treści
 
-- **Em dashe zabronione** — używaj zwykłego myślnika `-` zamiast `—` we wszystkich tekstach widocznych dla użytkownika (JSX, metadata, stringi)
+- **Em dashe zabronione** - używaj zwykłego myślnika `-` zamiast `—` we wszystkich tekstach widocznych dla użytkownika (JSX, metadata, stringi)
+- **Zawsze polskie znaki** - wszystkie teksty pisz z pełnymi polskimi znakami diakrytycznymi (ą, ć, ę, ł, ń, ó, ś, ź, ż); nigdy nie zastępuj ich odpowiednikami ASCII

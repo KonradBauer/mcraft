@@ -19,6 +19,11 @@ test.describe('Frontend', () => {
     await expect(heading).toContainText('Nadzór')
   })
 
+  test('subpage nadzor-spawalniczy has no Realizacje section', async ({ page }) => {
+    await page.goto('http://localhost:3000/nadzor-spawalniczy')
+    await expect(page.getByRole('heading', { name: 'Realizacje' })).toHaveCount(0)
+  })
+
   test('subpage konstrukcje-stalowe loads', async ({ page }) => {
     await page.goto('http://localhost:3000/konstrukcje-stalowe')
     await expect(page).toHaveTitle(/Konstrukcje stalowe/)

@@ -1,16 +1,43 @@
 import Link from 'next/link'
 import React from 'react'
+import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { MobileNav } from './MobileNav'
+import { ModalProvider } from './ModalProvider'
+import { ModalTrigger } from './ModalTrigger'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
+
+function ScopeIcon({ icon }: { icon?: string | null }) {
+  const Icon = icon ? ICON_REGISTRY[icon] : null
+  if (!Icon) return <span className="w-[28px] h-[28px] bg-accent rotate-45 flex-none" />
+  return <Icon size={56} strokeWidth={1.4} className="text-accent flex-none" />
+}
+
+function BulletList({ title, items }: { title: string; items: { text: string }[] }) {
+  return (
+    <div>
+      <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{title}</h2>
+      <ul className="flex flex-col gap-4">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
+            <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
+            <span>{item.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 export interface SubpageLayoutProps {
   eyebrow?: string | null
   title: string
   description?: string | null
   heroImageUrl?: string | null
-  items: { text: string; description?: string | null; modalDescription?: string | null }[]
+  items: { icon?: string | null; text: string; description?: string | null; modalDescription?: string | null }[]
+  audience?: { title: string; items: { text: string }[] } | null
+  additionalSections?: { title: string; items: { text: string }[] }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
 }
@@ -38,11 +65,13 @@ export function SubpageLayout({
   description,
   heroImageUrl,
   items,
+  audience,
+  additionalSections,
   realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
 }: SubpageLayoutProps) {
   return (
-    <>
+    <ModalProvider>
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
@@ -85,49 +114,76 @@ export function SubpageLayout({
 
       {/* Body */}
       <section className="py-20">
-        <div className={wrap}>
+        <div className={`${wrap} flex flex-col gap-[54px]`}>
+          {audience && audience.items.length > 0 && (
+            <BulletList title={audience.title} items={audience.items} />
+          )}
+
           <div>
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
-            <ul className="grid grid-rows-3 grid-flow-col auto-cols-fr gap-x-8 gap-y-4 max-[700px]:grid-flow-row max-[700px]:grid-rows-none max-[700px]:auto-cols-auto max-[700px]:grid-cols-1">
-              {items.map((item, i) => (
-                <li key={i} className="flex items-start gap-4 text-[15.5px] leading-[1.6] text-[#56544e]">
-                  <span className="w-[9px] h-[9px] bg-accent mt-[7px] flex-none rotate-45" />
-                  <span>{item.text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+            <div className="flex flex-col gap-[18px]">
+              {items.map((item, i) => {
+                const cardClass = 'relative flex items-center gap-5 bg-white border border-[#e8e3d9] p-[28px]'
+                const content = (
+                  <>
+                    <span className="absolute top-0 left-0 w-[22px] h-[22px] border-t border-l border-accent pointer-events-none" />
+                    <ScopeIcon icon={item.icon} />
+                    <span className="block font-montserrat font-semibold text-[17px] text-dark-text leading-[1.4]">
+                      {item.text}
+                    </span>
+                  </>
+                )
 
-          {/* Realizacje */}
-          <div className="mt-[18px]">
-            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
-            <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
-              {realizacje && realizacje.length > 0
-                ? realizacje.map((item, i) => (
-                    <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
-                      {item.thumbnailUrl ? (
-                        <ImageWithSkeleton
-                          src={item.thumbnailUrl}
-                          alt={item.title}
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw"
-                        />
-                      ) : (
-                        <ImageSlot placeholder={item.title} className="w-full h-full" />
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
-                        <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
-                          {item.title}
-                        </span>
-                      </div>
-                    </Link>
-                  ))
-                : (['Realizacja 1', 'Realizacja 2', 'Realizacja 3'] as const).map((ph) => (
-                    <ImageSlot key={ph} placeholder={ph} className="w-full h-[220px]" />
-                  ))
-              }
+                if (!item.description) {
+                  return <div key={i} className={cardClass}>{content}</div>
+                }
+
+                return (
+                  <ModalTrigger
+                    key={i}
+                    modalKey="scope"
+                    asDiv
+                    ariaLabel={item.text}
+                    content={{ title: item.text, description: item.modalDescription || item.description }}
+                    className={`${cardClass} cursor-pointer transition-colors duration-200 hover:border-accent`}
+                  >
+                    {content}
+                  </ModalTrigger>
+                )
+              })}
             </div>
           </div>
+
+          {additionalSections?.map((section, i) => (
+            <BulletList key={i} title={section.title} items={section.items} />
+          ))}
+
+          {realizacje && realizacje.length > 0 && (
+            <div>
+              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
+              <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
+                {realizacje.map((item, i) => (
+                  <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
+                    {item.thumbnailUrl ? (
+                      <ImageWithSkeleton
+                        src={item.thumbnailUrl}
+                        alt={item.title}
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 560px) 100vw, (max-width: 980px) 50vw, 33vw"
+                      />
+                    ) : (
+                      <ImageSlot placeholder={item.title} className="w-full h-full" />
+                    )}
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
+                      <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
+                        {item.title}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -201,6 +257,6 @@ export function SubpageLayout({
           </div>
         </div>
       </footer>
-    </>
+    </ModalProvider>
   )
 }
