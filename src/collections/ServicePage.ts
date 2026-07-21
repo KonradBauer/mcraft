@@ -1,5 +1,33 @@
 import type { CollectionConfig } from 'payload'
 
+import { BULLET_STYLE_OPTIONS, DEFAULT_BULLET_STYLE } from '../lib/bulletStyles'
+import { stringToLexical } from '../lib/stringToLexical'
+
+const bulletStyleField = (name: string, label: string) => ({
+  name,
+  label,
+  type: 'select' as const,
+  defaultValue: DEFAULT_BULLET_STYLE,
+  options: BULLET_STYLE_OPTIONS.map(({ value, label: optionLabel }) => ({ value, label: optionLabel })),
+  admin: {
+    components: {
+      Field: '@/components/admin/BulletStylePickerField',
+    },
+  },
+})
+
+const richTextItemField = {
+  name: 'text' as const,
+  label: 'Treść punktu',
+  type: 'richText' as const,
+  required: true,
+  hooks: {
+    afterRead: [
+      ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),
+    ],
+  },
+}
+
 export const ServicePage: CollectionConfig = {
   slug: 'service-pages',
   labels: {
@@ -132,23 +160,17 @@ export const ServicePage: CollectionConfig = {
         description: 'Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.',
       },
     },
+    bulletStyleField('audienceBulletStyle', 'Styl punktora listy "Dla kogo?"'),
     {
       name: 'audienceItems',
       label: 'Punkty listy "Dla kogo?"',
       type: 'array',
       admin: {
         components: {
-          RowLabel: '@/components/admin/ScopeItemRowLabel',
+          RowLabel: '@/components/admin/RichTextItemRowLabel',
         },
       },
-      fields: [
-        {
-          name: 'text',
-          label: 'Treść punktu',
-          type: 'text',
-          required: true,
-        },
-      ],
+      fields: [richTextItemField],
     },
     {
       name: 'additionalSections',
@@ -167,25 +189,28 @@ export const ServicePage: CollectionConfig = {
           type: 'text',
           required: true,
         },
+        bulletStyleField('bulletStyle', 'Styl punktora'),
         {
           name: 'items',
           label: 'Punkty listy',
           type: 'array',
           admin: {
             components: {
-              RowLabel: '@/components/admin/ScopeItemRowLabel',
+              RowLabel: '@/components/admin/RichTextItemRowLabel',
             },
           },
-          fields: [
-            {
-              name: 'text',
-              label: 'Treść punktu',
-              type: 'text',
-              required: true,
-            },
-          ],
+          fields: [richTextItemField],
         },
       ],
+    },
+    {
+      name: 'ctaHeader',
+      label: 'Nagłówek sekcji CTA (na dole strony)',
+      type: 'text',
+      defaultValue: 'Zainteresowany współpracą?',
+      admin: {
+        description: 'Tekst nad przyciskiem "Skontaktuj się" na dole podstrony.',
+      },
     },
     {
       name: 'thumbnailTitle',

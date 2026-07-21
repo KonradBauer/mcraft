@@ -1,5 +1,8 @@
 import type { Media, PortfolioProject, ServicePage } from '@/payload-types'
 import type { SubpageLayoutProps } from '@/components/mcraft/SubpageLayout'
+import { DEFAULT_BULLET_STYLE } from '@/lib/bulletStyles'
+
+const DEFAULT_CTA_HEADER = 'Zainteresowany współpracą?'
 
 function resolveMediaUrl(field: string | Media | null | undefined): string | null {
   if (!field || typeof field === 'string') return null
@@ -12,7 +15,7 @@ export function toSubpageLayoutProps(
 ): SubpageLayoutProps {
   if (!page) return fallback
 
-  const audienceItems = page.audienceItems?.filter((item) => item.text) ?? []
+  const audienceItems = page.audienceItems ?? []
 
   return {
     eyebrow: page.eyebrow ?? fallback.eyebrow,
@@ -28,14 +31,20 @@ export function toSubpageLayoutProps(
         }))
       : fallback.items,
     audience: audienceItems.length
-      ? { title: page.audienceTitle ?? 'Dla kogo?', items: audienceItems.map((item) => ({ text: item.text })) }
+      ? {
+          title: page.audienceTitle ?? 'Dla kogo?',
+          bulletStyle: page.audienceBulletStyle ?? DEFAULT_BULLET_STYLE,
+          items: audienceItems.map((item) => ({ text: item.text })),
+        }
       : null,
     additionalSections: (page.additionalSections ?? [])
       .map((section) => ({
         title: section.title,
-        items: (section.items ?? []).filter((item) => item.text).map((item) => ({ text: item.text })),
+        bulletStyle: section.bulletStyle ?? DEFAULT_BULLET_STYLE,
+        items: (section.items ?? []).map((item) => ({ text: item.text })),
       }))
       .filter((section) => section.items.length > 0),
+    ctaLabel: page.ctaHeader ?? DEFAULT_CTA_HEADER,
   }
 }
 

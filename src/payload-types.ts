@@ -324,9 +324,24 @@ export interface ServicePage {
    * Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.
    */
   audienceTitle?: string | null;
+  audienceBulletStyle?: ('short-line' | 'check' | 'step-number' | 'vertical-accent' | 'arrow' | 'plus') | null;
   audienceItems?:
     | {
-        text: string;
+        text: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
         id?: string | null;
       }[]
     | null;
@@ -336,15 +351,34 @@ export interface ServicePage {
   additionalSections?:
     | {
         title: string;
+        bulletStyle?: ('short-line' | 'check' | 'step-number' | 'vertical-accent' | 'arrow' | 'plus') | null;
         items?:
           | {
-              text: string;
+              text: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              };
               id?: string | null;
             }[]
           | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Tekst nad przyciskiem "Skontaktuj się" na dole podstrony.
+   */
+  ctaHeader?: string | null;
   /**
    * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej
    */
@@ -582,6 +616,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
         id?: T;
       };
   audienceTitle?: T;
+  audienceBulletStyle?: T;
   audienceItems?:
     | T
     | {
@@ -592,6 +627,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
     | T
     | {
         title?: T;
+        bulletStyle?: T;
         items?:
           | T
           | {
@@ -600,6 +636,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
             };
         id?: T;
       };
+  ctaHeader?: T;
   thumbnailTitle?: T;
   heroImage?: T;
   thumbnailImage?: T;

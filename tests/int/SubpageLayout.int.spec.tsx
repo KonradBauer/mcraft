@@ -1,6 +1,8 @@
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
+import { DEFAULT_BULLET_STYLE } from '@/lib/bulletStyles'
+import { stringToLexical } from '@/lib/stringToLexical'
 
 afterEach(cleanup)
 
@@ -19,7 +21,11 @@ describe('SubpageLayout', () => {
     render(
       <SubpageLayout
         {...BASE_PROPS}
-        audience={{ title: 'Dla kogo?', items: [{ text: 'Zakłady produkcyjne' }] }}
+        audience={{
+          title: 'Dla kogo?',
+          bulletStyle: DEFAULT_BULLET_STYLE,
+          items: [{ text: stringToLexical('Zakłady produkcyjne') }],
+        }}
       />,
     )
     expect(screen.getByRole('heading', { name: 'Dla kogo?' })).toBeTruthy()

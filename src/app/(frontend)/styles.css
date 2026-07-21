@@ -85,6 +85,7 @@
 }
 .prose-mcraft p { margin-bottom: 1em; }
 .prose-mcraft p:last-child { margin-bottom: 0; }
+.prose-mcraft-list p { margin-bottom: 0; }
 .prose-mcraft strong { font-weight: 600; color: var(--color-ink); }
 .prose-mcraft em { font-style: italic; }
 .prose-mcraft u { text-decoration: underline; text-underline-offset: 3px; }

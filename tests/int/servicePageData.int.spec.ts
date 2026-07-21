@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { toSubpageLayoutProps } from '@/lib/servicePageData'
+import { DEFAULT_BULLET_STYLE } from '@/lib/bulletStyles'
+import { stringToLexical } from '@/lib/stringToLexical'
 import type { ServicePage } from '@/payload-types'
+
+const text = (value: string) => stringToLexical(value)
 
 const BASE_PAGE: ServicePage = {
   id: 'page-1',
@@ -33,12 +37,13 @@ describe('toSubpageLayoutProps', () => {
     const page: ServicePage = {
       ...BASE_PAGE,
       audienceTitle: 'Dla kogo?',
-      audienceItems: [{ text: 'Zakłady produkcyjne' }, { text: 'Firmy budowlane i wykonawcy' }],
+      audienceItems: [{ text: text('Zakłady produkcyjne') }, { text: text('Firmy budowlane i wykonawcy') }],
     }
     const result = toSubpageLayoutProps(page, FALLBACK)
     expect(result.audience).toEqual({
       title: 'Dla kogo?',
-      items: [{ text: 'Zakłady produkcyjne' }, { text: 'Firmy budowlane i wykonawcy' }],
+      bulletStyle: DEFAULT_BULLET_STYLE,
+      items: [{ text: text('Zakłady produkcyjne') }, { text: text('Firmy budowlane i wykonawcy') }],
     })
   })
 
@@ -46,15 +51,16 @@ describe('toSubpageLayoutProps', () => {
     const page: ServicePage = {
       ...BASE_PAGE,
       additionalSections: [
-        { title: 'Jak przygotować zapytanie?', items: [{ text: 'rodzaj konstrukcji' }, { text: 'rysunki lub szkice' }] },
-        { title: 'Druga sekcja', items: [{ text: 'punkt A' }] },
+        { title: 'Jak przygotować zapytanie?', items: [{ text: text('rodzaj konstrukcji') }, { text: text('rysunki lub szkice') }] },
+        { title: 'Druga sekcja', items: [{ text: text('punkt A') }] },
       ],
     }
     const result = toSubpageLayoutProps(page, FALLBACK)
     expect(result.additionalSections).toHaveLength(2)
     expect(result.additionalSections?.[0]).toEqual({
       title: 'Jak przygotować zapytanie?',
-      items: [{ text: 'rodzaj konstrukcji' }, { text: 'rysunki lub szkice' }],
+      bulletStyle: DEFAULT_BULLET_STYLE,
+      items: [{ text: text('rodzaj konstrukcji') }, { text: text('rysunki lub szkice') }],
     })
   })
 
@@ -63,7 +69,7 @@ describe('toSubpageLayoutProps', () => {
       ...BASE_PAGE,
       additionalSections: [
         { title: 'Pusta sekcja', items: [] },
-        { title: 'Wypełniona sekcja', items: [{ text: 'punkt' }] },
+        { title: 'Wypełniona sekcja', items: [{ text: text('punkt') }] },
       ],
     }
     const result = toSubpageLayoutProps(page, FALLBACK)

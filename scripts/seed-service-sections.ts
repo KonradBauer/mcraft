@@ -1,25 +1,26 @@
 import 'dotenv/config'
 import { getPayload } from 'payload'
 import config from '../src/payload.config.js'
+import { stringToLexical } from '../src/lib/stringToLexical.js'
 
 const AUDIENCE_ITEMS = [
-  { text: 'Zakłady produkcyjne' },
-  { text: 'Firmy budowlane i wykonawcy' },
-  { text: 'Inwestorzy prywatni' },
-  { text: 'Projektanci i architekci' },
+  { text: stringToLexical('Zakłady produkcyjne') },
+  { text: stringToLexical('Firmy budowlane i wykonawcy') },
+  { text: stringToLexical('Inwestorzy prywatni') },
+  { text: stringToLexical('Projektanci i architekci') },
 ]
 
 const REQUEST_PREP_ITEMS = [
-  { text: 'rodzaj konstrukcji' },
-  { text: 'rysunki lub szkice' },
-  { text: 'podstawowe wymiary' },
-  { text: 'przewidywane obciążenia' },
-  { text: 'miejsce użytkowania: wewnątrz czy na zewnątrz' },
-  { text: 'wymagany materiał' },
-  { text: 'sposób zabezpieczenia powierzchni' },
-  { text: 'miejsce dostawy' },
-  { text: 'informacja, czy potrzebny jest montaż' },
-  { text: 'planowany termin' },
+  { text: stringToLexical('rodzaj konstrukcji') },
+  { text: stringToLexical('rysunki lub szkice') },
+  { text: stringToLexical('podstawowe wymiary') },
+  { text: stringToLexical('przewidywane obciążenia') },
+  { text: stringToLexical('miejsce użytkowania: wewnątrz czy na zewnątrz') },
+  { text: stringToLexical('wymagany materiał') },
+  { text: stringToLexical('sposób zabezpieczenia powierzchni') },
+  { text: stringToLexical('miejsce dostawy') },
+  { text: stringToLexical('informacja, czy potrzebny jest montaż') },
+  { text: stringToLexical('planowany termin') },
 ]
 
 async function main() {
