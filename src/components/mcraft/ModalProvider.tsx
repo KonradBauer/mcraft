@@ -1,5 +1,6 @@
 'use client'
 
+import { RichText } from '@payloadcms/richtext-lexical/react'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { BioModal, CvModal, StatTile } from '@/payload-types'
 import { getTileIcon } from '@/lib/tileIcons'
@@ -205,7 +206,9 @@ function ModalBio({ bioModal }: { bioModal: BioModal }) {
         {hasData ? (
           bioModal.sections!.map((section) => (
             <ModalBodySection key={section.id ?? section.title} title={section.title}>
-              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{section.content}</p>
+              <div className="prose-mcraft">
+                <RichText data={section.content} />
+              </div>
             </ModalBodySection>
           ))
         ) : (

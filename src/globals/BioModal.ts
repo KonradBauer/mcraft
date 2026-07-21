@@ -1,5 +1,7 @@
 import type { GlobalConfig } from 'payload'
 
+import { stringToLexical } from '../lib/stringToLexical'
+
 export const BioModal: GlobalConfig = {
   slug: 'bio-modal',
   label: 'Modal Życiorys (Więcej o mnie)',
@@ -21,8 +23,13 @@ export const BioModal: GlobalConfig = {
         {
           name: 'content',
           label: 'Treść',
-          type: 'textarea',
+          type: 'richText',
           required: true,
+          hooks: {
+            afterRead: [
+              ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),
+            ],
+          },
         },
       ],
     },
