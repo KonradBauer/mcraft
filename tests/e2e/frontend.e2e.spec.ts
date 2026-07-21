@@ -31,6 +31,6 @@ test.describe('Frontend', () => {
 
   test('subpage meble-premium loads', async ({ page }) => {
     await page.goto('http://localhost:3000/meble-premium')
-    await expect(page).toHaveTitle(/Meble premium/)
+    await expect(page).toHaveTitle(/Meble stalowe premium/)
   })
 })
