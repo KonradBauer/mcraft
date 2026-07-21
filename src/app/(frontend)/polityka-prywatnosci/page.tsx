@@ -70,7 +70,7 @@ export default function PolitykaPrywatnosci() {
 
       <footer className="bg-ink-3 text-light py-6 mt-16">
         <div className={`${wrap} text-center text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)]`}>
-          © 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.
+          © {new Date().getFullYear()} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.
         </div>
       </footer>
     </div>

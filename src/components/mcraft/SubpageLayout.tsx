@@ -51,7 +51,7 @@ const SUBPAGE_NAV_LINKS = [
   {
     label: 'Realizacje',
     sub: [
-      { href: '/nadzor-spawalniczy', label: 'Nadzor spawalniczy' },
+      { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
       { href: '/meble-premium', label: 'Meble premium' },
       { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
     ],
@@ -251,7 +251,7 @@ export function SubpageLayout({
           </div>
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
-            <span>© 2025 MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
+            <span>© {new Date().getFullYear()} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
             <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatności</Link>
             <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>

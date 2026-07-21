@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 const AREAS = [
-  { href: '/nadzor-spawalniczy', label: 'Nadzor spawalniczy' },
+  { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
   { href: '/meble-premium', label: 'Meble premium' },
   { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
 ]

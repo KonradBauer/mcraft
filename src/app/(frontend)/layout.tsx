@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     default: 'Inżynier spawalnik Dr inż. Michał Macherzyński | MCRAFT',
     template: '%s | MCRAFT',
   },
-  description: 'Dr inz. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2. Nadzór spawalniczy, konstrukcje stalowe, meble premium. Wilkowiecko, woj. śląskie.',
+  description: 'Dr inż. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2. Nadzór spawalniczy, konstrukcje stalowe, meble premium. Wilkowiecko, woj. śląskie.',
   keywords: ['inżynier spawalnik', 'nadzór spawalniczy', 'IWE', 'IWI', 'spawalnictwo', 'konstrukcje stalowe', 'meble stalowe', 'MCRAFT', 'Macherzyński'],
   authors: [{ name: 'Michał Macherzyński', url: siteUrl }],
   creator: 'Michał Macherzyński',
