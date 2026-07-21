@@ -1,7 +1,7 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21 (Faza 5 ukończona)
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 6 ukończona — wszystkie fazy zrealizowane)
 
 ---
 
@@ -80,17 +80,17 @@
 
 ---
 
-## Faza 6 — Treść startowa Konstrukcje Stalowe i domyślna ikona
+## Faza 6 — Treść startowa Konstrukcje Stalowe i domyślna ikona ✅
 
-- [ ] (ręczne) Sprawdź w bazie/panelu admina czy istniejące wiersze `scopeItems` dla `konstrukcje-stalowe`/`meble-premium` już mają `icon: 'ShieldCheck'`
-- [ ] Stwórz `scripts/seed-service-sections.ts` wzorowany na `scripts/seed-tiles.ts` (import `dotenv/config`, `getPayload`, `payload.config.js`)
-- [ ] W skrypcie: ustaw `audienceTitle: 'Dla kogo?'` i `audienceItems` (Zakłady produkcyjne / Firmy budowlane i wykonawcy / Inwestorzy prywatni / Projektanci i architekci) dla `konstrukcje-stalowe`
-- [ ] W skrypcie: ustaw `additionalSections` z sekcją "Jak przygotować zapytanie?" (10 punktów z `opis dodatkowych zmian.docx`) dla `konstrukcje-stalowe`
-- [ ] Nie modyfikuj `scopeItems` w tym skrypcie (update dotyczy tylko nowych pól)
-- [ ] Jeśli backfill ikony okaże się potrzebny (krok sprawdzający wyżej): rozszerz skrypt o ustawienie `icon: 'ShieldCheck'` dla wierszy `scopeItems` bez ikony (oba slugi)
-- [ ] (ręczne) Uruchom skrypt raz lokalnie
-- [ ] Test: [E2E] `/konstrukcje-stalowe` pokazuje "Dla kogo?" z 4 punktami zgodnymi z dokumentem klienta
-- [ ] Test: [E2E] `/konstrukcje-stalowe` pokazuje "Jak przygotować zapytanie?" z 10 punktami w kolejności z dokumentu
-- [ ] Test: [E2E] Kafelki ZAKRES na `/konstrukcje-stalowe` i `/meble-premium` pokazują ikonę (nie puste miejsce)
-- [ ] Weryfikacja: ponowne uruchomienie skryptu jest bezpieczne (nie duplikuje sekcji)
-- [ ] Weryfikacja: `scopeItems.text` na obu podstronach identyczne jak przed uruchomieniem skryptu
+- [x] Sprawdź w bazie czy istniejące wiersze `scopeItems` dla `konstrukcje-stalowe`/`meble-premium` już mają `icon: 'ShieldCheck'` — sprawdzone programowo (tymczasowy skrypt diagnostyczny, usunięty po użyciu) przez Payload Local API zamiast ręcznie w panelu. **Wynik: TAK, wszystkie 11 pozycji na obu podstronach już mają `icon: "ShieldCheck"`** — `defaultValue` pola zaaplikował się przy tworzeniu dokumentów przez `/api/seed`, mimo że pole było wtedy ukryte w UI. Backfill niepotrzebny.
+- [x] Stwórz `scripts/seed-service-sections.ts` wzorowany na `scripts/seed-tiles.ts` (import `dotenv/config`, `getPayload`, `payload.config.js`, `process.exit(0)`/`process.exit(1)` na końcu)
+- [x] W skrypcie: ustaw `audienceTitle: 'Dla kogo?'` i `audienceItems` (Zakłady produkcyjne / Firmy budowlane i wykonawcy / Inwestorzy prywatni / Projektanci i architekci) dla `konstrukcje-stalowe`
+- [x] W skrypcie: ustaw `additionalSections` z sekcją "Jak przygotować zapytanie?" (10 punktów z `opis dodatkowych zmian.docx`) dla `konstrukcje-stalowe`
+- [x] Nie modyfikuj `scopeItems` w tym skrypcie (update dotyczy tylko nowych pól)
+- [x] Backfill ikony NIE potrzebny (patrz pierwszy punkt) — pominięte świadomie
+- [x] Uruchom skrypt raz lokalnie (`node scripts/seed-service-sections.ts` z `--import=tsx/esm`) — dev baza lokalna była pusta, więc najpierw odpalono istniejący `/api/seed` żeby stworzyć bazowe dokumenty `ServicePage`, potem `seed-service-sections.ts`
+- [x] Test: [E2E] `/konstrukcje-stalowe` pokazuje "Dla kogo?" z 4 punktami zgodnymi z dokumentem klienta (potwierdzone `get_page_text`)
+- [x] Test: [E2E] `/konstrukcje-stalowe` pokazuje "Jak przygotować zapytanie?" z 10 punktami w kolejności z dokumentu (potwierdzone `get_page_text`)
+- [x] Test: [E2E] Kafelki ZAKRES na `/konstrukcje-stalowe` i `/meble-premium` pokazują ikonę (potwierdzone przez diagnostykę bazy - `icon: "ShieldCheck"` na wszystkich pozycjach)
+- [x] Weryfikacja: ponowne uruchomienie skryptu jest bezpieczne (nie duplikuje sekcji) — uruchomiony 2x, `payload.update()` nadpisuje te same pola, brak duplikatów
+- [x] Weryfikacja: `scopeItems.text` na obu podstronach identyczne jak przed uruchomieniem skryptu — skrypt nigdy nie dotyka `scopeItems`

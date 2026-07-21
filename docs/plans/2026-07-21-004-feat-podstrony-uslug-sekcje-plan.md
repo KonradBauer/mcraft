@@ -256,7 +256,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 6: Treść startowa dla Konstrukcje Stalowe i weryfikacja domyślnej ikony**
+- [x] **Unit 6: Treść startowa dla Konstrukcje Stalowe i weryfikacja domyślnej ikony**
 
 **Cel:** Konstrukcje Stalowe ma od razu wypełnione "Dla kogo?" i "Jak przygotować zapytanie?" zgodnie z treścią klienta (R8); istniejące kafelki ZAKRES mają ikonę zamiast pustego miejsca (R9).
 
