@@ -227,7 +227,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 5: Podłączenie 3 podstron do wspólnego komponentu**
+- [x] **Unit 5: Podłączenie 3 podstron do wspólnego komponentu**
 
 **Cel:** `nadzor-spawalniczy` renderuje się przez ten sam komponent co pozostałe dwie podstrony.
 

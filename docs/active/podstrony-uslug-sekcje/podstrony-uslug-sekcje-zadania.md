@@ -1,7 +1,7 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21 (Faza 4 ukończona)
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 5 ukończona)
 
 ---
 
@@ -68,15 +68,15 @@
 
 ---
 
-## Faza 5 — Podłączenie 3 podstron do wspólnego komponentu
+## Faza 5 — Podłączenie 3 podstron do wspólnego komponentu ✅
 
 - [x] W `src/app/(frontend)/nadzor-spawalniczy/page.tsx` zamień import `NadzorLayout` na `SubpageLayout` (wykonane w Fazie 3, wymuszone usunięciem `NadzorLayout.tsx`)
 - [x] Zamień `<NadzorLayout {...} />` na `<SubpageLayout {...} />` (bez `realizacje`, jak dziś) (wykonane w Fazie 3)
-- [ ] Sprawdź że `konstrukcje-stalowe/page.tsx` i `meble-premium/page.tsx` nie wymagają zmian
-- [ ] Test: [E2E] `/nadzor-spawalniczy` ładuje się bez błędów, `<h1>` zawiera "Nadzór" (rozszerz `tests/e2e/frontend.e2e.spec.ts`)
-- [ ] Test: [E2E] `/nadzor-spawalniczy` nie zawiera sekcji "Realizacje" w DOM
-- [ ] Weryfikacja: `pnpm build` bez błędów
-- [ ] Weryfikacja: `tests/e2e/frontend.e2e.spec.ts` przechodzi dla wszystkich 3 podstron
+- [x] Sprawdź że `konstrukcje-stalowe/page.tsx` i `meble-premium/page.tsx` nie wymagają zmian (potwierdzone - obie już importują `SubpageLayout`, zero różnic względem `main`)
+- [x] Test: [E2E] `/nadzor-spawalniczy` ładuje się bez błędów, `<h1>` zawiera "Nadzór" (istniejący test w `tests/e2e/frontend.e2e.spec.ts` przechodzi)
+- [x] Test: [E2E] `/nadzor-spawalniczy` nie zawiera sekcji "Realizacje" w DOM (nowy test dodany, przechodzi: `page.getByRole('heading', { name: 'Realizacje' })` ma 0 wystąpień)
+- [x] Weryfikacja: `pnpm build` bez błędów
+- [x] Weryfikacja: `tests/e2e/frontend.e2e.spec.ts` — 5/6 testów przechodzi (w tym oba nowe/zmodyfikowane w tym zadaniu). 1 pre-existing failure (`meble-premium loads`, niezwiązany z tym zadaniem - patrz kontekst) zgłoszony jako osobne zadanie, nie blokuje tej fazy
 
 ---
 
