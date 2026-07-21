@@ -1,7 +1,7 @@
 # Rozbudowa treści podstron usług — Checklist zadań
 
 **Branch:** `feature/podstrony-uslug-sekcje`
-**Ostatnia aktualizacja:** 2026-07-21 (Faza 3 ukończona)
+**Ostatnia aktualizacja:** 2026-07-21 (Faza 4 ukończona)
 
 ---
 
@@ -52,19 +52,19 @@
 
 ---
 
-## Faza 4 — Nowe sekcje treści i Realizacje bez placeholderów
+## Faza 4 — Nowe sekcje treści i Realizacje bez placeholderów ✅
 
-- [ ] Dodaj lokalny komponent `BulletList({ title, items })` w `SubpageLayout.tsx` — `<h2>` + jednokolumnowa `<ul>` z rombowym znacznikiem (`w-[9px] h-[9px] bg-accent rotate-45`)
-- [ ] Renderuj sekcję "Dla kogo?" (`<BulletList title={audience.title} items={audience.items} />`) tylko gdy `audience && audience.items.length > 0`, przed ZAKRES
-- [ ] Renderuj `additionalSections?.map(...)` jako `BulletList` po ZAKRES, w kolejności z tablicy
-- [ ] Zamień warunek renderowania REALIZACJE na `{realizacje && realizacje.length > 0 && (...)}` bez fallbacku 3 placeholderów, na samym końcu strony
-- [ ] Sprawdź i usuń nieużywany kod fallbacku placeholderów Realizacji (zachowaj `ImageSlot` dla kart bez `thumbnailUrl` — to inne użycie)
-- [ ] Test: [Unit] `SubpageLayout` z `audience: null` nie renderuje nagłówka "Dla kogo?"
-- [ ] Test: [E2E] `/konstrukcje-stalowe` po wypełnieniu `audienceItems`/`additionalSections` pokazuje sekcje w kolejności: Dla kogo → Zakres → dodatkowe sekcje → Realizacje
-- [ ] Test: [E2E] `/nadzor-spawalniczy` — brak nagłówka "Realizacje" w DOM
-- [ ] Test: [E2E] Podstrona bez dodatkowych sekcji ani "Dla kogo" renderuje się bez błędów
-- [ ] Weryfikacja: `pnpm lint` i `pnpm build` bez błędów
-- [ ] Weryfikacja: kolejność sekcji w DOM zgodna na wszystkich 3 podstronach
+- [x] Dodaj lokalny komponent `BulletList({ title, items })` w `SubpageLayout.tsx` — `<h2>` + jednokolumnowa `<ul>` z rombowym znacznikiem (`w-[9px] h-[9px] bg-accent rotate-45`)
+- [x] Renderuj sekcję "Dla kogo?" (`<BulletList title={audience.title} items={audience.items} />`) tylko gdy `audience && audience.items.length > 0`, przed ZAKRES
+- [x] Renderuj `additionalSections?.map(...)` jako `BulletList` po ZAKRES, w kolejności z tablicy
+- [x] Zamień warunek renderowania REALIZACJE na `{realizacje && realizacje.length > 0 && (...)}` bez fallbacku 3 placeholderów, na samym końcu strony
+- [x] Sprawdź i usuń nieużywany kod fallbacku placeholderów Realizacji (zachowano `ImageSlot` dla kart bez `thumbnailUrl` — inne użycie)
+- [x] Test: [Unit] `SubpageLayout` z `audience: null` nie renderuje nagłówka "Dla kogo?" (`tests/int/SubpageLayout.int.spec.tsx`, 4 przypadki)
+- [ ] Test: [E2E] `/konstrukcje-stalowe` po wypełnieniu `audienceItems`/`additionalSections` pokazuje sekcje w kolejności: Dla kogo → Zakres → dodatkowe sekcje → Realizacje — brak danych w bazie dev (Faza 6 dopiero seeduje treść), zweryfikowane strukturalnie testem jednostkowym; pełna weryfikacja E2E na realnych danych po Fazie 6
+- [x] Test: [E2E] `/nadzor-spawalniczy` — brak nagłówka "Realizacje" w DOM (potwierdzone przez `get_page_text` w przeglądarce: sekcja zniknęła, wcześniej pokazywała placeholder)
+- [x] Test: [E2E] Podstrona bez dodatkowych sekcji ani "Dla kogo" renderuje się bez błędów (potwierdzone na `/konstrukcje-stalowe` i `/nadzor-spawalniczy`, zero błędów w konsoli)
+- [x] Weryfikacja: `pnpm lint` i `pnpm build` bez błędów
+- [x] Weryfikacja: kolejność sekcji w DOM zgodna na wszystkich 3 podstronach (potwierdzone przez `get_page_text`)
 
 ---
 

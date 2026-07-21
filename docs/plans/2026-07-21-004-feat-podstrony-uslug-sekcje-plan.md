@@ -193,7 +193,7 @@ Klient zgłosił (dokument `opis dodatkowych zmian.docx`, załączony screenshot
 
 ---
 
-- [ ] **Unit 4: Renderowanie sekcji "Dla kogo?", "Dodatkowe sekcje" i REALIZACJE bez placeholderów**
+- [x] **Unit 4: Renderowanie sekcji "Dla kogo?", "Dodatkowe sekcje" i REALIZACJE bez placeholderów**
 
 **Cel:** Pełna kolejność sekcji z R1/R4/R5 działa na wszystkich 3 podstronach: Dla kogo → Zakres → dodatkowe sekcje → Realizacje.
 
