@@ -90,6 +90,7 @@ export function MobileNav({ links }: MobileNavProps) {
                     <Link
                       key={href}
                       href={href}
+                      prefetch={false}
                       onClick={close}
                       className="block font-montserrat text-[18px] font-light tracking-[0.22em] uppercase text-light/70 py-[10px] pl-3 hover:text-accent hover:pl-5 transition-all duration-200"
                     >
@@ -103,6 +104,7 @@ export function MobileNav({ links }: MobileNavProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={false}
                 onClick={close}
                 className="font-montserrat text-[22px] font-light tracking-[0.25em] uppercase text-light/80 py-[18px] border-b border-white/[0.08] hover:text-accent hover:pl-3 transition-all duration-200 last:border-b-0"
               >

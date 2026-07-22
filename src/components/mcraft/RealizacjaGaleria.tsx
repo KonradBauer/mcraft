@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState, useEffect, useCallback } from 'react'
 import { ImageWithSkeleton } from '@/components/mcraft/ImageWithSkeleton'
 
@@ -138,7 +139,7 @@ export function RealizacjaGaleria({ images }: Props) {
 
           {/* Image */}
           <div
-            className="relative max-w-[88vw] max-h-[80vh] flex items-center justify-center"
+            className="relative w-[88vw] h-[80vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {!lightboxLoaded && (
@@ -148,11 +149,13 @@ export function RealizacjaGaleria({ images }: Props) {
                 </svg>
               </div>
             )}
-            <img
+            <Image
               key={active.url}
               src={active.url}
               alt={active.alt}
-              className={`max-w-[88vw] max-h-[80vh] object-contain transition-opacity duration-300 ${lightboxLoaded ? 'opacity-100' : 'opacity-0'}`}
+              fill
+              sizes="88vw"
+              className={`object-contain transition-opacity duration-300 ${lightboxLoaded ? 'opacity-100' : 'opacity-0'}`}
               onLoad={() => setLightboxLoaded(true)}
             />
           </div>
@@ -182,7 +185,7 @@ export function RealizacjaGaleria({ images }: Props) {
                   }`}
                   aria-label={`Zdjęcie ${i + 1}`}
                 >
-                  <img src={img.url} alt={img.alt} className="w-full h-full object-contain" />
+                  <Image src={img.url} alt={img.alt} fill sizes="52px" className="object-contain" />
                 </button>
               ))}
             </div>

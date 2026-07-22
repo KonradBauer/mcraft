@@ -9,7 +9,7 @@ const montserrat = Montserrat({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-montserrat',
   display: 'swap',
-  weight: ['200', '300', '400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
 })
 
 const barlow = Barlow({

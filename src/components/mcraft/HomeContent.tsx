@@ -12,6 +12,7 @@ import type {
 import { mediaUrl } from '@/lib/mediaUrl'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
+import { LocationCard } from './LocationCard'
 import { MobileNav } from './MobileNav'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 import { ModalProvider } from './ModalProvider'
@@ -348,15 +349,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
             </div>
 
             <div className="border-l border-hairline-dark pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-hairline-dark max-[768px]:pt-[34px] overflow-hidden">
-              <iframe
-                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
-                width="100%"
-                height="300"
-                style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title="Lokalizacja MCRAFT"
-              />
+              <LocationCard />
             </div>
           </div>
 

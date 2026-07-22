@@ -45,6 +45,7 @@ export function NavRealizacjeDropdown({ triggerClass }: { triggerClass: string }
             <Link
               key={href}
               href={href}
+              prefetch={false}
               onClick={() => setOpen(false)}
               className="flex items-center gap-3 px-5 py-[11px] font-montserrat text-[11px] font-semibold tracking-[0.18em] uppercase text-white/65 hover:text-accent hover:bg-white/[0.04] transition-colors duration-150"
             >
