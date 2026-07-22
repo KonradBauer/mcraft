@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Barlow, Great_Vibes, Montserrat } from 'next/font/google'
+import { headers } from 'next/headers'
 import Script from 'next/script'
 import React from 'react'
 import { PageLoader } from '@/components/mcraft/PageLoader'
@@ -115,13 +116,15 @@ const schemaOrg = JSON.stringify({
   ],
 })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined
+
   return (
     <html lang="pl" className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
       <body>
         <PageLoader />
         {children}
-        <Script id="schema-org" type="application/ld+json">
+        <Script id="schema-org" type="application/ld+json" nonce={nonce}>
           {schemaOrg}
         </Script>
       </body>
