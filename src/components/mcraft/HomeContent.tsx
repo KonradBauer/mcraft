@@ -108,6 +108,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
           src={heroBackground}
           fill
           sizes="100vw"
+          quality={65}
           alt=""
           priority
           className="z-0 object-cover object-[33%]"
