@@ -11,7 +11,7 @@ Start with `.claude/skills/payload/SKILL.md` for a quick reference, then see `.c
 
 Marketing website for **MCRAFT / Dr inż. Michał Macherzyński** (welding engineer) built on **Next.js 16 + Payload CMS 3.x** with MongoDB.
 
-Production URL: `https://mcraft.pl`
+Production URL: `https://mcraft.com.pl`
 
 ## Commands
 

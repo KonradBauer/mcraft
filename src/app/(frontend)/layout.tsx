@@ -26,7 +26,7 @@ const greatVibes = Great_Vibes({
   weight: ['400'],
 })
 
-const siteUrl = 'https://mcraft.pl'
+const siteUrl = 'https://mcraft.com.pl'
 const ogImage = `${siteUrl}/og-image.png`
 
 export const metadata: Metadata = {

@@ -4,9 +4,9 @@
 
 ## Usługi
 
-- [Nadzór spawalniczy](https://mcraft.pl/nadzor-spawalniczy): WPS/WPQR, badania VT/PT, dokumentacja spawalnicza, kontrola jakości
-- [Konstrukcje stalowe](https://mcraft.pl/konstrukcje-stalowe): Hale przemysłowe, prefabrykacja elementów stalowych, montaż
-- [Meble premium](https://mcraft.pl/meble-premium): Meble stalowe loftowe, projekty autorskie, wykonanie na zamówienie
+- [Nadzór spawalniczy](https://mcraft.com.pl/nadzor-spawalniczy): WPS/WPQR, badania VT/PT, dokumentacja spawalnicza, kontrola jakości
+- [Konstrukcje stalowe](https://mcraft.com.pl/konstrukcje-stalowe): Hale przemysłowe, prefabrykacja elementów stalowych, montaż
+- [Meble premium](https://mcraft.com.pl/meble-premium): Meble stalowe loftowe, projekty autorskie, wykonanie na zamówienie
 
 ## Kwalifikacje
 
@@ -30,4 +30,4 @@
 - Telefon: +48 601-488-318
 - Email: kontakt@poczta-mcraft.pl
 - LinkedIn: https://www.linkedin.com/in/micha%C5%82-macherzy%C5%84ski-399521276/
-- Strona: [mcraft.pl](https://mcraft.pl)
+- Strona: [mcraft.com.pl](https://mcraft.com.pl)

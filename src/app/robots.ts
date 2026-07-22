@@ -16,6 +16,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'Applebot', allow: '/' },
       { userAgent: 'Googlebot-Extended', allow: '/' },
     ],
-    sitemap: 'https://mcraft.pl/sitemap.xml',
+    sitemap: 'https://mcraft.com.pl/sitemap.xml',
   }
 }

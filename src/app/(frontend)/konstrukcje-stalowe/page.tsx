@@ -9,12 +9,12 @@ import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 export const metadata: Metadata = {
   title: 'Konstrukcje stalowe - prefabrykacja i montaż',
   description: 'Projektowanie i realizacja konstrukcji stalowych: hale przemysłowe, elementy infrastruktury, prefabrykacja w warsztacie, montaż na obiekcie. Michał Macherzyński.',
-  alternates: { canonical: 'https://mcraft.pl/konstrukcje-stalowe' },
+  alternates: { canonical: 'https://mcraft.com.pl/konstrukcje-stalowe' },
   openGraph: {
     title: 'Konstrukcje stalowe - prefabrykacja i montaż',
     description: 'Konstrukcje przemysłowe i hale, elementy infrastruktury, prefabrykacja w warsztacie, montaż na obiekcie.',
-    url: 'https://mcraft.pl/konstrukcje-stalowe',
-    images: [{ url: 'https://mcraft.pl/og-image.png', width: 1200, height: 630 }],
+    url: 'https://mcraft.com.pl/konstrukcje-stalowe',
+    images: [{ url: 'https://mcraft.com.pl/og-image.png', width: 1200, height: 630 }],
   },
 }
 
