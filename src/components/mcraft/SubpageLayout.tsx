@@ -6,7 +6,7 @@ import type { BulletStyle } from '@/lib/bulletStyles'
 import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
-import { LocationCard } from './LocationCard'
+import { LazyMap } from './LazyMap'
 import { MobileNav } from './MobileNav'
 import { ModalProvider } from './ModalProvider'
 import { ModalTrigger } from './ModalTrigger'
@@ -277,7 +277,7 @@ export function SubpageLayout({
             </div>
 
             <div className="border-l border-white/10 pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-white/10 max-[768px]:pt-[34px] overflow-hidden">
-              <LocationCard />
+              <LazyMap />
             </div>
 
           </div>

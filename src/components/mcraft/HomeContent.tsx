@@ -12,7 +12,7 @@ import type {
 import { mediaUrl } from '@/lib/mediaUrl'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
-import { LocationCard } from './LocationCard'
+import { LazyMap } from './LazyMap'
 import { MobileNav } from './MobileNav'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 import { ModalProvider } from './ModalProvider'
@@ -350,7 +350,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
             </div>
 
             <div className="border-l border-hairline-dark pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-hairline-dark max-[768px]:pt-[34px] overflow-hidden">
-              <LocationCard />
+              <LazyMap />
             </div>
           </div>
 
