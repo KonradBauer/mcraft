@@ -6,6 +6,7 @@ import type { BioModal, CvModal, StatTile } from '@/payload-types'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
+import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 
 export type ModalKey = 'cv' | 'bio' | 'tiles' | 'scope'
 
@@ -50,7 +51,7 @@ function ModalHead({ eyebrowText, title, sub }: { eyebrowText?: string; title: s
       <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
       <div className="relative">
         {eyebrowText && <span className="font-montserrat text-[11px] font-semibold tracking-[0.26em] uppercase text-accent-bright">{eyebrowText}</span>}
-        <h2 className={`font-light text-[34px] uppercase tracking-[0.02em] text-white max-[980px]:text-[27px] ${eyebrowText ? 'mt-[14px]' : ''}`}>{title}</h2>
+        <h2 className={`font-light text-[34px] uppercase tracking-[0.02em] text-white max-[980px]:text-[27px] ${eyebrowText ? 'mt-[14px]' : ''}`}>{preserveAcronymCase(title)}</h2>
         {sub && <div className="font-montserrat font-light text-[14px] tracking-[0.14em] uppercase text-light-muted mt-2.5">{sub}</div>}
       </div>
     </div>

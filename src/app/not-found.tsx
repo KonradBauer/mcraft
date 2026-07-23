@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { getLocale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
+import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 import './(frontend)/styles.css'
 
 const montserrat = Montserrat({
@@ -57,7 +58,7 @@ export default async function NotFound() {
         </div>
 
         <footer className="py-6 text-center font-montserrat text-[11px] tracking-[0.14em] uppercase text-light-faint">
-          {dict.notFound.footer}
+          {preserveAcronymCase(dict.notFound.footer)}
         </footer>
       </body>
     </html>

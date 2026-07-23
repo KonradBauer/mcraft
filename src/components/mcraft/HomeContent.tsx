@@ -12,6 +12,7 @@ import type {
 import type { Locale } from '@/lib/i18n/locale'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { mediaUrl } from '@/lib/mediaUrl'
+import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -157,7 +158,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
 
             <div className="flex items-start justify-between pt-[clamp(24px,2.92vw,56px)] pb-[clamp(30px,4.69vw,90px)] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
-                <span className={`${eyebrow} mb-[clamp(10px,1.15vw,22px)] text-[clamp(12px,0.94vw,18px)]`}>{dict.hero.eyebrow}</span>
+                <span className={`${eyebrow} mb-[clamp(10px,1.15vw,22px)] text-[clamp(12px,0.94vw,18px)]`}>{preserveAcronymCase(dict.hero.eyebrow)}</span>
                 <h1 className="font-light text-[clamp(30px,3.23vw,62px)] leading-[1.05] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
                   Michał<br />Macherzyński
                 </h1>

@@ -4,11 +4,41 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { Locale } from '@/lib/i18n/locale'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
-import { LanguageSwitcher } from './LanguageSwitcher'
+import { LocaleFlag } from './FlagIcon'
+import { useLanguageSwitch } from './useLanguageSwitch'
 
 type NavItem =
   | { href: string; label: string; sub?: never }
   | { label: string; sub: { href: string; label: string }[]; href?: never }
+
+const LOCALES: { code: Locale; label: string }[] = [
+  { code: 'pl', label: 'PL' },
+  { code: 'en', label: 'ENG' },
+]
+
+function MobileLanguageToggle({ locale }: { locale: Locale }) {
+  const { isPending, selectLocale } = useLanguageSwitch(locale)
+
+  return (
+    <div className="flex items-center gap-5">
+      {LOCALES.map(({ code, label }) => (
+        <button
+          key={code}
+          type="button"
+          onClick={() => selectLocale(code)}
+          disabled={isPending}
+          aria-current={code === locale}
+          className={`flex items-center gap-2 font-montserrat text-[15px] font-semibold tracking-[0.2em] uppercase transition-colors duration-150 cursor-pointer bg-transparent border-none disabled:opacity-50 ${
+            code === locale ? 'text-accent' : 'text-light/40 hover:text-accent'
+          }`}
+        >
+          <LocaleFlag code={code} />
+          {label}
+        </button>
+      ))}
+    </div>
+  )
+}
 
 interface MobileNavProps {
   links: NavItem[]
@@ -122,7 +152,7 @@ export function MobileNav({ links, locale = 'pl', dict }: MobileNavProps) {
         <div className="px-8 pb-10 flex-none">
           <div className="w-10 h-px bg-accent mb-6" />
           <div className="mb-5">
-            <LanguageSwitcher locale={locale} triggerClassName="text-light/50 hover:text-accent text-[13px] font-montserrat font-semibold tracking-[0.2em] uppercase" />
+            <MobileLanguageToggle locale={locale} />
           </div>
           <a
             href="https://www.linkedin.com/in/micha%C5%82-macherzy%C5%84ski-399521276/"

@@ -1,11 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 
 const MAX_VISIBLE_MS = 4000
 const FADE_OUT_MS = 550
 
-export function PageLoader() {
+export function PageLoader({ title }: { title: string }) {
   const [isHiding, setIsHiding] = useState(false)
   const [isRemoved, setIsRemoved] = useState(false)
 
@@ -74,7 +75,7 @@ export function PageLoader() {
         <div className="flex flex-col items-center gap-[6px]">
           <span className="font-montserrat font-light text-[20px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
           <span className="font-montserrat text-[11px] font-semibold tracking-[0.28em] uppercase text-accent-bright text-center">
-            Dr inż. Michał Macherzyński
+            {preserveAcronymCase(title)}
           </span>
         </div>
 

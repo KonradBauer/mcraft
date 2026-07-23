@@ -133,7 +133,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={locale} className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
       <body>
-        <PageLoader />
+        <PageLoader title={dict.modal.cv.title} />
         {children}
         <Script id="schema-org" type="application/ld+json">
           {buildSchemaOrg(dict)}

@@ -1,10 +1,9 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Locale } from '@/lib/i18n/locale'
-import { setLocale } from '@/lib/i18n/setLocale'
-import { useOptionalModal } from './ModalProvider'
+import { LocaleFlag } from './FlagIcon'
+import { useLanguageSwitch } from './useLanguageSwitch'
 
 const LOCALES: Locale[] = ['pl', 'en']
 const LOCALE_LABELS: Record<Locale, string> = { pl: 'PL', en: 'EN' }
@@ -16,9 +15,7 @@ interface LanguageSwitcherProps {
 
 export function LanguageSwitcher({ locale, triggerClassName = '' }: LanguageSwitcherProps) {
   const [open, setOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
-  const router = useRouter()
-  const modal = useOptionalModal()
+  const { isPending, selectLocale } = useLanguageSwitch(locale)
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -39,12 +36,7 @@ export function LanguageSwitcher({ locale, triggerClassName = '' }: LanguageSwit
 
   const handleSelect = (next: Locale) => {
     setOpen(false)
-    if (next === locale) return
-    if (modal?.isOpen) modal.closeModal()
-    startTransition(async () => {
-      await setLocale(next)
-      router.refresh()
-    })
+    selectLocale(next)
   }
 
   return (
@@ -57,6 +49,7 @@ export function LanguageSwitcher({ locale, triggerClassName = '' }: LanguageSwit
         aria-expanded={open}
         disabled={isPending}
       >
+        <LocaleFlag code={locale} />
         {LOCALE_LABELS[locale]}
         <svg
           viewBox="0 0 10 6"
@@ -85,6 +78,7 @@ export function LanguageSwitcher({ locale, triggerClassName = '' }: LanguageSwit
                 code === locale ? 'text-accent' : 'text-white/65 hover:text-accent hover:bg-white/[0.04]'
               }`}
             >
+              <LocaleFlag code={code} />
               {LOCALE_LABELS[code]}
             </button>
           ))}
