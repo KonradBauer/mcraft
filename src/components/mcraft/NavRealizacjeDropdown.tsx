@@ -2,15 +2,21 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 
-const AREAS = [
-  { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
-  { href: '/meble-premium', label: 'Meble premium' },
-  { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
-]
+interface NavRealizacjeDropdownProps {
+  triggerClass: string
+  dict: Dictionary
+}
 
-export function NavRealizacjeDropdown({ triggerClass }: { triggerClass: string }) {
+export function NavRealizacjeDropdown({ triggerClass, dict }: NavRealizacjeDropdownProps) {
   const [open, setOpen] = useState(false)
+
+  const AREAS = [
+    { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+    { href: '/meble-premium', label: dict.areas.names.meblePremium },
+    { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+  ]
 
   return (
     <div
@@ -24,7 +30,7 @@ export function NavRealizacjeDropdown({ triggerClass }: { triggerClass: string }
         aria-haspopup="true"
         aria-expanded={open}
       >
-        Realizacje
+        {dict.nav.realizations}
         <svg
           viewBox="0 0 10 6"
           fill="none"

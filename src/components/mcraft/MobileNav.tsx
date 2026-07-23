@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import type { Locale } from '@/lib/i18n/locale'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
 type NavItem =
@@ -12,9 +13,10 @@ type NavItem =
 interface MobileNavProps {
   links: NavItem[]
   locale?: Locale
+  dict: Dictionary
 }
 
-export function MobileNav({ links, locale = 'pl' }: MobileNavProps) {
+export function MobileNav({ links, locale = 'pl', dict }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
   const scrollYRef = useRef(0)
 
@@ -54,7 +56,7 @@ export function MobileNav({ links, locale = 'pl' }: MobileNavProps) {
       <button
         className="hidden max-[980px]:flex items-center justify-center w-10 h-10 text-white cursor-pointer bg-transparent border-none"
         onClick={() => setIsOpen(true)}
-        aria-label="Otwórz menu"
+        aria-label={dict.mobileNav.openMenuAria}
         aria-expanded={isOpen}
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-6 h-6">
@@ -66,14 +68,14 @@ export function MobileNav({ links, locale = 'pl' }: MobileNavProps) {
         className={`fixed inset-0 z-[80] bg-ink flex flex-col transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
         role="dialog"
         aria-modal="true"
-        aria-label="Menu nawigacyjne"
+        aria-label={dict.mobileNav.menuLabelAria}
       >
         <div className="flex items-center justify-between px-5 py-[30px] border-b border-white/10 flex-none">
           <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
           <button
             className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
             onClick={close}
-            aria-label="Zamknij menu"
+            aria-label={dict.mobileNav.closeMenuAria}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" className="w-5 h-5">
               <path d="M18 6L6 18M6 6l12 12" />
@@ -132,7 +134,7 @@ export function MobileNav({ links, locale = 'pl' }: MobileNavProps) {
               <rect x="2" y="9" width="4" height="12" />
               <circle cx="4" cy="4" r="2" />
             </svg>
-            LinkedIn
+            {dict.mobileNav.linkedin}
           </a>
         </div>
       </div>

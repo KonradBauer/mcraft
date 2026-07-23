@@ -12,7 +12,7 @@ function resolveMediaUrl(field: string | Media | null | undefined): string | nul
 export function toSubpageLayoutProps(
   page: ServicePage | undefined,
   fallback: Required<Pick<SubpageLayoutProps, 'eyebrow' | 'title' | 'description' | 'items'>>,
-): SubpageLayoutProps {
+): Omit<SubpageLayoutProps, 'dict'> {
   if (!page) return fallback
 
   const audienceItems = page.audienceItems ?? []

@@ -17,6 +17,10 @@ export const en = {
     eyebrow: 'PhD Eng.',
     ctaMoreInfo: 'Find out more',
     fallbackSubtitle: 'Welding engineer\nIWE / IWI / VT2 / PT2',
+    theoryLabel: 'Theory',
+    experienceLabel: 'Experience',
+    practiceLabel: 'Practice',
+    quote: 'I build a bridge\nbetween theory\nand practice through experience.',
   },
   about: {
     eyebrow: 'Who am I?',
@@ -43,7 +47,7 @@ export const en = {
     eyebrow: 'Let\'s talk about your project',
     title: 'Get in touch',
     mapsTitle: 'MCRAFT location',
-    copyright: (year: number) => `© ${year} MCRAFT Michał Macherzyński. All rights reserved.`,
+    copyrightSuffix: 'MCRAFT Michał Macherzyński. All rights reserved.',
     privacyPolicy: 'Privacy policy',
     builtBy: 'Built by:',
   },
@@ -60,11 +64,11 @@ export const en = {
   },
   gallery: {
     noPhotos: 'No photos',
-    zoomAria: (alt: string) => `Zoom: ${alt}`,
+    zoomAriaLabel: 'Zoom',
     closeGalleryAria: 'Close gallery',
     prevPhotoAria: 'Previous photo',
     nextPhotoAria: 'Next photo',
-    photoAria: (index: number) => `Photo ${index}`,
+    photoAriaLabel: 'Photo',
   },
   modal: {
     closeAria: 'Close',

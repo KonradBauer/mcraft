@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { ImageWithSkeleton } from '@/components/mcraft/ImageWithSkeleton'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 
 type GalleryImage = {
   url: string
@@ -10,9 +11,10 @@ type GalleryImage = {
 
 type Props = {
   images: GalleryImage[]
+  dict: Dictionary
 }
 
-export function RealizacjaGaleria({ images }: Props) {
+export function RealizacjaGaleria({ images, dict }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxLoaded, setLightboxLoaded] = useState(false)
@@ -38,7 +40,7 @@ export function RealizacjaGaleria({ images }: Props) {
   if (images.length === 0) {
     return (
       <div className="w-full aspect-[4/3] bg-ink/5 flex items-center justify-center text-ink/30 font-montserrat text-sm tracking-[0.1em] uppercase">
-        Brak zdjęć
+        {dict.gallery.noPhotos}
       </div>
     )
   }
@@ -51,7 +53,7 @@ export function RealizacjaGaleria({ images }: Props) {
       <button
         className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7] max-h-[520px]"
         onClick={() => setLightboxOpen(true)}
-        aria-label={`Powiększ: ${active.alt}`}
+        aria-label={`${dict.gallery.zoomAriaLabel}: ${active.alt}`}
       >
         <ImageWithSkeleton
           src={active.url}
@@ -85,7 +87,7 @@ export function RealizacjaGaleria({ images }: Props) {
                   ? 'outline outline-2 outline-accent opacity-100'
                   : 'opacity-50 hover:opacity-90'
               }`}
-              aria-label={`Zdjecie ${i + 1}`}
+              aria-label={`${dict.gallery.photoAriaLabel} ${i + 1}`}
               aria-pressed={i === activeIndex}
             >
               <ImageWithSkeleton
@@ -111,7 +113,7 @@ export function RealizacjaGaleria({ images }: Props) {
           <button
             className="absolute top-5 right-5 text-white/60 hover:text-white transition-colors p-2"
             onClick={closeLightbox}
-            aria-label="Zamknij galerię"
+            aria-label={dict.gallery.closeGalleryAria}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-7 h-7">
               <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" />
@@ -128,7 +130,7 @@ export function RealizacjaGaleria({ images }: Props) {
             <button
               className="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
               onClick={(e) => { e.stopPropagation(); setActive((activeIndex - 1 + images.length) % images.length) }}
-              aria-label="Poprzednie zdjęcie"
+              aria-label={dict.gallery.prevPhotoAria}
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5 rotate-180">
                 <path d="M0 6h28M23 1l5 5-5 5" />
@@ -162,7 +164,7 @@ export function RealizacjaGaleria({ images }: Props) {
             <button
               className="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-3"
               onClick={(e) => { e.stopPropagation(); setActive((activeIndex + 1) % images.length) }}
-              aria-label="Następne zdjęcie"
+              aria-label={dict.gallery.nextPhotoAria}
             >
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-8 h-5">
                 <path d="M0 6h28M23 1l5 5-5 5" />
@@ -180,7 +182,7 @@ export function RealizacjaGaleria({ images }: Props) {
                   className={`relative w-[52px] h-[38px] overflow-hidden flex-none bg-black/50 transition-opacity duration-200 ${
                     i === activeIndex ? 'opacity-100 outline outline-2 outline-accent' : 'opacity-35 hover:opacity-70'
                   }`}
-                  aria-label={`Zdjęcie ${i + 1}`}
+                  aria-label={`${dict.gallery.photoAriaLabel} ${i + 1}`}
                 >
                   <img src={img.url} alt={img.alt} className="w-full h-full object-contain" />
                 </button>

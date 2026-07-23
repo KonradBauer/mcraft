@@ -10,6 +10,7 @@ import type {
   StatTile,
 } from '@/payload-types'
 import type { Locale } from '@/lib/i18n/locale'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { mediaUrl } from '@/lib/mediaUrl'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
@@ -28,26 +29,13 @@ export interface HomeContentProps {
   tiles: StatTile[]
   areas: Pick<ServicePage, 'slug' | 'thumbnailTitle' | 'thumbnailImage'>[]
   locale?: Locale
+  dict: Dictionary
 }
 
 /* ─── reusable class strings ─── */
 const eyebrow = 'block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58]'
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase relative transition-colors duration-200'
-
-const HOME_NAV_LINKS = [
-  { href: '#about', label: 'O mnie' },
-  { href: '#areas', label: 'Obszary' },
-  {
-    label: 'Realizacje',
-    sub: [
-      { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
-      { href: '/meble-premium', label: 'Meble premium' },
-      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
-    ],
-  },
-  { href: '#contact', label: 'Kontakt' },
-]
 
 /* ─── icon helpers ─── */
 function ArrowRight({ className = 'w-5 h-3 flex-none' }: { className?: string }) {
@@ -83,27 +71,41 @@ const AREA_ICONS: Record<string, React.ReactNode> = {
   ),
 }
 
-const AREA_DEFAULTS = [
-  { href: '/nadzor-spawalniczy', slug: 'nadzor-spawalniczy', name: 'Nadzór\nspawalniczy' },
-  { href: '/konstrukcje-stalowe', slug: 'konstrukcje-stalowe', name: 'Konstrukcje\nstalowe' },
-  { href: '/meble-premium', slug: 'meble-premium', name: 'Meble\npremium' },
-]
-
 /* ─── main component (server) ─── */
-export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, locale = 'pl' }: HomeContentProps) {
+export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, locale = 'pl', dict }: HomeContentProps) {
   const areaBySlug = Object.fromEntries(areas.map((a) => [a.slug, a]))
 
   const heroBackground = mediaUrl(hero.backgroundImage) ?? '/hero-tlo-v2.png'
   const heroPersonPhoto = mediaUrl(hero.personPhoto) ?? '/hero-michal.png'
-  const heroSubtitle = hero.subtitle ?? 'Inżynier spawalnik\nIWE / IWI / VT2 / PT2'
+  const heroSubtitle = hero.subtitle ?? dict.hero.fallbackSubtitle
   const portraitUrl = mediaUrl(about.portraitPhoto) ?? '/kim-jestem.jpg'
-  const bioText = about.bioText ?? 'Główny Spawalnik oraz Kierownik Projektów B+R w ZUGIL S.A. Od ponad 18 lat związany ze spawalnictwem i konstrukcjami stalowymi. Krótka prezentacja, doświadczenie i wartości - pełny opis zostanie wczytany z zasobów.'
+  const bioText = about.bioText ?? dict.about.fallbackBio
 
   const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[clamp(30px,4.69vw,90px)] max-[980px]:hidden border border-[#3A3A3A] px-[26px] py-[clamp(12px,0.89vw,17px)] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
   const cvBtnMobileClass = 'inline-flex items-center gap-[30px] border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
 
+  const HOME_NAV_LINKS = [
+    { href: '#about', label: dict.nav.about },
+    { href: '#areas', label: dict.nav.areas },
+    {
+      label: dict.nav.realizations,
+      sub: [
+        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+        { href: '/meble-premium', label: dict.areas.names.meblePremium },
+        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+      ],
+    },
+    { href: '#contact', label: dict.nav.contact },
+  ]
+
+  const AREA_DEFAULTS = [
+    { href: '/nadzor-spawalniczy', slug: 'nadzor-spawalniczy', name: dict.areas.names.nadzorSpawalniczy },
+    { href: '/konstrukcje-stalowe', slug: 'konstrukcje-stalowe', name: dict.areas.names.konstrukcjeStalowe },
+    { href: '/meble-premium', slug: 'meble-premium', name: dict.areas.names.meblePremium },
+  ]
+
   return (
-    <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles}>
+    <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles} dict={dict}>
       {/* ====== HERO ====== */}
       <header className="relative w-full bg-ink text-light aspect-[48/18] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
         <Image
@@ -121,7 +123,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
         <div className="absolute inset-y-0 z-[2] pointer-events-none shrink-0 flex items-end left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
-            alt="Dr inż. Michał Macherzyński"
+            alt={dict.modal.cv.title}
             width={390}
             height={620}
             sizes="(max-width: 980px) 290px, 390px"
@@ -144,18 +146,18 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             <nav className="flex items-center justify-between py-[clamp(14px,1.56vw,30px)]">
               <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
               <div className="flex items-center gap-[24px] max-[980px]:hidden rounded-2xl bg-white/30 backdrop-blur-md px-1.5 py-px">
-                <a href="#about" className={`${navLink} text-black`}>O mnie</a>
-                <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>Obszary</a>
-                <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} />
-                <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
+                <a href="#about" className={`${navLink} text-black`}>{dict.nav.about}</a>
+                <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>{dict.nav.areas}</a>
+                <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} dict={dict} />
+                <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>{dict.nav.contact}</a>
                 <LanguageSwitcher locale={locale} triggerClassName={`${navLink} text-black/70 hover:text-black`} />
               </div>
-              <MobileNav links={HOME_NAV_LINKS} locale={locale} />
+              <MobileNav links={HOME_NAV_LINKS} locale={locale} dict={dict} />
             </nav>
 
             <div className="flex items-start justify-between pt-[clamp(24px,2.92vw,56px)] pb-[clamp(30px,4.69vw,90px)] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">
               <div className="max-w-[460px] flex-shrink-0">
-                <span className={`${eyebrow} mb-[clamp(10px,1.15vw,22px)] text-[clamp(12px,0.94vw,18px)]`}>Dr inż.</span>
+                <span className={`${eyebrow} mb-[clamp(10px,1.15vw,22px)] text-[clamp(12px,0.94vw,18px)]`}>{dict.hero.eyebrow}</span>
                 <h1 className="font-light text-[clamp(30px,3.23vw,62px)] leading-[1.05] tracking-[0.01em] text-white uppercase max-[980px]:text-[38px]">
                   Michał<br />Macherzyński
                 </h1>
@@ -164,28 +166,29 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
                   {heroSubtitle}
                 </div>
                 <ModalTrigger modalKey="cv" className={cvBtnClass}>
-                  Dowiedz się więcej <ArrowRight />
+                  {dict.hero.ctaMoreInfo} <ArrowRight />
                 </ModalTrigger>
               </div>
 
               <div className="hidden bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-lg p-6 max-[980px]:hidden">
                 <div className="flex flex-col justify-start mr-[8%]">
                   <div>
-                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Teoria</div>
+                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">{dict.hero.theoryLabel}</div>
                     <div
-                      className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">Doświadczenie
+                      className="font-montserrat font-semibold text-[40px] leading-[1.15] text-[#069364]">{dict.hero.experienceLabel}
                     </div>
-                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">Praktyka</div>
+                    <div className="font-montserrat font-semibold text-[40px] leading-[1.15] text-black">{dict.hero.practiceLabel}</div>
                   </div>
                   <div className="mt-4">
                     <hr className="border-[#ccc] mb-4" />
                     <p className="relative text-lg font-bold leading-[1.75] text-[#56544e] pl-5">
                       <span className="absolute left-0 top-0 text-3xl font-bold text-[#00A887]">{'"'}</span>
-                      Doświadczeniem buduję
-                      <br />
-                      most pomiędzy teorią
-                      <br />
-                      a praktyką.
+                      {dict.hero.quote.split('\n').map((line, i, arr) => (
+                        <span key={i}>
+                          {line}
+                          {i < arr.length - 1 && <br />}
+                        </span>
+                      ))}
                       <span className="ml-1 text-3xl font-bold text-[#00A887]">{'"'}</span>
                     </p>
                   </div>
@@ -203,7 +206,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             {heroSubtitle}
           </p>
           <ModalTrigger modalKey="cv" className={cvBtnMobileClass}>
-            Dowiedz się więcej <ArrowRight />
+            {dict.hero.ctaMoreInfo} <ArrowRight />
           </ModalTrigger>
         </div>
       </header>
@@ -223,17 +226,17 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
               <span className="absolute bottom-0 right-0 w-[28px] h-[28px] max-[980px]:w-[20px] max-[980px]:h-[20px] border-b border-r border-accent pointer-events-none" />
               <div className="relative h-full">
                 {portraitUrl ? (
-                  <ImageWithSkeleton src={portraitUrl} alt="Dr inż. Michał Macherzyński" className="object-cover object-top" sizes="(max-width: 700px) 100vw, 35vw" />
+                  <ImageWithSkeleton src={portraitUrl} alt={dict.modal.cv.title} className="object-cover object-top" sizes="(max-width: 700px) 100vw, 35vw" />
                 ) : (
-                  <ImageSlot placeholder="Zdjęcie - Kim jestem" className="w-full h-full" />
+                  <ImageSlot placeholder={dict.about.portraitPlaceholder} className="w-full h-full" />
                 )}
               </div>
             </div>
 
             <div className="min-w-0">
-              <span className={`${eyebrow} mb-[14px]`}>Kim jestem?</span>
+              <span className={`${eyebrow} mb-[14px]`}>{dict.about.eyebrow}</span>
               <h2 className="font-medium text-[27px] tracking-[0.02em] text-dark-text mt-[14px] mb-[22px] uppercase">
-                Dr inż. Michał Macherzyński
+                {dict.modal.cv.title}
               </h2>
               <p className="text-[15px] leading-[1.85] text-[#56544e]">
                 {bioText}
@@ -244,14 +247,14 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
                   modalKey="bio"
                   className="inline-flex items-center gap-3 bg-transparent border border-[#3A3A3A] text-accent font-montserrat text-xs font-semibold tracking-[0.14em] uppercase px-[18px] py-[11px] cursor-pointer transition-all duration-[220ms] hover:bg-accent hover:border-accent hover:text-white"
                 >
-                  ...więcej o mnie
+                  {dict.about.moreAboutMe}
                   <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-4 h-2.5">
                     <path d="M0 6h28M23 1l5 5-5 5" />
                   </svg>
                 </ModalTrigger>
               </div>
 
-              <TilesMarquee tiles={tiles} />
+              <TilesMarquee tiles={tiles} dict={dict} />
             </div>
 
           </div>
@@ -262,8 +265,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
       <section className="bg-cream-2 py-[74px]" id="areas">
         <div className={wrap}>
           <div>
-            <span className={`${eyebrow} mb-[14px]`}>Co oferuję?</span>
-            <h2 className="font-montserrat font-semibold text-[30px] tracking-[0.04em] uppercase text-dark-text">Obszary działalności</h2>
+            <span className={`${eyebrow} mb-[14px]`}>{dict.areas.eyebrow}</span>
+            <h2 className="font-montserrat font-semibold text-[30px] tracking-[0.04em] uppercase text-dark-text">{dict.areas.title}</h2>
           </div>
           <div className="grid grid-cols-3 gap-[26px] mt-[42px] max-[980px]:grid-cols-1">
             {AREA_DEFAULTS.map(({ href, slug, name }) => {
@@ -299,7 +302,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
                       {displayName}
                     </span>
                     <span className="inline-flex items-center gap-[9px] font-montserrat text-[10.5px] font-semibold tracking-[0.16em] uppercase text-accent mt-[10px] opacity-0 translate-y-1.5 transition-all duration-[250ms] group-hover:opacity-100 group-hover:translate-y-0">
-                      Zobacz <ArrowRight className="w-5 h-[9px]" />
+                      {dict.areas.seeMore} <ArrowRight className="w-5 h-[9px]" />
                     </span>
                   </div>
                 </Link>
@@ -315,8 +318,8 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
           <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
 
             <div>
-              <span className={`${eyebrow} mb-[18px]`}>Porozmawiajmy o Twoim projekcie</span>
-              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">Skontaktuj się</h2>
+              <span className={`${eyebrow} mb-[18px]`}>{dict.footer.eyebrow}</span>
+              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">{dict.footer.title}</h2>
               <div className="mb-[22px]">
                 <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">MCRAFT Michał Macherzyński</div>
                 <div className="text-[13px] text-light-muted leading-[1.8]">
@@ -353,21 +356,21 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
 
             <div className="border-l border-hairline-dark pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-hairline-dark max-[768px]:pt-[34px] overflow-hidden">
               <iframe
-                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
+                src={`https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed&hl=${locale}`}
                 width="100%"
                 height="300"
                 style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Lokalizacja MCRAFT"
+                title={dict.footer.mapsTitle}
               />
             </div>
           </div>
 
           <div className="border-t border-hairline-dark mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
-            <span>© {new Date().getFullYear()} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
-            <Link href="/polityka-prywatnosci" className="hover:text-light/60 transition-colors duration-200">Polityka prywatności</Link>
-            <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-light/60 transition-colors duration-200">studiocodeart.pl</a></span>
+            <span>© {new Date().getFullYear()} {dict.footer.copyrightSuffix}</span>
+            <Link href="/polityka-prywatnosci" className="hover:text-light/60 transition-colors duration-200">{dict.footer.privacyPolicy}</Link>
+            <span>{dict.footer.builtBy} <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-light/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>
         </div>
       </footer>

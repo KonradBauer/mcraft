@@ -2,6 +2,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, screen, cleanup, fireEvent, waitFor } from '@testing-library/react'
 import { LanguageSwitcher } from '@/components/mcraft/LanguageSwitcher'
 import { ModalProvider } from '@/components/mcraft/ModalProvider'
+import { pl } from '@/lib/i18n/dictionaries/pl'
 
 afterEach(cleanup)
 
@@ -44,7 +45,7 @@ describe('LanguageSwitcher', () => {
 
   it('renders identically when nested inside ModalProvider (desktop/mobile nav context)', () => {
     render(
-      <ModalProvider>
+      <ModalProvider dict={pl}>
         <LanguageSwitcher locale="pl" />
       </ModalProvider>,
     )

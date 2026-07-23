@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 5)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 6)
 
 ## Powiazane pliki
 
@@ -122,6 +122,37 @@ Przy okazji: `realizacje/[slug]/page.tsx` przekazuje teraz `locale` do `<MobileN
 **Weryfikacja manualna w przegladarce:** ustawiono cookie `locale=en`, odwiedzono `/konstrukcje-stalowe` - `<html lang="en">`, strona nie crashuje, `h1` pokazuje polski fallback ("Konstrukcje stalowe") bo lokalna baza dev nie ma jeszcze wpisanego tlumaczenia EN dla tego dokumentu. Dokladnie zgodne z R4 (fallback nigdy nie jest pusty).
 
 **E2E:** napisano `tests/e2e/locale-content.e2e.spec.ts`, nie uruchomiono automatycznie w tej sesji (ten sam port-3000-conflict z niepowiazanym projektem co w Fazie 4) - logika potwierdzona manualnie jak wyzej.
+
+## Faza 6 — wykonanie (2026-07-23)
+
+Ukonczona - najwieksza faza planu (9 plikow + 2 pliki dictionaries). Wszystkie statyczne stringi UI w komponentach zastapione odwolaniami do `dict` (prop przekazywany z gory, od `page.tsx` przez `HomeContent`/`SubpageLayout` do klienckich komponentow lisci). Fallback CV/Bio w `ModalProvider.tsx` (hardcodowana tresc gdy CMS pusty) POZOSTAJE po polsku zawsze, zgodnie z decyzja planu - zmienione zostaly tylko etykiety UI wokol niego (naglowki sekcji, eyebrow/title/sub modali, przycisk pobierania).
+
+### Krytyczny bug: funkcje w slowniku łamią RSC serialization
+
+Pierwsza wersja slownika (Faza 3) miala 3 pola jako funkcje: `footer.copyright(year)`, `gallery.zoomAria(alt)`, `gallery.photoAria(index)`. Dzialalo to poprawnie w testach jednostkowych (Vitest/jsdom nie wymusza granicy serializacji RSC), ale w REALNYM Next.js dev serverze powodowalo natychmiastowy crash calej strony w trybie EN:
+
+```
+Error: Functions cannot be passed directly to Client Components unless you explicitly
+expose it by marking it with "use server".
+```
+
+**Przyczyna:** `dict` (caly obiekt) jest przekazywany jako prop z komponentow serwerowych (`HomeContent`, `SubpageLayout`, `page.tsx`) do komponentow klienckich (`ModalProvider`, `TilesMarquee`, `RealizacjaGaleria`, `MobileNav`, `NavRealizacjeDropdown` - wszystkie `'use client'`). React Server Components serializuje CALY graf propsa przy przejsciu przez granice serwer->klient - JAKAKOLWIEK funkcja gdziekolwiek w tym obiekcie (nawet nieuzywana przez dany konkretny komponent) powoduje blad na calym obiekcie.
+
+**Naprawa:** usunieto funkcje ze slownika calkowicie. `copyright(year) => string` zastapiono plain stringiem `copyrightSuffix` + interpolacja `` `© ${year} ${dict.footer.copyrightSuffix}` `` bezposrednio w JSX (server component, nie przekazywana dalej jako funkcja). Analogicznie `zoomAria`/`photoAria` -> `zoomAriaLabel`/`photoAriaLabel` + template literal w miejscu uzycia.
+
+**Lekcja na przyszlosc:** slownik i18n przekazywany jako prop przez granice Server/Client Component w Next.js App Router MOZE zawierac WYLACZNIE dane serializowalne (stringi, liczby, plaskie obiekty/tablice) - zero funkcji, nawet "niewinnych" helperow formatujacych. Testy jednostkowe (Vitest) NIE wykryja tego bledu, bo nie ma tam prawdziwej granicy RSC - wymagana jest weryfikacja w prawdziwym `next dev`/`next build` + realna przegladarka.
+
+### Weryfikacja manualna w przegladarce (po naprawie)
+
+Odwiedzono strone glowna, `/konstrukcje-stalowe`, `/nieistniejaca-strona-xyz` (404) z cookie `locale=en`:
+- Strona glowna: caly UI chrome po angielsku (PHD ENG., WELDING ENGINEER, FIND OUT MORE, WHO AM I?, WHAT I OFFER, AREAS OF ACTIVITY, SEE MORE, LET'S TALK ABOUT YOUR PROJECT, GET IN TOUCH, All rights reserved., Privacy policy, Built by:), zero bledow konsoli.
+- `/konstrukcje-stalowe`: UI chrome po angielsku (SCOPE, GET IN TOUCH), tresc CMS (tytul, opis, "Dla kogo?", zakres uslug) poprawnie fallbackuje do PL - lokalna baza dev nie ma jeszcze wpisanych tlumaczen EN dla tego dokumentu (zgodnie z R4, nie jest to blad).
+- Nazwy obszarow dzialalnosci (Nadzor spawalniczy/Konstrukcje stalowe/Meble premium) na stronie glownej takze PL - to `ServicePage.thumbnailTitle` z CMS (ma pierwszenstwo nad `dict.areas.names` gdy wypelnione), poprawne zachowanie.
+- 404: naglowek/opis/przycisk po angielsku; `<title>` strony pozostaje PL (statyczny `export const metadata`, celowo NIE dotykany - to zakres Fazy 7, ktora nie wymienia `not-found.tsx` w swojej liscie plikow).
+
+### E2E
+
+Napisano `tests/e2e/dictionary-en.e2e.spec.ts` (4 strony + mobile nav aria-labels), NIE uruchomiono automatycznie w tej sesji - ten sam port-3000-conflict z niepowiazanym projektem uzytkownika co w poprzednich fazach. Logika 1:1 potwierdzona manualnie powyzej.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

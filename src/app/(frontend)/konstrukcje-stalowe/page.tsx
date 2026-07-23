@@ -6,6 +6,7 @@ import config from '@payload-config'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
 import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 import { getLocale } from '@/lib/i18n/locale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 export const metadata: Metadata = {
   title: 'Konstrukcje stalowe - prefabrykacja i montaż',
@@ -34,6 +35,7 @@ const FALLBACK = {
 export default async function KonstrukcjeStalowePage() {
   const payload = await getPayload({ config })
   const locale = await getLocale()
+  const dict = await getDictionary(locale)
   const { docs } = await payload.find({
     collection: 'service-pages',
     where: { slug: { equals: 'konstrukcje-stalowe' } },
@@ -61,6 +63,7 @@ export default async function KonstrukcjeStalowePage() {
       {...toSubpageLayoutProps(servicePage, FALLBACK)}
       realizacje={toRealizacjeProps(portfolioDocs, 'konstrukcje-stalowe')}
       locale={locale}
+      dict={dict}
     />
   )
 }

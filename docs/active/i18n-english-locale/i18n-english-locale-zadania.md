@@ -84,22 +84,24 @@
 
 ---
 
-## Faza 6 — Podmiana statycznych tekstow na slownik + konsolidacja duplikatow
+## Faza 6 — Podmiana statycznych tekstow na slownik + konsolidacja duplikatow ✅
 
-- [ ] Zmodyfikuj `src/components/mcraft/HomeContent.tsx` — zastap hardcodowane stringi odwolaniami do slownika (dict jako prop)
-- [ ] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx` — jw.
-- [ ] Zmodyfikuj `src/components/mcraft/ModalProvider.tsx` — etykiety UI (nie fallback CV/Bio — ten zostaje PL) na slownik
-- [ ] Zmodyfikuj `src/components/mcraft/MobileNav.tsx` — aria-labels, LinkedIn itd. na slownik
-- [ ] Zmodyfikuj `src/components/mcraft/NavRealizacjeDropdown.tsx` — etykiety obszarow na slownik
-- [ ] Zmodyfikuj `src/components/mcraft/TilesMarquee.tsx` — teksty na slownik
-- [ ] Zmodyfikuj `src/components/mcraft/RealizacjaGaleria.tsx` — teksty (Brak zdjec, Powieksz, Zamknij galerie) na slownik
-- [ ] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — stopka na slownik, Google Maps `&hl=${locale}`
-- [ ] Zmodyfikuj `src/app/(frontend)/not-found.tsx` — stopka na slownik, Google Maps `&hl=${locale}`
-- [ ] (opcjonalnie, jesli nie zwieksza istotnie ryzyka) Wydziel wspolny komponent `Footer`/`Nav` konsolidujacy 4 kopie
-- [ ] Test: `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich — rozszerz `tests/int/SubpageLayout.int.spec.tsx`
-- [ ] Test [E2E]: otworz kazda z 4 glownych stron w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio
-- [ ] Test [E2E]: sprawdz `aria-label` przyciskow mobile nav po przelaczeniu na EN
-- [ ] Weryfikacja: grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio
+- [x] Zmodyfikuj `src/components/mcraft/HomeContent.tsx` — zastap hardcodowane stringi odwolaniami do slownika (dict jako prop)
+- [x] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx` — jw.
+- [x] Zmodyfikuj `src/components/mcraft/ModalProvider.tsx` — etykiety UI (nie fallback CV/Bio — ten zostaje PL) na slownik; dodano `useOptionalModal()`, `closeModal`/`isOpen` w kontekscie (Faza 4), teraz + `dict` prop
+- [x] Zmodyfikuj `src/components/mcraft/MobileNav.tsx` — aria-labels, LinkedIn itd. na slownik
+- [x] Zmodyfikuj `src/components/mcraft/NavRealizacjeDropdown.tsx` — etykiety obszarow na slownik
+- [x] Zmodyfikuj `src/components/mcraft/TilesMarquee.tsx` — teksty na slownik
+- [x] Zmodyfikuj `src/components/mcraft/RealizacjaGaleria.tsx` — teksty (Brak zdjec, Powieksz, Zamknij galerie) na slownik
+- [x] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — stopka na slownik, Google Maps `&hl=${locale}`
+- [x] Zmodyfikuj `src/app/(frontend)/not-found.tsx` — stopka + naglowki na slownik (async server component + `getLocale()`/`getDictionary()`); Google Maps NIE dotyczy (ta strona nie ma mapy - checklist zalozenie bledne, zweryfikowane w kodzie)
+- [ ] (pominieto, opcjonalne) Wydziel wspolny komponent `Footer`/`Nav` konsolidujacy 4 kopie — plan sam oznaczyl to jako opcjonalne "jesli nie zwieksza ryzyka"; przy juz duzym scope tej fazy pominiete swiadomie
+- [x] Test: `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich — rozszerzono `tests/int/SubpageLayout.int.spec.tsx`
+- [x] Test [E2E]: otworz kazda z 4 glownych stron w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio — napisano `tests/e2e/dictionary-en.e2e.spec.ts`; zweryfikowano manualnie w przegladarce (patrz kontekst.md)
+- [x] Test [E2E]: sprawdz `aria-label` przyciskow mobile nav po przelaczeniu na EN — w tym samym pliku
+- [x] Weryfikacja: grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio — potwierdzone (zero wynikow)
+
+**Odkryty krytyczny bug (2026-07-23):** funkcje w obiekcie slownika (`footer.copyright(year)`, `gallery.zoomAria(alt)`, `gallery.photoAria(index)`) powodowaly crash calej strony w trybie EN - "Functions cannot be passed directly to Client Components" - React Server Components nie moga serializowac funkcji w propsach przekazywanych do Client Components (`ModalProvider`, `TilesMarquee`, `RealizacjaGaleria`, `MobileNav`, `NavRealizacjeDropdown` sa `'use client'` i dostaja caly obiekt `dict`). Naprawione: zamieniono funkcje na plain stringi (`copyrightSuffix`, `zoomAriaLabel`, `photoAriaLabel`) + interpolacja template literal w miejscu uzycia (server component), nie wewnatrz slownika. Zweryfikowane w przegladarce po restarcie dev servera - dziala poprawnie.
 
 ---
 

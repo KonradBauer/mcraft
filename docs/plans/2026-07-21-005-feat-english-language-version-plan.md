@@ -289,7 +289,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 6: Podmiana statycznych tekstow na slownik + konsolidacja duplikatow**
+- [x] **Unit 6: Podmiana statycznych tekstow na slownik + konsolidacja duplikatow** ✅
 
 **Cel:** Wszystkie hardcodowane polskie stringi w komponentach zastapione odwolaniami do slownika (Unit 3); przy okazji skonsolidowana 4-krotna duplikacja nav/stopki.
 
@@ -311,12 +311,14 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `src/lib/i18n/getDictionary.ts` (Unit 3).
 
 **Scenariusze testowe:**
-- [Unit] `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich.
-- [E2E] Otworz kazda z 4 glownych stron (home, 3x podstrona uslugowa) w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio.
-- [E2E] Sprawdz `aria-label` przyciskow mobile nav (otworz/zamknij menu) po przelaczeniu na EN.
+- [x] [Unit] `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich.
+- [x] [E2E] Otworz kazda z 4 glownych stron (home, 3x podstrona uslugowa) w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio.
+- [x] [E2E] Sprawdz `aria-label` przyciskow mobile nav (otworz/zamknij menu) po przelaczeniu na EN.
 
 **Weryfikacja:**
-- Grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio (swiadomy wyjatek).
+- [x] Grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio (swiadomy wyjatek).
+
+**Krytyczny bug odkryty i naprawiony (2026-07-23):** funkcje w obiekcie slownika (`footer.copyright`, `gallery.zoomAria`, `gallery.photoAria`) crashowaly strone w trybie EN - "Functions cannot be passed directly to Client Components" (RSC nie serializuje funkcji w propsach do Client Components). Zamieniono na plain stringi + interpolacja w miejscu uzycia. Vitest nie wykryl tego (brak realnej granicy RSC) - wymagana weryfikacja w prawdziwym `next dev`. Szczegoly: [i18n-english-locale-kontekst.md](../active/i18n-english-locale/i18n-english-locale-kontekst.md#faza-6--wykonanie-2026-07-23).
 
 ---
 

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 import type { BulletStyle } from '@/lib/bulletStyles'
 import type { Locale } from '@/lib/i18n/locale'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
@@ -82,24 +83,11 @@ export interface SubpageLayoutProps {
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
   locale?: Locale
+  dict: Dictionary
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
-
-const SUBPAGE_NAV_LINKS = [
-  { href: '/#about', label: 'O mnie' },
-  { href: '/#areas', label: 'Obszary' },
-  {
-    label: 'Realizacje',
-    sub: [
-      { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
-      { href: '/meble-premium', label: 'Meble premium' },
-      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
-    ],
-  },
-  { href: '/#contact', label: 'Kontakt' },
-]
 
 export function SubpageLayout({
   eyebrow,
@@ -110,11 +98,28 @@ export function SubpageLayout({
   audience,
   additionalSections,
   realizacje,
-  ctaLabel = 'Zainteresowany współpracą?',
+  ctaLabel,
   locale = 'pl',
+  dict,
 }: SubpageLayoutProps) {
+  const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
+
+  const SUBPAGE_NAV_LINKS = [
+    { href: '/#about', label: dict.nav.about },
+    { href: '/#areas', label: dict.nav.areas },
+    {
+      label: dict.nav.realizations,
+      sub: [
+        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+        { href: '/meble-premium', label: dict.areas.names.meblePremium },
+        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+      ],
+    },
+    { href: '/#contact', label: dict.nav.contact },
+  ]
+
   return (
-    <ModalProvider>
+    <ModalProvider dict={dict}>
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
@@ -123,13 +128,13 @@ export function SubpageLayout({
               <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
             </Link>
             <div className="flex gap-[38px] max-[980px]:hidden">
-              <Link href="/#about" className={navLink}>O mnie</Link>
-              <Link href="/#areas" className={navLink}>Obszary</Link>
-              <NavRealizacjeDropdown triggerClass={navLink} />
-              <Link href="/#contact" className={navLink}>Kontakt</Link>
+              <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
+              <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
+              <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
+              <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
               <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
-            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} />
+            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} />
           </nav>
         </div>
       </div>
@@ -164,7 +169,7 @@ export function SubpageLayout({
           )}
 
           <div>
-            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Zakres</h2>
+            <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{dict.subpage.scopeTitle}</h2>
             <div className="flex flex-col gap-[18px]">
               {items.map((item, i) => {
                 const cardClass = 'relative flex items-center gap-5 bg-white border border-[#e8e3d9] p-[28px]'
@@ -204,7 +209,7 @@ export function SubpageLayout({
 
           {realizacje && realizacje.length > 0 && (
             <div>
-              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">Realizacje</h2>
+              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{dict.subpage.realizationsTitle}</h2>
               <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
                 {realizacje.map((item, i) => (
                   <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">
@@ -234,12 +239,12 @@ export function SubpageLayout({
       {/* CTA */}
       <section className="bg-cream-2 py-16 text-center">
         <div className={wrap}>
-          <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{ctaLabel}</h2>
+          <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{resolvedCtaLabel}</h2>
           <Link
             href="/#contact"
             className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
           >
-            Skontaktuj się
+            {dict.subpage.ctaButton}
             <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
               <path d="M0 6h28M23 1l5 5-5 5" />
             </svg>
@@ -253,8 +258,8 @@ export function SubpageLayout({
           <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
 
             <div>
-              <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">Porozmawiajmy o Twoim projekcie</span>
-              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">Skontaktuj się</h2>
+              <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">{dict.footer.eyebrow}</span>
+              <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">{dict.footer.title}</h2>
               <div className="mb-[22px]">
                 <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">MCRAFT Michał Macherzyński</div>
                 <div className="text-[13px] text-light-muted leading-[1.8]">
@@ -282,22 +287,22 @@ export function SubpageLayout({
 
             <div className="border-l border-white/10 pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-white/10 max-[768px]:pt-[34px] overflow-hidden">
               <iframe
-                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
+                src={`https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed&hl=${locale}`}
                 width="100%"
                 height="300"
                 style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Lokalizacja MCRAFT"
+                title={dict.footer.mapsTitle}
               />
             </div>
 
           </div>
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
-            <span>© {new Date().getFullYear()} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
-            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">Polityka prywatności</Link>
-            <span>Wykonanie: <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
+            <span>© {new Date().getFullYear()} {dict.footer.copyrightSuffix}</span>
+            <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">{dict.footer.privacyPolicy}</Link>
+            <span>{dict.footer.builtBy} <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
           </div>
         </div>
       </footer>

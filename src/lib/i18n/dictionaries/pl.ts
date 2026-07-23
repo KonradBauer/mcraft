@@ -15,6 +15,10 @@ export const pl = {
     eyebrow: 'Dr inż.',
     ctaMoreInfo: 'Dowiedz się więcej',
     fallbackSubtitle: 'Inżynier spawalnik\nIWE / IWI / VT2 / PT2',
+    theoryLabel: 'Teoria',
+    experienceLabel: 'Doświadczenie',
+    practiceLabel: 'Praktyka',
+    quote: 'Doświadczeniem buduję\nmost pomiędzy teorią\na praktyką.',
   },
   about: {
     eyebrow: 'Kim jestem?',
@@ -41,7 +45,7 @@ export const pl = {
     eyebrow: 'Porozmawiajmy o Twoim projekcie',
     title: 'Skontaktuj się',
     mapsTitle: 'Lokalizacja MCRAFT',
-    copyright: (year: number) => `© ${year} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.`,
+    copyrightSuffix: 'MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.',
     privacyPolicy: 'Polityka prywatności',
     builtBy: 'Wykonanie:',
   },
@@ -58,11 +62,11 @@ export const pl = {
   },
   gallery: {
     noPhotos: 'Brak zdjęć',
-    zoomAria: (alt: string) => `Powiększ: ${alt}`,
+    zoomAriaLabel: 'Powiększ',
     closeGalleryAria: 'Zamknij galerię',
     prevPhotoAria: 'Poprzednie zdjęcie',
     nextPhotoAria: 'Następne zdjęcie',
-    photoAria: (index: number) => `Zdjęcie ${index}`,
+    photoAriaLabel: 'Zdjęcie',
   },
   modal: {
     closeAria: 'Zamknij',
