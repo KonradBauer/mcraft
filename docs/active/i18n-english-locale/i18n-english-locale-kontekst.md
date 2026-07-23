@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-21
+**Ostatnia aktualizacja:** 2026-07-23
 
 ## Powiazane pliki
 
@@ -57,6 +57,25 @@
 - Faza 7 zalezy od Fazy 2 (`getLocale()`) i Fazy 3 (slownik).
 - Faza 8 zalezy od Fazy 2 i Fazy 3.
 - Fazy 1, 2, 3 nie zaleza od siebie nawzajem — mozna je prowadzic rownolegle/w dowolnej kolejnosci.
+
+## Faza 1 — wykonanie (2026-07-23)
+
+Ukonczona. Przelacznik jezyka (Faza 4) bedzie w formie dropdown w nawigacji (decyzja usera, nadpisuje "reczne" placeholder z checklisty).
+
+### Blokady (rozwiazane)
+
+**Payload `required: true` + `localized: true` blokuje stopniowe tlumaczenie EN.**
+Payload egzekwuje `required` osobno per locale. Eksperyment: probe zapisania SAMEGO `title` w locale `en` (bez dotykania innych pol) konczyla sie bledem walidacji o brakujacych tlumaczeniach INNYCH wymaganych, zlokalizowanych pol tego samego dokumentu (np. `scopeItems[].text`, `StatTile.label`/`description`) - mimo ze w ogole nie byly edytowane w tym zapisie. To udokumentowane zachowanie Payloada (required = wymagane w KAZDYM zapisywanym locale), nie blad implementacji.
+Konflikt z R4/decyzja planu "klient uzupelnia tlumaczenia stopniowo" - klient nie mogby zapisac zadnej czesciowej wersji EN bez przetlumaczenia od razu WSZYSTKICH wymaganych pol dokumentu.
+**Rozwiazanie (potwierdzone przez usera):** usunieto `required: true` ze wszystkich pol, ktore staly sie `localized: true` (patrz checklist Fazy 1). Walidacja obecnosci danych w PL pozostaje odpowiedzialnoscia warstwy frontu (mappery w `servicePageData.ts` i komponenty filtruja/fallbackuja brakujace wartosci), nie Payload schema.
+
+### Odkryty gotcha: array items bez `id` przy zapisie innego locale
+
+Gdy pole-tablica (np. `BioModal.sections`) NIE jest samo w sobie `localized`, tylko jego pola-liscie (`title`, `content`) sa - zapisanie nowego arraya BEZ `id` istniejacego elementu tworzy NOWY element (traci wartosci innych locale dla tego "miejsca"). Kazda aktualizacja elementu array w innym locale MUSI przekazac `id` istniejacego elementu, inaczej dane z poprzednich locale dla tego elementu znikaja. Real admin UI nie ma tego problemu (edytuje ten sam zaladowany dokument/formularz), ale dotyczy to skryptow/testow uzywajacych Local API bezposrednio.
+
+### Konsekwencja typow (naprawiona w tej samej fazie, minimalny zakres)
+
+Usuniecie `required: true` zmienilo generowane typy z `string` na `string | null | undefined`, co zepsulo typecheck w `src/lib/servicePageData.ts`, `src/components/mcraft/ModalProvider.tsx` i `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx`. Naprawiono minimalnie (filtrowanie niekompletnych wpisow / `?? ''` fallback), BEZ wchodzenia w zakres Fazy 6 (podmiana na slownik).
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

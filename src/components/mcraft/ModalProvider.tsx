@@ -98,7 +98,7 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
               <ModalBodySection title="Doświadczenie zawodowe">
                 <ul className="flex flex-col gap-2">
                   {cvModal.experience.map((item) => (
-                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} sub={item.company ?? undefined} />
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description ?? ''} sub={item.company ?? undefined} />
                   ))}
                 </ul>
               </ModalBodySection>
@@ -107,7 +107,7 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
               <ModalBodySection title="Kwalifikacje">
                 <ul className="flex flex-col gap-2">
                   {cvModal.qualifications.map((item) => (
-                    <CvLi key={item.id ?? item.code} year={item.code} title={item.description} />
+                    <CvLi key={item.id ?? item.code} year={item.code} title={item.description ?? ''} />
                   ))}
                 </ul>
               </ModalBodySection>
@@ -116,7 +116,7 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
               <ModalBodySection title="Edukacja">
                 <ul className="flex flex-col gap-2">
                   {cvModal.education.map((item) => (
-                    <CvLi key={item.id ?? item.year + item.institution} year={item.year} title={item.institution} sub={item.description ?? undefined} />
+                    <CvLi key={item.id ?? item.year + item.institution} year={item.year} title={item.institution ?? ''} sub={item.description ?? undefined} />
                   ))}
                 </ul>
               </ModalBodySection>
@@ -125,7 +125,7 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
               <ModalBodySection title="Dodatkowe kwalifikacje">
                 <ul className="flex flex-col gap-2">
                   {cvModal.additionalQualifications.map((item) => (
-                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} />
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description ?? ''} />
                   ))}
                 </ul>
               </ModalBodySection>
@@ -198,13 +198,16 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
 }
 
 function ModalBio({ bioModal }: { bioModal: BioModal }) {
-  const hasData = (bioModal.sections?.length ?? 0) > 0
+  const sectionsWithContent = (bioModal.sections ?? []).filter(
+    (s): s is typeof s & { title: string; content: NonNullable<typeof s.content> } => Boolean(s.title) && Boolean(s.content),
+  )
+  const hasData = sectionsWithContent.length > 0
   return (
     <>
       <ModalHead eyebrowText="Więcej o mnie" title="Michał Macherzyński" sub="Życiorys - droga i pasja" />
       <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         {hasData ? (
-          bioModal.sections!.map((section) => (
+          sectionsWithContent.map((section) => (
             <ModalBodySection key={section.id ?? section.title} title={section.title}>
               <div className="prose-mcraft">
                 <RichText data={section.content} />

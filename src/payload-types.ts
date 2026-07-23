@@ -94,7 +94,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('pl' | 'en') | ('pl' | 'en')[];
   globals: {
     'hero-section': HeroSection;
     'about-section': AboutSection;
@@ -107,7 +107,7 @@ export interface Config {
     'cv-modal': CvModalSelect<false> | CvModalSelect<true>;
     'bio-modal': BioModalSelect<false> | BioModalSelect<true>;
   };
-  locale: null;
+  locale: 'pl' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -205,7 +205,10 @@ export interface Document {
 export interface StatTile {
   id: string;
   number: string;
-  label: string;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
+  label?: string | null;
   /**
    * Ikona wyświetlana przy kafelku na stronie i w popupie
    */
@@ -248,7 +251,10 @@ export interface StatTile {
         | 'Calendar'
       )
     | null;
-  description: string;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
+  description?: string | null;
   /**
    * Mniejsza liczba = wyświetla się wcześniej
    */
@@ -266,8 +272,17 @@ export interface ServicePage {
    * Hardcoded - nie zmieniaj.
    */
   slug: string;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   eyebrow?: string | null;
-  title: string;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
+  title?: string | null;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   description?: string | null;
   scopeItems?:
     | {
@@ -311,23 +326,29 @@ export interface ServicePage {
               | 'Zap'
             )
           | null;
-        text: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        text?: string | null;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
         description?: string | null;
         /**
-         * Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.
+         * Jeśli puste, w oknie modal użyty zostanie krótki opis z karty. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
          */
         modalDescription?: string | null;
         id?: string | null;
       }[]
     | null;
   /**
-   * Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.
+   * Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   audienceTitle?: string | null;
   audienceBulletStyle?: ('short-line' | 'check' | 'step-number' | 'vertical-accent' | 'arrow' | 'plus') | null;
   audienceItems?:
     | {
-        text: {
+        text?: {
           root: {
             type: string;
             children: {
@@ -341,7 +362,7 @@ export interface ServicePage {
             version: number;
           };
           [k: string]: unknown;
-        };
+        } | null;
         id?: string | null;
       }[]
     | null;
@@ -350,11 +371,14 @@ export interface ServicePage {
    */
   additionalSections?:
     | {
-        title: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        title?: string | null;
         bulletStyle?: ('short-line' | 'check' | 'step-number' | 'vertical-accent' | 'arrow' | 'plus') | null;
         items?:
           | {
-              text: {
+              text?: {
                 root: {
                   type: string;
                   children: {
@@ -368,7 +392,7 @@ export interface ServicePage {
                   version: number;
                 };
                 [k: string]: unknown;
-              };
+              } | null;
               id?: string | null;
             }[]
           | null;
@@ -376,11 +400,11 @@ export interface ServicePage {
       }[]
     | null;
   /**
-   * Tekst nad przyciskiem "Skontaktuj się" na dole podstrony.
+   * Tekst nad przyciskiem "Skontaktuj się" na dole podstrony. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   ctaHeader?: string | null;
   /**
-   * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej
+   * Tekst widoczny w sekcji "Obszary działalności" na stronie głównej. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   thumbnailTitle?: string | null;
   /**
@@ -400,7 +424,10 @@ export interface ServicePage {
  */
 export interface PortfolioProject {
   id: string;
-  title: string;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
+  title?: string | null;
   /**
    * Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy
    */
@@ -409,6 +436,9 @@ export interface PortfolioProject {
    * Tylko Meble premium lub Konstrukcje stalowe
    */
   servicePage: string | ServicePage;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   description?: {
     root: {
       type: string;
@@ -428,6 +458,9 @@ export interface PortfolioProject {
   images?:
     | {
         image: string | Media;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
         alt?: string | null;
         id?: string | null;
       }[]
@@ -712,7 +745,13 @@ export interface HeroSection {
   id: string;
   backgroundImage?: (string | null) | Media;
   personPhoto?: (string | null) | Media;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   subtitle?: string | null;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   description?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -724,6 +763,9 @@ export interface HeroSection {
 export interface AboutSection {
   id: string;
   portraitPhoto?: (string | null) | Media;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   bioText?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -737,7 +779,13 @@ export interface CvModal {
   experience?:
     | {
         year: string;
-        description: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        description?: string | null;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
         company?: string | null;
         id?: string | null;
       }[]
@@ -745,14 +793,23 @@ export interface CvModal {
   qualifications?:
     | {
         code: string;
-        description: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
   education?:
     | {
         year: string;
-        institution: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        institution?: string | null;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
         description?: string | null;
         id?: string | null;
       }[]
@@ -760,11 +817,20 @@ export interface CvModal {
   additionalQualifications?:
     | {
         year: string;
-        description: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        description?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   skills?: string | null;
+  /**
+   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+   */
   interests?: string | null;
   cvFile?: (string | null) | Document;
   updatedAt?: string | null;
@@ -778,8 +844,14 @@ export interface BioModal {
   id: string;
   sections?:
     | {
-        title: string;
-        content: {
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        title?: string | null;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        content?: {
           root: {
             type: string;
             children: {
@@ -793,7 +865,7 @@ export interface BioModal {
             version: number;
           };
           [k: string]: unknown;
-        };
+        } | null;
         id?: string | null;
       }[]
     | null;

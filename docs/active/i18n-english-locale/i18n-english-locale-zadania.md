@@ -5,24 +5,26 @@
 
 ---
 
-## Faza 1 — Payload localization: config, flagi pol, migracja danych
+## Faza 1 — Payload localization: config, flagi pol, migracja danych ✅
 
-- [ ] Dodaj `localization: { locales: [{code:'pl',label:'Polski'},{code:'en',label:'English'}], defaultLocale:'pl', fallback:true }` do `src/payload.config.ts`
-- [ ] Oznacz `localized: true` w `src/collections/ServicePage.ts`: `eyebrow`, `title`, `description`, `scopeItems[].text`, `scopeItems[].description`, `scopeItems[].modalDescription`, `audienceTitle`, `audienceItems[].text`, `additionalSections[].title`, `additionalSections[].items[].text`, `ctaHeader`, `thumbnailTitle`; dodaj `admin.description` hint o aktualizacji tlumaczenia
-- [ ] Oznacz `localized: true` w `src/collections/Portfolio.ts`: `title`, `description`, `images[].alt` — NIE `slug`
-- [ ] Oznacz `localized: true` w `src/globals/HeroSection.ts`: `subtitle`, `description`
-- [ ] Oznacz `localized: true` w `src/globals/AboutSection.ts`: `bioText`
-- [ ] Oznacz `localized: true` w `src/globals/CvModal.ts`: `experience[].description`, `experience[].company`, `qualifications[].description`, `education[].institution`, `education[].description`, `additionalQualifications[].description`, `skills`, `interests` — NIE pola `year`
-- [ ] Oznacz `localized: true` w `src/globals/BioModal.ts`: `sections[].title`, `sections[].content`
-- [ ] Oznacz `localized: true` w `src/collections/StatTile.ts`: `label`, `description` — NIE `number`
-- [ ] Uruchom `pnpm generate:types` i sprawdz ze `src/payload-types.ts` sie zregenerowal bez recznych zmian
-- [ ] Napisz `scripts/migrate-localize-content.ts` — jednorazowy, idempotentny skrypt: per dokument w kazdej dotknietej kolekcji/globalu, odczytaj plaska wartosc, zapisz jako `locale: 'pl'`; jawny `process.exit(0)`/`process.exit(1)` (wzorzec: `docs/solutions/backend-issues/2026-07-21-payload-seed-script-hangs-without-process-exit.md`)
-- [ ] Uruchom skrypt migracyjny na lokalnej kopii bazy, zweryfikuj przez Local API ze `payload.find({ locale: 'pl' })` zwraca identyczna tresc jak przed migracja
-- [ ] Test: `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja
-- [ ] Test: `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback)
-- [ ] Test: `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z ustawionym `sections[].content` w EN zwraca tresc EN, nie PL
-- [ ] Test: skrypt migracyjny uruchomiony drugi raz nie duplikuje ani nie psuje danych (idempotencja) — rozszerz `tests/int/api.int.spec.ts`
-- [ ] Weryfikacja: wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy)
+- [x] Dodaj `localization: { locales: [{code:'pl',label:'Polski'},{code:'en',label:'English'}], defaultLocale:'pl', fallback:true }` do `src/payload.config.ts`
+- [x] Oznacz `localized: true` w `src/collections/ServicePage.ts`: `eyebrow`, `title`, `description`, `scopeItems[].text`, `scopeItems[].description`, `scopeItems[].modalDescription`, `audienceTitle`, `audienceItems[].text`, `additionalSections[].title`, `additionalSections[].items[].text`, `ctaHeader`, `thumbnailTitle`; dodaj `admin.description` hint o aktualizacji tlumaczenia
+- [x] Oznacz `localized: true` w `src/collections/Portfolio.ts`: `title`, `description`, `images[].alt` — NIE `slug`
+- [x] Oznacz `localized: true` w `src/globals/HeroSection.ts`: `subtitle`, `description`
+- [x] Oznacz `localized: true` w `src/globals/AboutSection.ts`: `bioText`
+- [x] Oznacz `localized: true` w `src/globals/CvModal.ts`: `experience[].description`, `experience[].company`, `qualifications[].description`, `education[].institution`, `education[].description`, `additionalQualifications[].description`, `skills`, `interests` — NIE pola `year`
+- [x] Oznacz `localized: true` w `src/globals/BioModal.ts`: `sections[].title`, `sections[].content`
+- [x] Oznacz `localized: true` w `src/collections/StatTile.ts`: `label`, `description` — NIE `number`
+- [x] (odkryte podczas Fazy 1) Usun `required: true` ze wszystkich pol ktore stały się `localized: true` (ServicePage.title, scopeItems[].text, additionalSections[].title, richTextItemField.text, Portfolio.title, CvModal experience/qualifications/education/additionalQualifications[].description+institution, BioModal sections[].title+content, StatTile label+description) — Payload egzekwuje `required` osobno per locale, bez tego klient nie moze zapisac czesciowego tlumaczenia EN (patrz kontekst.md, Blokady)
+- [x] Uruchom `pnpm generate:types` i sprawdz ze `src/payload-types.ts` sie zregenerowal bez recznych zmian
+- [x] Napisz `scripts/migrate-localize-content.ts` — jednorazowy, idempotentny skrypt: per dokument w kazdej dotknietej kolekcji/globalu, odczytaj plaska wartosc, zapisz jako `locale: 'pl'`; jawny `process.exit(0)`/`process.exit(1)` (wzorzec: `docs/solutions/backend-issues/2026-07-21-payload-seed-script-hangs-without-process-exit.md`); pure logika w `scripts/lib/localize-migration-helpers.ts` (testowalna bez efektow ubocznych importu)
+- [x] (odkryte podczas Fazy 1) Napisz `scripts/backup-before-i18n-migration.ts` — dumpuje service-pages/portfolio-projects/stat-tiles/globals do JSON przed migracja (bezpieczenstwo produkcyjnego wdrozenia)
+- [x] Uruchom skrypt migracyjny na lokalnej kopii bazy, zweryfikuj przez Local API ze `payload.find({ locale: 'pl' })` zwraca identyczna tresc jak przed migracja
+- [x] Test: `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja
+- [x] Test: `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback)
+- [x] Test: `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z ustawionym `sections[].content` w EN zwraca tresc EN, nie PL
+- [x] Test: skrypt migracyjny uruchomiony drugi raz nie duplikuje ani nie psuje danych (idempotencja) — rozszerzono `tests/int/api.int.spec.ts`
+- [x] Weryfikacja: wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy)
 
 ---
 

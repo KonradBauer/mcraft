@@ -22,12 +22,19 @@ export const CvModal: GlobalConfig = {
           name: 'description',
           label: 'Stanowisko',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         {
           name: 'company',
           label: 'Firma / instytucja',
           type: 'text',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
       ],
     },
@@ -46,7 +53,10 @@ export const CvModal: GlobalConfig = {
           name: 'description',
           label: 'Opis',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
       ],
     },
@@ -65,12 +75,19 @@ export const CvModal: GlobalConfig = {
           name: 'institution',
           label: 'Uczelnia / instytucja',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         {
           name: 'description',
           label: 'Opis / kierunek',
           type: 'text',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
       ],
     },
@@ -89,7 +106,10 @@ export const CvModal: GlobalConfig = {
           name: 'description',
           label: 'Opis',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
       ],
     },
@@ -97,11 +117,19 @@ export const CvModal: GlobalConfig = {
       name: 'skills',
       label: 'Umiejętności (tekst)',
       type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'interests',
       label: 'Zainteresowania i hobby',
       type: 'text',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'cvFile',

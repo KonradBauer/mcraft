@@ -113,7 +113,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ## Implementation Units
 
-- [ ] **Unit 1: Payload localization - config, flagi pol, migracja danych**
+- [x] **Unit 1: Payload localization - config, flagi pol, migracja danych** ✅
 
 **Cel:** Wlaczyc natywna lokalizacje Payload, oznaczyc wszystkie kwalifikujace sie pola jako `localized: true` we wszystkich 6 kolekcjach/globalach, zmigrowac istniejaca produkcyjna tresc PL do ksztaltu locale-keyed bez utraty danych.
 
@@ -144,13 +144,15 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejace skrypty w `scripts/` (np. `seed-service-sections.ts`) - styl, idempotencja.
 
 **Scenariusze testowe:**
-- [Unit] `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja (zero utraty danych).
-- [Unit] `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback Payload).
-- [Unit] `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z bezposrednio ustawionym `sections[].content` w EN zwraca tresc EN, nie PL.
-- [Unit] Skrypt migracyjny uruchomiony drugi raz (na juz zmigrowanych danych) nie duplikuje ani nie psuje danych (idempotencja).
+- [x] [Unit] `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja (zero utraty danych).
+- [x] [Unit] `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback Payload).
+- [x] [Unit] `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z bezposrednio ustawionym `sections[].content` w EN zwraca tresc EN, nie PL.
+- [x] [Unit] Skrypt migracyjny uruchomiony drugi raz (na juz zmigrowanych danych) nie duplikuje ani nie psuje danych (idempotencja).
 
 **Weryfikacja:**
-- Wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna istniejaca produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy, nie tylko typami).
+- [x] Wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna istniejaca produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy, nie tylko typami).
+
+**Odkryte podczas implementacji (2026-07-23):** Payload egzekwuje `required: true` osobno per locale - z `localized: true` zachowanym blokowaloby to zapisywanie czesciowych tlumaczen EN (klient musialby przetlumaczyc WSZYSTKIE wymagane pola dokumentu na raz). Usunieto `required: true` ze wszystkich pol, ktore staly sie `localized: true` (decyzja potwierdzona przez usera). Szczegoly: [i18n-english-locale-kontekst.md](../active/i18n-english-locale/i18n-english-locale-kontekst.md#faza-1--wykonanie-2026-07-23).
 
 ---
 

@@ -84,7 +84,7 @@ export default async function RealizacjaPage({ params }: Props) {
 
   const galleryImages = (item.images ?? []).reduce<{ url: string; alt: string }[]>((acc, g) => {
     const url = resolveUrl(g.image)
-    if (url) acc.push({ url, alt: g.alt ?? item.title })
+    if (url) acc.push({ url, alt: g.alt ?? item.title ?? '' })
     return acc
   }, [])
 
