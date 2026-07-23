@@ -3,6 +3,7 @@ import { Barlow, Great_Vibes, Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import React from 'react'
 import { PageLoader } from '@/components/mcraft/PageLoader'
+import { getLocale } from '@/lib/i18n/locale'
 import './styles.css'
 
 const montserrat = Montserrat({
@@ -115,9 +116,11 @@ const schemaOrg = JSON.stringify({
   ],
 })
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale()
+
   return (
-    <html lang="pl" className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
+    <html lang={locale} className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
       <body>
         <PageLoader />
         {children}

@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 2)
 
 ## Powiazane pliki
 
@@ -76,6 +76,16 @@ Gdy pole-tablica (np. `BioModal.sections`) NIE jest samo w sobie `localized`, ty
 ### Konsekwencja typow (naprawiona w tej samej fazie, minimalny zakres)
 
 Usuniecie `required: true` zmienilo generowane typy z `string` na `string | null | undefined`, co zepsulo typecheck w `src/lib/servicePageData.ts`, `src/components/mcraft/ModalProvider.tsx` i `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx`. Naprawiono minimalnie (filtrowanie niekompletnych wpisow / `?? ''` fallback), BEZ wchodzenia w zakres Fazy 6 (podmiana na slownik).
+
+## Faza 2 — wykonanie (2026-07-23)
+
+Ukonczona. `src/lib/i18n/locale.ts` (`getLocale`, `Locale` type, `LOCALE_COOKIE_NAME`), `src/lib/i18n/setLocale.ts` (server action), `layout.tsx` uzywa `getLocale()` do `<html lang>`.
+
+**Odchylenie od checklisty:** checklist mowil "przekaz locale w dol jako prop" z RootLayout do dzieci - technicznie niewykonalne w App Router (RootLayout nie kontroluje wewnetrznej struktury `children`, ktora jest juz zbudowanym drzewem strony dostarczonym przez routing Next.js; nie da sie doinjectowac propsa bez `cloneElement`, co byloby nieidiomatyczne i kruche). Rzeczywisty wzorzec przekazywania `locale`/`dict` w dol to kazdy `page.tsx` woła `getLocale()` niezaleznie i przekazuje w dol do wlasnych komponentow - to juz zaplanowane wprost w Fazie 5 (Unit 5 planu technicznego). RootLayout w tej fazie dostarcza tylko `<html lang>`.
+
+**Test next/headers w Vitest:** `cookies()` z `next/headers` wymaga kontekstu requestu Next.js i rzuca poza nim - `tests/int/locale.int.spec.ts` mockuje caly modul `next/headers` (`vi.mock`) i dynamicznie importuje `getLocale` per test, zeby uniknac tego problemu. Wzorzec do powielenia w Fazie 7 (metadata) jesli tam tez potrzebny bedzie test dotykajacy `cookies()`.
+
+Build (`pnpm run build`) przeszedl czysto po zmianie RootLayout na async server component.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

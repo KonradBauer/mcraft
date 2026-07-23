@@ -28,15 +28,15 @@
 
 ---
 
-## Faza 2 — Rozpoznawanie i trwalosc jezyka (cookie)
+## Faza 2 — Rozpoznawanie i trwalosc jezyka (cookie) ✅
 
-- [ ] Stworz `src/lib/i18n/locale.ts` z `getLocale(): Promise<Locale>` — czyta cookie `locale`, waliduje przeciw `['pl','en']`, domyslnie `'pl'`
-- [ ] Stworz `src/lib/i18n/setLocale.ts` — `'use server'`, `setLocale(locale: Locale)` ustawiajacy cookie (`path:'/'`, `maxAge: 31536000`, `sameSite:'lax'`)
-- [ ] Zmodyfikuj `src/app/(frontend)/layout.tsx` — wywolaj `getLocale()`, przekaz `locale` w dol jako prop, uzyj do `<html lang={locale}>`
-- [ ] Test: brak cookie → `getLocale()` zwraca `'pl'`
-- [ ] Test: cookie `'en'` → `getLocale()` zwraca `'en'`
-- [ ] Test: cookie z nieprawidlowa wartoscia (np. `'de'`, `''`) → `getLocale()` zwraca `'pl'`, nie rzuca wyjatkiem — stworz `tests/int/locale.int.spec.ts`
-- [ ] Weryfikacja: `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request
+- [x] Stworz `src/lib/i18n/locale.ts` z `getLocale(): Promise<Locale>` — czyta cookie `locale`, waliduje przeciw `['pl','en']`, domyslnie `'pl'`
+- [x] Stworz `src/lib/i18n/setLocale.ts` — `'use server'`, `setLocale(locale: Locale)` ustawiajacy cookie (`path:'/'`, `maxAge: 31536000`, `sameSite:'lax'`)
+- [x] Zmodyfikuj `src/app/(frontend)/layout.tsx` — wywolaj `getLocale()`, uzyj do `<html lang={locale}>` (RootLayout jest teraz async server component)
+- [x] Test: brak cookie → `getLocale()` zwraca `'pl'`
+- [x] Test: cookie `'en'` → `getLocale()` zwraca `'en'`
+- [x] Test: cookie z nieprawidlowa wartoscia (np. `'de'`, `''`) → `getLocale()` zwraca `'pl'`, nie rzuca wyjatkiem — stworzono `tests/int/locale.int.spec.ts`
+- [x] Weryfikacja: `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request
 
 ---
 

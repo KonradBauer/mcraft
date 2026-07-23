@@ -156,7 +156,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 2: Rozpoznawanie i trwalosc jezyka (cookie)**
+- [x] **Unit 2: Rozpoznawanie i trwalosc jezyka (cookie)** ✅
 
 **Cel:** Serwerowy mechanizm odczytu wybranego jezyka (domyslnie PL) i server action do jego zmiany, bez zaleznosci od konkretnego UI.
 
@@ -178,12 +178,14 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `src/lib/stringToLexical.ts` - styl malego, czystego modulu w `src/lib/`.
 
 **Scenariusze testowe:**
-- [Unit] Brak cookie -> `getLocale()` zwraca `'pl'`.
-- [Unit] Cookie z wartoscia `'en'` -> `getLocale()` zwraca `'en'`.
-- [Unit] Cookie z nieprawidlowa wartoscia (np. `'de'`, `''`, uszkodzony string) -> `getLocale()` zwraca `'pl'` (bezpieczny fallback, nie rzuca wyjatkiem).
+- [x] [Unit] Brak cookie -> `getLocale()` zwraca `'pl'`.
+- [x] [Unit] Cookie z wartoscia `'en'` -> `getLocale()` zwraca `'en'`.
+- [x] [Unit] Cookie z nieprawidlowa wartoscia (np. `'de'`, `''`, uszkodzony string) -> `getLocale()` zwraca `'pl'` (bezpieczny fallback, nie rzuca wyjatkiem).
 
 **Weryfikacja:**
-- `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request.
+- [x] `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request.
+
+**Odchylenie (2026-07-23):** "przekaz locale w dol jako prop" z RootLayout nie jest technicznie wykonalne w Next.js App Router (RootLayout nie kontroluje `children`). Kazdy `page.tsx` (Unit 5) wola `getLocale()` niezaleznie zamiast dziedziczyc przez propsy z layoutu.
 
 ---
 
