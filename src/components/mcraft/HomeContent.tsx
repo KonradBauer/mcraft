@@ -237,7 +237,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             <div className="min-w-0">
               <span className={`${eyebrow} mb-[14px]`}>{dict.about.eyebrow}</span>
               <h2 className="font-medium text-[27px] tracking-[0.02em] text-dark-text mt-[14px] mb-[22px] uppercase">
-                {dict.modal.cv.title}
+                {preserveAcronymCase(dict.modal.cv.title)}
               </h2>
               <p className="text-[15px] leading-[1.85] text-[#56544e]">
                 {bioText}
