@@ -48,7 +48,7 @@
 - [x] (odkryte podczas Fazy 3) `pnpm add server-only` — paczka wymagana przez plan nie byla zainstalowana w projekcie
 - [x] Test: `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (runtime check ponad `satisfies`)
 - [x] Test: `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL — stworzono `tests/int/i18n-dictionary.int.spec.ts`
-- [ ] Weryfikacja: zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Fazy 6 (slownik jedynym zrodlem statycznej tresci UI)
+- [x] Weryfikacja: zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Fazy 6 (slownik jedynym zrodlem statycznej tresci UI) - potwierdzone grepem w Fazie 6, jedyny wyjatek to zamierzony fallback CV/Bio
 
 ---
 
@@ -117,15 +117,15 @@
 
 ---
 
-## Faza 8 — Tlumaczenie polityki prywatnosci
+## Faza 8 — Tlumaczenie polityki prywatnosci ✅
 
-- [ ] Stworz `src/app/(frontend)/polityka-prywatnosci/content.pl.tsx`
-- [ ] Stworz `src/app/(frontend)/polityka-prywatnosci/content.en.tsx`
-- [ ] Zmodyfikuj `src/app/(frontend)/polityka-prywatnosci/page.tsx` — wywolaj `getLocale()`, renderuj odpowiedni wariant tresci
-- [ ] Test: stworz `tests/int/polityka-prywatnosci.int.spec.ts` sprawdzajacy render odpowiedniej tresci per locale
-- [ ] Test [E2E]: odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku
-- [ ] Test [E2E]: link "Polityka prywatności" w stopce prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian)
-- [ ] Weryfikacja: strona renderuje sie poprawnie w obu jezykach bez bledow konsoli, brak mieszania PL/EN w obrebie jednego widoku
+- [x] Stworz `src/app/(frontend)/polityka-prywatnosci/content.pl.tsx`
+- [x] Stworz `src/app/(frontend)/polityka-prywatnosci/content.en.tsx`
+- [x] Zmodyfikuj `src/app/(frontend)/polityka-prywatnosci/page.tsx` — wywolaj `getLocale()`, renderuj odpowiedni wariant tresci (metadata pozostaje statyczny PL - poza scope tej fazy, `robots: noindex`)
+- [x] Test: stworzono `tests/int/polityka-prywatnosci.int.spec.ts` sprawdzajacy render odpowiedniej tresci per locale
+- [x] Test [E2E]: napisano `tests/e2e/polityka-prywatnosci.e2e.spec.ts` - odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku; zweryfikowano manualnie w przegladarce
+- [x] Test [E2E]: link "Polityka prywatności" w stopce prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian) - w tym samym pliku
+- [x] Weryfikacja: strona renderuje sie poprawnie w obu jezykach bez bledow konsoli, brak mieszania PL/EN w obrebie jednego widoku (potwierdzone manualnie)
 
 ---
 

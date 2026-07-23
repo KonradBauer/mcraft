@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 7)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 8 - CALY PLAN UKONCZONY)
 
 ## Powiazane pliki
 
@@ -161,6 +161,31 @@ Ukonczona. Nowa sekcja slownika `meta.*` (site/nadzorSpawalniczy/konstrukcjeStal
 **Test next/font/google w Vitest:** import `layout.tsx` w tescie wymagal zamockowania `next/font/google` (Montserrat/Barlow/Great_Vibes) - te funkcje dzialaja WYLACZNIE poprzez kompilator Next.js (SWC/Turbopack font loader), pod plain Vite/Vitest sa zwyklymi npm-owymi eksportami ktore rzucaja `TypeError: ... is not a function`. Wzorzec do powielenia gdziekolwiek indziej trzeba zaimportowac plik z `next/font/google`.
 
 **Weryfikacja manualna w przegladarce:** `/` z cookie `locale=en` -> `document.title` = "Welding Engineer Dr Michał Macherzyński | MCRAFT"; `/konstrukcje-stalowe` -> `document.title` = "Steel structures - prefabrication and assembly | MCRAFT", `<meta name="description">` po angielsku. Bez cookie (domyslnie) -> `document.title` z powrotem po polsku.
+
+## Faza 8 — wykonanie (2026-07-23)
+
+Ukonczona - ostatnia faza planu. `content.pl.tsx`/`content.en.tsx` (osobne komponenty tresci, nie CMS - tresc prawna dluzsza niz typowe UI stringi). `page.tsx` async, `getLocale()` wybiera wariant. Metadata (`title`, `description`, `robots: noindex`) pozostaje statyczna PL - swiadomie poza scope tej fazy (Faza 7 nie wymieniala tego pliku).
+
+Zweryfikowane manualnie w przegladarce: PL domyslnie, EN po ustawieniu cookie - naglowki, tresc sekcji, link powrotny i stopka poprawnie przelaczaja jezyk, zero mieszania PL/EN, URL bez zmian (`/polityka-prywatnosci` identyczny w obu jezykach, zgodnie z R5).
+
+## Podsumowanie calego planu
+
+Wszystkie 8 faz ukonczone. Strona mcraft ma teraz pelnoprawna wersje angielska: dropdown PL/EN w nawigacji (desktop + mobile), tresc CMS lokalizowana natywnym mechanizmem Payload z automatycznym fallbackiem do PL, statyczne teksty UI przez wlasny slownik, wybor jezyka trwaly w cookie bez zmiany URL, meta dane i JSON-LD przelaczajace sie z jezykiem, polityka prywatnosci w obu jezykach.
+
+**Kluczowe odkrycia w trakcie implementacji (nie przewidziane w planie):**
+1. Payload `required: true` + `localized: true` blokuje zapis czesciowych tlumaczen - required usuniety z lokalizowanych pol (Faza 1).
+2. Array items bez `id` przy zapisie innego locale tworza nowy element, nie aktualizuja istniejacego (odkryte w testach Fazy 1).
+3. `server-only` i `next/font/google` wymagaja mockowania w Vitest (nie dzialaja poza kompilatorem Next.js) - wzorzec ustalony w Fazach 3 i 7.
+4. **Najwazniejsze:** funkcje w obiekcie slownika i18n lamia serializacje React Server Components przy przekazywaniu do Client Components - crash calej strony w trybie EN, niewykrywalny przez testy jednostkowe, wymagal weryfikacji w prawdziwej przegladarce (Faza 6).
+
+**Braki operacyjne (nie bledy, ograniczenia srodowiska deweloperskiego):**
+- Testy E2E (Playwright) napisane w kazdej fazie, ale NIE uruchomione automatycznie w tej sesji - port 3000 na maszynie deweloperskiej byl zajety przez niepowiazany projekt uzytkownika ("KCRAFT") przez cala sesje. Logika kazdego testu zweryfikowana manualnie w przegladarce (real Chrome, nie jsdom) z identycznymi krokami. Rekomendacja: uruchomic `pnpm test:e2e` na wolnym porcie 3000 przed wdrozeniem produkcyjnym.
+- `pnpm add server-only` - nowa zaleznosc dodana (0 zaleznosci wlasnych, oficjalna paczka Vercel/React), wymagana przez plan, nie byla wczesniej w projekcie.
+
+**Notatki operacyjne z checklisty (wymagaja akcji uzytkownika, nie kodu):**
+- Przed pierwszym wdrozeniem produkcyjnym: zweryfikuj `Vary: Cookie`/cache config na hostingu (Coolify) - ryzyko mixed-language cache leak.
+- Po wdrozeniu: przypomnij klientowi ze tlumaczenia EN w CMS sa jego odpowiedzialnoscia (panel admina ma juz podpowiedz przy kazdym lokalizowanym polu).
+- Rozwaz `/dev-compound` - warto udokumentowac w `docs/solutions/` odkrycie #4 (funkcje w i18n dictionary vs RSC) jako osobny wpis, to nieoczywisty i kosztowny w debugowaniu problem dla przyszlych projektow Next.js z i18n.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

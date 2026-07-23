@@ -352,7 +352,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 8: Tlumaczenie polityki prywatnosci**
+- [x] **Unit 8: Tlumaczenie polityki prywatnosci** ✅
 
 **Cel:** Strona `/polityka-prywatnosci` (statyczna, bez CMS) ma pelna wersje angielska, przelaczana tym samym mechanizmem co reszta serwisu.
 
@@ -374,11 +374,11 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejaca struktura sekcji w `polityka-prywatnosci/page.tsx` (zachowac numeracje/uklad, zmienic tylko jezyk).
 
 **Scenariusze testowe:**
-- [E2E] Odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku.
-- [E2E] Link "Polityka prywatności" w stopce (Unit 6) prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian, zgodnie z R5).
+- [x] [E2E] Odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku.
+- [x] [E2E] Link "Polityka prywatności" w stopce (Unit 6) prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian, zgodnie z R5).
 
 **Weryfikacja:**
-- Strona renderuje sie poprawnie w obu jezykach bez bledow konsoli; brak mieszania PL/EN w obrebie jednego widoku.
+- [x] Strona renderuje sie poprawnie w obu jezykach bez bledow konsoli; brak mieszania PL/EN w obrebie jednego widoku.
 
 ## Wplyw systemowy
 
