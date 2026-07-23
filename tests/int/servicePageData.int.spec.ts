@@ -81,4 +81,19 @@ describe('toSubpageLayoutProps', () => {
     const result = toSubpageLayoutProps(undefined, FALLBACK)
     expect(result).toBe(FALLBACK)
   })
+
+  it('maps data correctly regardless of which locale it was fetched in (mapper is locale-agnostic)', () => {
+    const englishPage: ServicePage = {
+      ...BASE_PAGE,
+      title: 'Steel structures',
+      description: 'Design and execution of steel structures.',
+      scopeItems: [{ text: 'Industrial structures and halls', id: 'item-1' }],
+    }
+    const result = toSubpageLayoutProps(englishPage, FALLBACK)
+    expect(result.title).toBe('Steel structures')
+    expect(result.description).toBe('Design and execution of steel structures.')
+    expect(result.items).toEqual([
+      { icon: null, text: 'Industrial structures and halls', description: null, modalDescription: null },
+    ])
+  })
 })

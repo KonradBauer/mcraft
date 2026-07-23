@@ -10,6 +10,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
+import { getLocale } from '@/lib/i18n/locale'
 
 const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe']
 
@@ -65,12 +66,14 @@ export default async function RealizacjaPage({ params }: Props) {
   if (!PORTFOLIO_PAGES.includes(serviceSlug)) notFound()
 
   const payload = await getPayload({ config })
+  const locale = await getLocale()
 
   const { docs } = await payload.find({
     collection: 'portfolio-projects',
     where: { slug: { equals: slug } },
     depth: 2,
     limit: 1,
+    locale,
   })
 
   const item = docs[0]
@@ -105,7 +108,7 @@ export default async function RealizacjaPage({ params }: Props) {
               <NavRealizacjeDropdown triggerClass={navLink} />
               <Link href="/#contact" className={navLink}>Kontakt</Link>
             </div>
-            <MobileNav links={NAV_LINKS} />
+            <MobileNav links={NAV_LINKS} locale={locale} />
           </nav>
         </div>
       </div>

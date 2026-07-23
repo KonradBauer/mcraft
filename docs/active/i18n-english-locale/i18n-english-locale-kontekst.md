@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 4)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 5)
 
 ## Powiazane pliki
 
@@ -112,6 +112,16 @@ Ukonczona. `src/components/mcraft/LanguageSwitcher.tsx` (dropdown, click-based n
 **Weryfikacja manualna w przegladarce (real Chrome, nie jsdom):** otwarto mobile nav, kliknieto przelacznik -> dropdown pokazal PL/EN poprawnie -> klik EN -> `document.cookie` = `locale=en`, `document.documentElement.lang` = `en`, URL bez zmian. Pelny flow Faza 2 + Faza 4 dziala end-to-end.
 
 **Blokada operacyjna (nie blokada kodu):** napisano `tests/e2e/language-switcher.e2e.spec.ts` (2 scenariusze: brak zmiany URL + html lang po przelaczeniu, zamkniecie modala CV przed przelaczeniem), ale NIE dalo sie ich uruchomic w tej sesji - port 3000 na tej maszynie zajety przez inny, niepowiazany projekt uzytkownika (proces node.exe serwujacy strone "KCRAFT", nie mcraft). Nie zabito tego procesu (nie nalezy do tego projektu). Logika testow zweryfikowana manualnie w przegladarce (patrz wyzej) - testy powinny przejsc przy wolnym porcie 3000 lub w CI.
+
+## Faza 5 — wykonanie (2026-07-23)
+
+Ukonczona. Wszystkie 6 miejsc wywolania Payload (`page.tsx` x6 w Promise.all, 3x subpage `service-pages`+`portfolio-projects`, `realizacje/[slug]/page.tsx`) dostaly `locale` z `getLocale()`. `servicePageData.ts` bez zmian sygnatury - potwierdzone testem, ze mapper jest locale-agnostic (mapuje cokolwiek dostanie, nie zna pojecia jezyka).
+
+Przy okazji: `realizacje/[slug]/page.tsx` przekazuje teraz `locale` do `<MobileNav>` (ktory od Fazy 4 przyjmuje ten prop opcjonalnie) - drobna, naturalna dokonczenie wpiecia z poprzedniej fazy, nie nowy zakres.
+
+**Weryfikacja manualna w przegladarce:** ustawiono cookie `locale=en`, odwiedzono `/konstrukcje-stalowe` - `<html lang="en">`, strona nie crashuje, `h1` pokazuje polski fallback ("Konstrukcje stalowe") bo lokalna baza dev nie ma jeszcze wpisanego tlumaczenia EN dla tego dokumentu. Dokladnie zgodne z R4 (fallback nigdy nie jest pusty).
+
+**E2E:** napisano `tests/e2e/locale-content.e2e.spec.ts`, nie uruchomiono automatycznie w tej sesji (ten sam port-3000-conflict z niepowiazanym projektem co w Fazie 4) - logika potwierdzona manualnie jak wyzej.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

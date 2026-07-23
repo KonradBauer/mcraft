@@ -5,6 +5,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
 import { toSubpageLayoutProps } from '@/lib/servicePageData'
+import { getLocale } from '@/lib/i18n/locale'
 
 export const metadata: Metadata = {
   title: 'Nadzór spawalniczy - IWE / IWI / VT2 / PT2',
@@ -32,12 +33,14 @@ const FALLBACK = {
 
 export default async function NadzorSpawalniczyPage() {
   const payload = await getPayload({ config })
+  const locale = await getLocale()
   const { docs } = await payload.find({
     collection: 'service-pages',
     where: { slug: { equals: 'nadzor-spawalniczy' } },
     depth: 1,
     limit: 1,
+    locale,
   })
 
-  return <SubpageLayout {...toSubpageLayoutProps(docs[0], FALLBACK)} />
+  return <SubpageLayout {...toSubpageLayoutProps(docs[0], FALLBACK)} locale={locale} />
 }

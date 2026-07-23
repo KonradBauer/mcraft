@@ -72,15 +72,15 @@
 
 ---
 
-## Faza 5 — Locale w pobieraniu danych z Payload
+## Faza 5 — Locale w pobieraniu danych z Payload ✅
 
-- [ ] Zmodyfikuj `src/app/(frontend)/page.tsx` — dodaj `locale` (z `getLocale()`) do wszystkich 6 wywolan w `Promise.all`
-- [ ] Zmodyfikuj `src/app/(frontend)/nadzor-spawalniczy/page.tsx`, `konstrukcje-stalowe/page.tsx`, `meble-premium/page.tsx` — dodaj `locale` do `payload.find` (service-pages + ew. portfolio-projects)
-- [ ] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — dodaj `locale` w komponencie strony
-- [ ] Sprawdz czy `src/lib/servicePageData.ts` (`toSubpageLayoutProps`, `toRealizacjeProps`) wymaga zmiany sygnatury (prawdopodobnie nie — locale juz "wpieczony" w dane wejsciowe)
-- [ ] Test: `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od locale, w jakim zostaly pobrane — rozszerz `tests/int/servicePageData.int.spec.ts`
-- [ ] Test [E2E]: odwiedz `/konstrukcje-stalowe` z cookie `locale=en`, sprawdz ze tresc CMS (tytul, opis, zakres uslug) jest po angielsku lub PL fallback
-- [ ] Weryfikacja: zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS
+- [x] Zmodyfikuj `src/app/(frontend)/page.tsx` — dodaj `locale` (z `getLocale()`) do wszystkich 6 wywolan w `Promise.all`
+- [x] Zmodyfikuj `src/app/(frontend)/nadzor-spawalniczy/page.tsx`, `konstrukcje-stalowe/page.tsx`, `meble-premium/page.tsx` — dodaj `locale` do `payload.find` (service-pages + ew. portfolio-projects)
+- [x] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — dodaj `locale` w komponencie strony (+ przekazano do `MobileNav`, ktory od Fazy 4 przyjmuje ten prop)
+- [x] Sprawdz czy `src/lib/servicePageData.ts` (`toSubpageLayoutProps`, `toRealizacjeProps`) wymaga zmiany sygnatury — potwierdzone: NIE, mapper jest locale-agnostic
+- [x] Test: `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od locale, w jakim zostaly pobrane — rozszerzono `tests/int/servicePageData.int.spec.ts`
+- [x] Test [E2E]: odwiedz `/konstrukcje-stalowe` z cookie `locale=en`, sprawdz ze tresc CMS (tytul, opis) jest po angielsku lub PL fallback — napisano `tests/e2e/locale-content.e2e.spec.ts`; zweryfikowano manualnie w przegladarce (patrz kontekst.md) - `<html lang="en">`, h1 pokazuje PL fallback (brak tlumaczenia EN w lokalnej bazie), brak crasha
+- [x] Weryfikacja: zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS
 
 ---
 

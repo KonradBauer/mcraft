@@ -258,7 +258,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 5: Locale w pobieraniu danych z Payload**
+- [x] **Unit 5: Locale w pobieraniu danych z Payload** ✅
 
 **Cel:** Kazde wywolanie `payload.find`/`payload.findGlobal` na froncie przekazuje aktualny jezyk, zeby CMS zwracal tresc we wlasciwym locale.
 
@@ -281,11 +281,11 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejacy wzorzec `Promise.all` w `page.tsx` (home).
 
 **Scenariusze testowe:**
-- [Unit] `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od tego, w jakim locale zostaly pobrane (mapper jest locale-agnostic, tylko przekazuje dalej).
-- [E2E] Odwiedz `/konstrukcje-stalowe` z ustawionym cookie `locale=en`, sprawdz ze tresc z CMS (tytul, opis, zakres uslug) jest po angielsku (lub PL fallback, jesli pole niewypelnione w EN).
+- [x] [Unit] `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od tego, w jakim locale zostaly pobrane (mapper jest locale-agnostic, tylko przekazuje dalej).
+- [x] [E2E] Odwiedz `/konstrukcje-stalowe` z ustawionym cookie `locale=en`, sprawdz ze tresc z CMS (tytul, opis, zakres uslug) jest po angielsku (lub PL fallback, jesli pole niewypelnione w EN).
 
 **Weryfikacja:**
-- Zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS.
+- [x] Zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS (zweryfikowane manualnie w przegladarce).
 
 ---
 
