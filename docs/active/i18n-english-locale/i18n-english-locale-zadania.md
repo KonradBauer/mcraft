@@ -105,15 +105,15 @@
 
 ---
 
-## Faza 7 — Lokalizacja meta danych i JSON-LD
+## Faza 7 — Lokalizacja meta danych i JSON-LD ✅
 
-- [ ] Zmodyfikuj `src/app/(frontend)/layout.tsx` — `export const metadata` → `generateMetadata()`, `<html lang={locale}>`, `openGraph.locale`, opisowe pola `schemaOrg` na slownik (dane faktyczne bez zmian)
-- [ ] Zmodyfikuj `src/app/(frontend)/page.tsx`, `nadzor-spawalniczy/page.tsx`, `konstrukcje-stalowe/page.tsx`, `meble-premium/page.tsx` — statyczny `metadata` → `generateMetadata()`
-- [ ] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — istniejacy `generateMetadata` dostaje `locale`
-- [ ] Test: stworz `tests/int/metadata.int.spec.ts` sprawdzajacy ze `generateMetadata()` zwraca rozne wartosci dla `locale: 'pl'` vs `'en'`
-- [ ] Test [E2E]: odwiedz strone glowna z `locale=en`, sprawdz `document.title` i `<html lang="en">`
-- [ ] Test [E2E]: odwiedz podstrone uslugowa z `locale=en`, sprawdz ze `<meta name="description">` jest po angielsku
-- [ ] Weryfikacja: brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware)
+- [x] Zmodyfikuj `src/app/(frontend)/layout.tsx` — `export const metadata` → `generateMetadata()`, `<html lang={locale}>`, `openGraph.locale` (pl_PL/en_US), opisowe pola `schemaOrg` na slownik (dane faktyczne bez zmian)
+- [x] Zmodyfikuj `src/app/(frontend)/page.tsx`, `nadzor-spawalniczy/page.tsx`, `konstrukcje-stalowe/page.tsx`, `meble-premium/page.tsx` — statyczny `metadata` → `generateMetadata()` (page.tsx home nie mial wlasnego metadata - dziedziczy z layout.tsx, bez zmian)
+- [x] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx` — istniejacy `generateMetadata` dostaje `locale`
+- [x] Test: stworzono `tests/int/metadata.int.spec.ts` sprawdzajacy ze `generateMetadata()` zwraca rozne wartosci dla `locale: 'pl'` vs `'en'`
+- [x] Test [E2E]: zweryfikowano manualnie w przegladarce - `document.title` i `<html lang="en">` poprawne po przelaczeniu
+- [x] Test [E2E]: zweryfikowano manualnie w przegladarce - `<meta name="description">` na `/konstrukcje-stalowe` po angielsku
+- [x] Weryfikacja: brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware)
 
 ---
 

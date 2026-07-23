@@ -8,16 +8,20 @@ import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 import { getLocale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
 
-export const metadata: Metadata = {
-  title: 'Meble stalowe premium - loft i industrial',
-  description: 'Unikalne meble stalowe i loftowe tworzone z dbałością o detal: projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
-  alternates: { canonical: 'https://mcraft.com.pl/meble-premium' },
-  openGraph: {
-    title: 'Meble stalowe premium - loft i industrial',
-    description: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
-    url: 'https://mcraft.com.pl/meble-premium',
-    images: [{ url: 'https://mcraft.com.pl/og-image.png', width: 1200, height: 630 }],
-  },
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+  const dict = await getDictionary(locale)
+  return {
+    title: dict.meta.meblePremium.title,
+    description: dict.meta.meblePremium.description,
+    alternates: { canonical: 'https://mcraft.com.pl/meble-premium' },
+    openGraph: {
+      title: dict.meta.meblePremium.ogTitle,
+      description: dict.meta.meblePremium.ogDescription,
+      url: 'https://mcraft.com.pl/meble-premium',
+      images: [{ url: 'https://mcraft.com.pl/og-image.png', width: 1200, height: 630 }],
+    },
+  }
 }
 
 const FALLBACK = {

@@ -104,6 +104,36 @@ export const pl = {
     backHome: 'Wróć na stronę główną',
     footer: 'MCRAFT - Dr inż. Michał Macherzyński',
   },
+  meta: {
+    site: {
+      title: 'Inżynier spawalnik Dr inż. Michał Macherzyński | MCRAFT',
+      description: 'Dr inż. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2. Nadzór spawalniczy, konstrukcje stalowe, meble premium. Wilkowiecko, woj. śląskie.',
+      ogTitle: 'Inżynier spawalnik Dr inż. Michał Macherzyński | MCRAFT',
+      ogDescription: 'Nadzór spawalniczy, konstrukcje stalowe, meble premium. IWE/IWI/VT2/PT2. Wilkowiecko, woj. śląskie.',
+    },
+    nadzorSpawalniczy: {
+      title: 'Nadzór spawalniczy - IWE / IWI / VT2 / PT2',
+      description: 'Kompleksowy nadzór spawalniczy: kwalifikowanie technologii WPS/WPQR, badania nieniszczące VT/PT, dokumentacja jakościowa. Dr inż. Michał Macherzyński IWE/IWI.',
+      ogTitle: 'Nadzór spawalniczy - IWE / IWI | Michał Macherzyński',
+      ogDescription: 'Kwalifikowanie technologii WPS/WPQR, nadzór nad jakością złączy spawanych, badania VT/PT, dokumentacja odbiorowa.',
+    },
+    konstrukcjeStalowe: {
+      title: 'Konstrukcje stalowe - prefabrykacja i montaż',
+      description: 'Projektowanie i realizacja konstrukcji stalowych: hale przemysłowe, elementy infrastruktury, prefabrykacja w warsztacie, montaż na obiekcie. Michał Macherzyński.',
+      ogTitle: 'Konstrukcje stalowe - prefabrykacja i montaż',
+      ogDescription: 'Konstrukcje przemysłowe i hale, elementy infrastruktury, prefabrykacja w warsztacie, montaż na obiekcie.',
+    },
+    meblePremium: {
+      title: 'Meble stalowe premium - loft i industrial',
+      description: 'Unikalne meble stalowe i loftowe tworzone z dbałością o detal: projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
+      ogTitle: 'Meble stalowe premium - loft i industrial',
+      ogDescription: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
+    },
+  },
+  schemaOrg: {
+    businessDescription: 'Nadzór spawalniczy, konstrukcje stalowe i meble premium. Dr inż. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2.',
+    personDescription: 'Główny Spawalnik i Kierownik Projektów B+R w ZUGIL S.A. Ponad 18 lat doświadczenia w spawalnictwie.',
+  },
 }
 
 export type Dictionary = typeof pl

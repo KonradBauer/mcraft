@@ -322,7 +322,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 7: Lokalizacja meta danych i JSON-LD**
+- [x] **Unit 7: Lokalizacja meta danych i JSON-LD** ✅
 
 **Cel:** Tytul karty przegladarki, opis, OG/Twitter card oraz `<html lang>` przelaczaja sie z jezykiem; JSON-LD schema.org tlumaczy pola opisowe, zachowuje dane faktyczne.
 
@@ -344,11 +344,11 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejaca struktura `metadata`/`schemaOrg` w `layout.tsx` (zachowac ksztalt, zmienic tylko zrodlo tekstu).
 
 **Scenariusze testowe:**
-- [E2E] Odwiedz strone glowna z `locale=en`, sprawdz `document.title` i `<html lang="en">`.
-- [E2E] Odwiedz jedna z podstron uslugowych z `locale=en`, sprawdz ze `<meta name="description">` jest po angielsku.
+- [x] [E2E] Odwiedz strone glowna z `locale=en`, sprawdz `document.title` i `<html lang="en">`.
+- [x] [E2E] Odwiedz jedna z podstron uslugowych z `locale=en`, sprawdz ze `<meta name="description">` jest po angielsku.
 
 **Weryfikacja:**
-- Brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware).
+- [x] Brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware).
 
 ---
 

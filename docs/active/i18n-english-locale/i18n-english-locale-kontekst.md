@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 6)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 7)
 
 ## Powiazane pliki
 
@@ -153,6 +153,14 @@ Odwiedzono strone glowna, `/konstrukcje-stalowe`, `/nieistniejaca-strona-xyz` (4
 ### E2E
 
 Napisano `tests/e2e/dictionary-en.e2e.spec.ts` (4 strony + mobile nav aria-labels), NIE uruchomiono automatycznie w tej sesji - ten sam port-3000-conflict z niepowiazanym projektem uzytkownika co w poprzednich fazach. Logika 1:1 potwierdzona manualnie powyzej.
+
+## Faza 7 — wykonanie (2026-07-23)
+
+Ukonczona. Nowa sekcja slownika `meta.*` (site/nadzorSpawalniczy/konstrukcjeStalowe/meblePremium: title/description/ogTitle/ogDescription) i `schemaOrg.*` (businessDescription/personDescription). `layout.tsx` i 3 podstrony: statyczny `export const metadata` -> `generateMetadata()` async, czytajacy `getLocale()`+`getDictionary()`. `openGraph.locale` mapowane `pl -> 'pl_PL'`, `en -> 'en_US'`. JSON-LD (`schemaOrg`) budowany dynamicznie funkcja `buildSchemaOrg(dict)` w `RootLayout` - dane faktyczne (adres, NIP, telefon, credentials IWE/IWI/VT2/PT2 - to formalne nazwy kwalifikacji, nie "opisowe pola" per decyzja planu) bez zmian, tlumaczone tylko `description` biznesu/osoby i nazwy uslug w `hasOfferCatalog` (reuzyte z `dict.areas.names`).
+
+**Test next/font/google w Vitest:** import `layout.tsx` w tescie wymagal zamockowania `next/font/google` (Montserrat/Barlow/Great_Vibes) - te funkcje dzialaja WYLACZNIE poprzez kompilator Next.js (SWC/Turbopack font loader), pod plain Vite/Vitest sa zwyklymi npm-owymi eksportami ktore rzucaja `TypeError: ... is not a function`. Wzorzec do powielenia gdziekolwiek indziej trzeba zaimportowac plik z `next/font/google`.
+
+**Weryfikacja manualna w przegladarce:** `/` z cookie `locale=en` -> `document.title` = "Welding Engineer Dr Michał Macherzyński | MCRAFT"; `/konstrukcje-stalowe` -> `document.title` = "Steel structures - prefabrication and assembly | MCRAFT", `<meta name="description">` po angielsku. Bez cookie (domyslnie) -> `document.title` z powrotem po polsku.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

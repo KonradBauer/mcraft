@@ -33,10 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!PORTFOLIO_PAGES.includes(serviceSlug)) return {}
 
   const payload = await getPayload({ config })
+  const locale = await getLocale()
   const { docs } = await payload.find({
     collection: 'portfolio-projects',
     where: { slug: { equals: slug } },
     limit: 1,
+    locale,
   })
 
   const item = docs[0]

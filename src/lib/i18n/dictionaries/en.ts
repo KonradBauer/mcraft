@@ -106,4 +106,34 @@ export const en = {
     backHome: 'Back to homepage',
     footer: 'MCRAFT - PhD Eng. Michał Macherzyński',
   },
+  meta: {
+    site: {
+      title: 'Welding Engineer Dr Michał Macherzyński | MCRAFT',
+      description: 'Dr Michał Macherzyński - welding engineer IWE/IWI/VT2/PT2. Welding supervision, steel structures, premium furniture. Wilkowiecko, Poland.',
+      ogTitle: 'Welding Engineer Dr Michał Macherzyński | MCRAFT',
+      ogDescription: 'Welding supervision, steel structures, premium furniture. IWE/IWI/VT2/PT2. Wilkowiecko, Poland.',
+    },
+    nadzorSpawalniczy: {
+      title: 'Welding supervision - IWE / IWI / VT2 / PT2',
+      description: 'Comprehensive welding supervision: WPS/WPQR procedure qualification, VT/PT non-destructive testing, quality documentation. Dr Michał Macherzyński IWE/IWI.',
+      ogTitle: 'Welding supervision - IWE / IWI | Michał Macherzyński',
+      ogDescription: 'WPS/WPQR procedure qualification, weld joint quality supervision, VT/PT testing, acceptance documentation.',
+    },
+    konstrukcjeStalowe: {
+      title: 'Steel structures - prefabrication and assembly',
+      description: 'Design and execution of steel structures: industrial halls, infrastructure components, workshop prefabrication, on-site assembly. Michał Macherzyński.',
+      ogTitle: 'Steel structures - prefabrication and assembly',
+      ogDescription: 'Industrial structures and halls, infrastructure components, workshop prefabrication, on-site assembly.',
+    },
+    meblePremium: {
+      title: 'Premium steel furniture - loft and industrial',
+      description: 'Unique steel and loft furniture crafted with attention to detail: custom designs, combining steel with wood and glass, premium finishing.',
+      ogTitle: 'Premium steel furniture - loft and industrial',
+      ogDescription: 'Loft and industrial furniture, custom designs, combining steel with wood and glass, premium finishing.',
+    },
+  },
+  schemaOrg: {
+    businessDescription: 'Welding supervision, steel structures and premium furniture. Dr Michał Macherzyński - welding engineer IWE/IWI/VT2/PT2.',
+    personDescription: 'Head Welder and R&D Project Manager at ZUGIL S.A. Over 18 years of experience in welding.',
+  },
 } satisfies Dictionary
