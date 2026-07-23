@@ -187,6 +187,27 @@ Wszystkie 8 faz ukonczone. Strona mcraft ma teraz pelnoprawna wersje angielska: 
 - Po wdrozeniu: przypomnij klientowi ze tlumaczenia EN w CMS sa jego odpowiedzialnoscia (panel admina ma juz podpowiedz przy kazdym lokalizowanym polu).
 - Rozwaz `/dev-compound` - warto udokumentowac w `docs/solutions/` odkrycie #4 (funkcje w i18n dictionary vs RSC) jako osobny wpis, to nieoczywisty i kosztowny w debugowaniu problem dla przyszlych projektow Next.js z i18n.
 
+## Review Fazy 8 (2026-07-23)
+
+4 rownolegle agenty review (Security, Performance, Architecture/TS, Test coverage) + swiadomie pominiety Agent 5 E2E (wszystkie checkboxy Weryfikacja juz odznaczone). Werdykt: ⚠️ KONTYNUUJ Z ZASTRZEZENIAMI (0×P1, 2×P2, 4×P3). Pelny raport: [review-faza-8.md](review-faza-8.md).
+
+**Kluczowy wniosek:** strona polityki prywatnosci NIE uzywa centralnego `dict` (`getDictionary()`), tylko wlasnych rownoleglych obiektow tekstow ktore duplikuja `dict.footer.copyrightSuffix`/`dict.notFound.backHome` bajt-w-bajt. Kazda inna zlokalizowana strona w repo (w tym `not-found.tsx` - najblizszy precedens: "statyczna strona + link powrotny + stopka") idzie przez `getDictionary(locale)`. Do poprawy w nastepnej iteracji `/dev-docs-execute` (sekcja "Do poprawy po review fazy 8" w zadania.md).
+
+**Drugi P2:** `metadata` na tej stronie zostaje statyczny PL (swiadoma decyzja z Fazy 8 - Faza 7 nie obejmowala tego pliku), ale to oznacza ze EN-jezyczny odwiedzajacy widzi polski `<title>`/opis meta na stronie ktora ta faza mial przetlumaczyc. Warty swiadomej kontynuacji, nie jest to bug wprowadzony przez Faze 8, tylko luka odziedziczona z zakresu Fazy 7.
+
+Port 3000 nadal zajety przez niepowiazany projekt ("KCRAFT") - potwierdzone niezaleznie przez agenta review (netstat+curl). E2E testy calego planu i18n nigdy nie zostaly uruchomione automatycznie w zadnej sesji tego zadania - do zrobienia na wolnym porcie przed produkcyjnym wdrozeniem.
+
+## Poprawki po review Fazy 8 (2026-07-23)
+
+Oba P2 i oba P3 z review naprawione:
+- `content.pl.tsx`/`content.en.tsx` eksportuja teraz TYLKO komponent JSX - usunieto rownolegle obiekty tekstow.
+- `page.tsx` uzywa `getDictionary(locale)`, reuzywa `dict.footer.copyrightSuffix` i `dict.notFound.backHome` zamiast duplikowac je.
+- Dodano `dict.meta.privacyPolicy.{title,description}` do slownika; `page.tsx` ma teraz `generateMetadata()` zamiast statycznego `export const metadata` - `<title>` poprawnie przelacza sie PL/EN (zweryfikowane w przegladarce: "Polityka prywatności | MCRAFT" bez cookie, "Privacy Policy | MCRAFT" z `locale=en`).
+- Jeden lookup `ContentComponent` zamiast dwoch osobnych ternary.
+- Test PL ma teraz symetryczna asercje negatywna wzgledem EN.
+
+Wszystkie testy (45/45), typecheck, lint, build przechodza po poprawkach.
+
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)
 - Plan techniczny: [docs/plans/2026-07-21-005-feat-english-language-version-plan.md](../../plans/2026-07-21-005-feat-english-language-version-plan.md)

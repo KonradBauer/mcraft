@@ -5,6 +5,7 @@ const mockGet = vi.fn()
 vi.mock('next/headers', () => ({
   cookies: () => Promise.resolve({ get: mockGet }),
 }))
+vi.mock('server-only', () => ({}))
 
 afterEach(cleanup)
 
@@ -24,6 +25,7 @@ describe('PolitykaPrywatnosci page', () => {
     expect(screen.getByRole('heading', { name: 'Polityka prywatności' })).toBeTruthy()
     expect(screen.getByText('1. Administrator danych')).toBeTruthy()
     expect(screen.getByText('- Wróć na stronę główną')).toBeTruthy()
+    expect(screen.queryByText('Privacy Policy')).toBeNull()
   })
 
   it('renders English content when locale is en', async () => {

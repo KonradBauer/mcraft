@@ -131,6 +131,10 @@ export const en = {
       ogTitle: 'Premium steel furniture - loft and industrial',
       ogDescription: 'Loft and industrial furniture, custom designs, combining steel with wood and glass, premium finishing.',
     },
+    privacyPolicy: {
+      title: 'Privacy Policy',
+      description: 'Privacy policy of mcraft.com.pl - information on personal data processing.',
+    },
   },
   schemaOrg: {
     businessDescription: 'Welding supervision, steel structures and premium furniture. Dr Michał Macherzyński - welding engineer IWE/IWI/VT2/PT2.',

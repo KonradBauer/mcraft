@@ -129,6 +129,13 @@
 
 ---
 
+## Do poprawy po review fazy 8 ✅
+
+- [x] 🟠 [important] **`src/app/(frontend)/polityka-prywatnosci/content.pl.tsx:46-49`, `content.en.tsx:46-49`, `page.tsx:3-5,16-17`** — usunieto rownolegle obiekty `politykaPrywatnosciPlText`/`EnText`; `page.tsx` teraz wola `getDictionary(locale)`, uzywa `dict.footer.copyrightSuffix` i `dict.notFound.backHome` (reuzyte), `content.*.tsx` eksportuja TYLKO komponent JSX
+- [x] 🟠 [important] **`src/app/(frontend)/polityka-prywatnosci/page.tsx:7-11`** — `metadata` -> `generateMetadata()` z `dict.meta.privacyPolicy.title/description` (nowy klucz w slowniku); zweryfikowano w przegladarce: `<title>` poprawnie przelacza sie PL/EN
+- [x] 🟡 [nit] **`page.tsx:17,30`** — jeden lookup `ContentComponent = locale === 'en' ? ... : ...` zamiast dwoch osobnych ternary (drugi ternary zniknal wraz z usunieciem `text` w poprzednim punkcie)
+- [x] 🟡 [nit] **`tests/int/polityka-prywatnosci.int.spec.ts:17-27`** — dodano `expect(screen.queryByText('Privacy Policy')).toBeNull()` w wariancie PL dla symetrii z EN
+
 ## Notatki operacyjne (poza checklista implementacji)
 
 - (reczne) Przed pierwszym wdrozeniem produkcyjnym: zweryfikuj `Vary: Cookie`/cache config na hostingu (Coolify) — ryzyko mixed-language cache leak, jesli reverse proxy cache'uje bez tego nagłówka

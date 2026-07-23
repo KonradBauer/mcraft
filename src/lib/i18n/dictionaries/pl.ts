@@ -129,6 +129,10 @@ export const pl = {
       ogTitle: 'Meble stalowe premium - loft i industrial',
       ogDescription: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
     },
+    privacyPolicy: {
+      title: 'Polityka prywatności',
+      description: 'Polityka prywatności serwisu mcraft.com.pl - informacje o przetwarzaniu danych osobowych.',
+    },
   },
   schemaOrg: {
     businessDescription: 'Nadzór spawalniczy, konstrukcje stalowe i meble premium. Dr inż. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2.',

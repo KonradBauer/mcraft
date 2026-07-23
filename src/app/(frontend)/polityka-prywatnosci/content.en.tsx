@@ -42,8 +42,3 @@ export function PolitykaPrywatnosciContentEn() {
     </>
   )
 }
-
-export const politykaPrywatnosciEnText = {
-  backHome: '- Back to homepage',
-  copyrightSuffix: 'MCRAFT Michał Macherzyński. All rights reserved.',
-}
