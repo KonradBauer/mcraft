@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-21
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 8 - CALY PLAN UKONCZONY)
 
 ## Powiazane pliki
 
@@ -57,6 +57,156 @@
 - Faza 7 zalezy od Fazy 2 (`getLocale()`) i Fazy 3 (slownik).
 - Faza 8 zalezy od Fazy 2 i Fazy 3.
 - Fazy 1, 2, 3 nie zaleza od siebie nawzajem — mozna je prowadzic rownolegle/w dowolnej kolejnosci.
+
+## Faza 1 — wykonanie (2026-07-23)
+
+Ukonczona. Przelacznik jezyka (Faza 4) bedzie w formie dropdown w nawigacji (decyzja usera, nadpisuje "reczne" placeholder z checklisty).
+
+### Blokady (rozwiazane)
+
+**Payload `required: true` + `localized: true` blokuje stopniowe tlumaczenie EN.**
+Payload egzekwuje `required` osobno per locale. Eksperyment: probe zapisania SAMEGO `title` w locale `en` (bez dotykania innych pol) konczyla sie bledem walidacji o brakujacych tlumaczeniach INNYCH wymaganych, zlokalizowanych pol tego samego dokumentu (np. `scopeItems[].text`, `StatTile.label`/`description`) - mimo ze w ogole nie byly edytowane w tym zapisie. To udokumentowane zachowanie Payloada (required = wymagane w KAZDYM zapisywanym locale), nie blad implementacji.
+Konflikt z R4/decyzja planu "klient uzupelnia tlumaczenia stopniowo" - klient nie mogby zapisac zadnej czesciowej wersji EN bez przetlumaczenia od razu WSZYSTKICH wymaganych pol dokumentu.
+**Rozwiazanie (potwierdzone przez usera):** usunieto `required: true` ze wszystkich pol, ktore staly sie `localized: true` (patrz checklist Fazy 1). Walidacja obecnosci danych w PL pozostaje odpowiedzialnoscia warstwy frontu (mappery w `servicePageData.ts` i komponenty filtruja/fallbackuja brakujace wartosci), nie Payload schema.
+
+### Odkryty gotcha: array items bez `id` przy zapisie innego locale
+
+Gdy pole-tablica (np. `BioModal.sections`) NIE jest samo w sobie `localized`, tylko jego pola-liscie (`title`, `content`) sa - zapisanie nowego arraya BEZ `id` istniejacego elementu tworzy NOWY element (traci wartosci innych locale dla tego "miejsca"). Kazda aktualizacja elementu array w innym locale MUSI przekazac `id` istniejacego elementu, inaczej dane z poprzednich locale dla tego elementu znikaja. Real admin UI nie ma tego problemu (edytuje ten sam zaladowany dokument/formularz), ale dotyczy to skryptow/testow uzywajacych Local API bezposrednio.
+
+### Konsekwencja typow (naprawiona w tej samej fazie, minimalny zakres)
+
+Usuniecie `required: true` zmienilo generowane typy z `string` na `string | null | undefined`, co zepsulo typecheck w `src/lib/servicePageData.ts`, `src/components/mcraft/ModalProvider.tsx` i `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx`. Naprawiono minimalnie (filtrowanie niekompletnych wpisow / `?? ''` fallback), BEZ wchodzenia w zakres Fazy 6 (podmiana na slownik).
+
+## Faza 2 — wykonanie (2026-07-23)
+
+Ukonczona. `src/lib/i18n/locale.ts` (`getLocale`, `Locale` type, `LOCALE_COOKIE_NAME`), `src/lib/i18n/setLocale.ts` (server action), `layout.tsx` uzywa `getLocale()` do `<html lang>`.
+
+**Odchylenie od checklisty:** checklist mowil "przekaz locale w dol jako prop" z RootLayout do dzieci - technicznie niewykonalne w App Router (RootLayout nie kontroluje wewnetrznej struktury `children`, ktora jest juz zbudowanym drzewem strony dostarczonym przez routing Next.js; nie da sie doinjectowac propsa bez `cloneElement`, co byloby nieidiomatyczne i kruche). Rzeczywisty wzorzec przekazywania `locale`/`dict` w dol to kazdy `page.tsx` woła `getLocale()` niezaleznie i przekazuje w dol do wlasnych komponentow - to juz zaplanowane wprost w Fazie 5 (Unit 5 planu technicznego). RootLayout w tej fazie dostarcza tylko `<html lang>`.
+
+**Test next/headers w Vitest:** `cookies()` z `next/headers` wymaga kontekstu requestu Next.js i rzuca poza nim - `tests/int/locale.int.spec.ts` mockuje caly modul `next/headers` (`vi.mock`) i dynamicznie importuje `getLocale` per test, zeby uniknac tego problemu. Wzorzec do powielenia w Fazie 7 (metadata) jesli tam tez potrzebny bedzie test dotykajacy `cookies()`.
+
+Build (`pnpm run build`) przeszedl czysto po zmianie RootLayout na async server component.
+
+## Faza 3 — wykonanie (2026-07-23)
+
+Ukonczona. `src/lib/i18n/dictionaries/pl.ts` (`Dictionary` typ), `dictionaries/en.ts` (`satisfies Dictionary`), `src/lib/i18n/getDictionary.ts`.
+
+**Odkryta zaleznosc:** `server-only` (paczka Vercela wymagana przez plan - `import 'server-only'` w `getDictionary.ts`) nie byla zainstalowana w projekcie (`pnpm add server-only`, wersja 0.0.1, zero zaleznosci). Bez niej import w ogole by sie nie zresolvowal.
+
+**Wazny detal implementacyjny:** `pl.ts` NIE uzywa `as const` - to celowe. Gdyby uzyc `as const`, `type Dictionary = typeof pl` zwezalby kazdy string do jego DOKLADNEJ literalnej wartosci, a wtedy `en.ts satisfies Dictionary` wymuszalby identyczne stringi PL w en.ts (kompilacja by sie nie powiodla przy jakiejkolwiek realnej translacji). Bez `as const` TypeScript naturalnie szerzy typy stringow do `string`, co pozwala `en.ts` miec zupelnie inna tresc przy zachowaniu identycznego ksztaltu kluczy.
+
+**`server-only` w testach:** paczka `server-only` rzuca wyjatkiem zawsze poza kontekstem RSC Next.js (warunek `exports["react-server"]` nie jest ustawiony w plain Node/Vitest) - `tests/int/i18n-dictionary.int.spec.ts` mockuje cala paczke (`vi.mock('server-only', () => ({}))`) zeby zaimportowac `getDictionary`.
+
+Slownik pokrywa wszystkie statyczne stringi UI znalezione w: `HomeContent.tsx`, `SubpageLayout.tsx`, `MobileNav.tsx`, `NavRealizacjeDropdown.tsx`, `TilesMarquee.tsx`, `RealizacjaGaleria.tsx`, `ModalProvider.tsx` (etykiety UI, NIE hardcodowany fallback CV/Bio - ten zostaje PL na zawsze, zgodnie z decyzja planu), `[serviceSlug]/realizacje/[slug]/page.tsx`, `not-found.tsx`. Nazwy obszarow dzialalnosci (`areas.names.*`) trzymane jako pojedyncza linia tekstu (bez recznego `\n`) - podzial na dwie linie wukladzie kafelka homepage to decyzja wizualna Fazy 6, nie danych slownika.
+
+## Faza 4 — wykonanie (2026-07-23)
+
+Ukonczona. `src/components/mcraft/LanguageSwitcher.tsx` (dropdown, click-based nie hover-based - musi dzialac na dotyku w MobileNav), wpieto w `HomeContent.tsx`/`SubpageLayout.tsx` (desktop nav, po "Kontakt") i `MobileNav.tsx` (osobny wiersz nad LinkedIn).
+
+**Kluczowa poprawka projektowa:** `ModalProvider` dostal `useOptionalModal()` obok istniejacego `useModal()`. Powod: `MobileNav` (ktory teraz zawsze renderuje `LanguageSwitcher`) jest uzywany takze na `[serviceSlug]/realizacje/[slug]/page.tsx`, ktora NIE ma `<ModalProvider>` w drzewie (ta strona nie jest w scope Fazy 4 do modyfikacji). `useModal()` rzucalby wyjatkiem przy kazdym renderze tej strony. `useOptionalModal()` zwraca `null` zamiast rzucac, `LanguageSwitcher` uzywa `modal?.isOpen`/`modal?.closeModal()` bezpiecznie.
+
+**Locale jako prop, nie z `getLocale()` bezposrednio:** `HomeContentProps`/`SubpageLayoutProps`/`MobileNavProps` dostaly opcjonalny `locale?: Locale` (default `'pl'`) zamiast wymagac go od razu - unika zlamania typow w `page.tsx` plikach, ktore jeszcze nie wolaja `getLocale()` (to Faza 5). Po Fazie 5 realna wartosc bedzie zawsze przekazywana, default stanie sie martwym kodem tylko na wypadek braku propa.
+
+**Test jsdom - `aria-hidden` na dropdownie:** panel dropdownu jest zawsze w DOM (widocznosc przez klasy CSS `invisible`/`opacity-0`), ale jsdom w Vitest NIE parsuje prawdziwego Tailwind CSS - `getByRole`/`getByText` widzialyby ukryte opcje jako dostepne. Naprawione dodaniem `aria-hidden={!open}` na kontenerze dropdownu (realna poprawka accessibility, nie tylko test hack - screen reader tez nie powinien widziec ukrytego menu).
+
+**Weryfikacja manualna w przegladarce (real Chrome, nie jsdom):** otwarto mobile nav, kliknieto przelacznik -> dropdown pokazal PL/EN poprawnie -> klik EN -> `document.cookie` = `locale=en`, `document.documentElement.lang` = `en`, URL bez zmian. Pelny flow Faza 2 + Faza 4 dziala end-to-end.
+
+**Blokada operacyjna (nie blokada kodu):** napisano `tests/e2e/language-switcher.e2e.spec.ts` (2 scenariusze: brak zmiany URL + html lang po przelaczeniu, zamkniecie modala CV przed przelaczeniem), ale NIE dalo sie ich uruchomic w tej sesji - port 3000 na tej maszynie zajety przez inny, niepowiazany projekt uzytkownika (proces node.exe serwujacy strone "KCRAFT", nie mcraft). Nie zabito tego procesu (nie nalezy do tego projektu). Logika testow zweryfikowana manualnie w przegladarce (patrz wyzej) - testy powinny przejsc przy wolnym porcie 3000 lub w CI.
+
+## Faza 5 — wykonanie (2026-07-23)
+
+Ukonczona. Wszystkie 6 miejsc wywolania Payload (`page.tsx` x6 w Promise.all, 3x subpage `service-pages`+`portfolio-projects`, `realizacje/[slug]/page.tsx`) dostaly `locale` z `getLocale()`. `servicePageData.ts` bez zmian sygnatury - potwierdzone testem, ze mapper jest locale-agnostic (mapuje cokolwiek dostanie, nie zna pojecia jezyka).
+
+Przy okazji: `realizacje/[slug]/page.tsx` przekazuje teraz `locale` do `<MobileNav>` (ktory od Fazy 4 przyjmuje ten prop opcjonalnie) - drobna, naturalna dokonczenie wpiecia z poprzedniej fazy, nie nowy zakres.
+
+**Weryfikacja manualna w przegladarce:** ustawiono cookie `locale=en`, odwiedzono `/konstrukcje-stalowe` - `<html lang="en">`, strona nie crashuje, `h1` pokazuje polski fallback ("Konstrukcje stalowe") bo lokalna baza dev nie ma jeszcze wpisanego tlumaczenia EN dla tego dokumentu. Dokladnie zgodne z R4 (fallback nigdy nie jest pusty).
+
+**E2E:** napisano `tests/e2e/locale-content.e2e.spec.ts`, nie uruchomiono automatycznie w tej sesji (ten sam port-3000-conflict z niepowiazanym projektem co w Fazie 4) - logika potwierdzona manualnie jak wyzej.
+
+## Faza 6 — wykonanie (2026-07-23)
+
+Ukonczona - najwieksza faza planu (9 plikow + 2 pliki dictionaries). Wszystkie statyczne stringi UI w komponentach zastapione odwolaniami do `dict` (prop przekazywany z gory, od `page.tsx` przez `HomeContent`/`SubpageLayout` do klienckich komponentow lisci). Fallback CV/Bio w `ModalProvider.tsx` (hardcodowana tresc gdy CMS pusty) POZOSTAJE po polsku zawsze, zgodnie z decyzja planu - zmienione zostaly tylko etykiety UI wokol niego (naglowki sekcji, eyebrow/title/sub modali, przycisk pobierania).
+
+### Krytyczny bug: funkcje w slowniku łamią RSC serialization
+
+Pierwsza wersja slownika (Faza 3) miala 3 pola jako funkcje: `footer.copyright(year)`, `gallery.zoomAria(alt)`, `gallery.photoAria(index)`. Dzialalo to poprawnie w testach jednostkowych (Vitest/jsdom nie wymusza granicy serializacji RSC), ale w REALNYM Next.js dev serverze powodowalo natychmiastowy crash calej strony w trybie EN:
+
+```
+Error: Functions cannot be passed directly to Client Components unless you explicitly
+expose it by marking it with "use server".
+```
+
+**Przyczyna:** `dict` (caly obiekt) jest przekazywany jako prop z komponentow serwerowych (`HomeContent`, `SubpageLayout`, `page.tsx`) do komponentow klienckich (`ModalProvider`, `TilesMarquee`, `RealizacjaGaleria`, `MobileNav`, `NavRealizacjeDropdown` - wszystkie `'use client'`). React Server Components serializuje CALY graf propsa przy przejsciu przez granice serwer->klient - JAKAKOLWIEK funkcja gdziekolwiek w tym obiekcie (nawet nieuzywana przez dany konkretny komponent) powoduje blad na calym obiekcie.
+
+**Naprawa:** usunieto funkcje ze slownika calkowicie. `copyright(year) => string` zastapiono plain stringiem `copyrightSuffix` + interpolacja `` `© ${year} ${dict.footer.copyrightSuffix}` `` bezposrednio w JSX (server component, nie przekazywana dalej jako funkcja). Analogicznie `zoomAria`/`photoAria` -> `zoomAriaLabel`/`photoAriaLabel` + template literal w miejscu uzycia.
+
+**Lekcja na przyszlosc:** slownik i18n przekazywany jako prop przez granice Server/Client Component w Next.js App Router MOZE zawierac WYLACZNIE dane serializowalne (stringi, liczby, plaskie obiekty/tablice) - zero funkcji, nawet "niewinnych" helperow formatujacych. Testy jednostkowe (Vitest) NIE wykryja tego bledu, bo nie ma tam prawdziwej granicy RSC - wymagana jest weryfikacja w prawdziwym `next dev`/`next build` + realna przegladarka.
+
+### Weryfikacja manualna w przegladarce (po naprawie)
+
+Odwiedzono strone glowna, `/konstrukcje-stalowe`, `/nieistniejaca-strona-xyz` (404) z cookie `locale=en`:
+- Strona glowna: caly UI chrome po angielsku (PHD ENG., WELDING ENGINEER, FIND OUT MORE, WHO AM I?, WHAT I OFFER, AREAS OF ACTIVITY, SEE MORE, LET'S TALK ABOUT YOUR PROJECT, GET IN TOUCH, All rights reserved., Privacy policy, Built by:), zero bledow konsoli.
+- `/konstrukcje-stalowe`: UI chrome po angielsku (SCOPE, GET IN TOUCH), tresc CMS (tytul, opis, "Dla kogo?", zakres uslug) poprawnie fallbackuje do PL - lokalna baza dev nie ma jeszcze wpisanych tlumaczen EN dla tego dokumentu (zgodnie z R4, nie jest to blad).
+- Nazwy obszarow dzialalnosci (Nadzor spawalniczy/Konstrukcje stalowe/Meble premium) na stronie glownej takze PL - to `ServicePage.thumbnailTitle` z CMS (ma pierwszenstwo nad `dict.areas.names` gdy wypelnione), poprawne zachowanie.
+- 404: naglowek/opis/przycisk po angielsku; `<title>` strony pozostaje PL (statyczny `export const metadata`, celowo NIE dotykany - to zakres Fazy 7, ktora nie wymienia `not-found.tsx` w swojej liscie plikow).
+
+### E2E
+
+Napisano `tests/e2e/dictionary-en.e2e.spec.ts` (4 strony + mobile nav aria-labels), NIE uruchomiono automatycznie w tej sesji - ten sam port-3000-conflict z niepowiazanym projektem uzytkownika co w poprzednich fazach. Logika 1:1 potwierdzona manualnie powyzej.
+
+## Faza 7 — wykonanie (2026-07-23)
+
+Ukonczona. Nowa sekcja slownika `meta.*` (site/nadzorSpawalniczy/konstrukcjeStalowe/meblePremium: title/description/ogTitle/ogDescription) i `schemaOrg.*` (businessDescription/personDescription). `layout.tsx` i 3 podstrony: statyczny `export const metadata` -> `generateMetadata()` async, czytajacy `getLocale()`+`getDictionary()`. `openGraph.locale` mapowane `pl -> 'pl_PL'`, `en -> 'en_US'`. JSON-LD (`schemaOrg`) budowany dynamicznie funkcja `buildSchemaOrg(dict)` w `RootLayout` - dane faktyczne (adres, NIP, telefon, credentials IWE/IWI/VT2/PT2 - to formalne nazwy kwalifikacji, nie "opisowe pola" per decyzja planu) bez zmian, tlumaczone tylko `description` biznesu/osoby i nazwy uslug w `hasOfferCatalog` (reuzyte z `dict.areas.names`).
+
+**Test next/font/google w Vitest:** import `layout.tsx` w tescie wymagal zamockowania `next/font/google` (Montserrat/Barlow/Great_Vibes) - te funkcje dzialaja WYLACZNIE poprzez kompilator Next.js (SWC/Turbopack font loader), pod plain Vite/Vitest sa zwyklymi npm-owymi eksportami ktore rzucaja `TypeError: ... is not a function`. Wzorzec do powielenia gdziekolwiek indziej trzeba zaimportowac plik z `next/font/google`.
+
+**Weryfikacja manualna w przegladarce:** `/` z cookie `locale=en` -> `document.title` = "Welding Engineer Dr Michał Macherzyński | MCRAFT"; `/konstrukcje-stalowe` -> `document.title` = "Steel structures - prefabrication and assembly | MCRAFT", `<meta name="description">` po angielsku. Bez cookie (domyslnie) -> `document.title` z powrotem po polsku.
+
+## Faza 8 — wykonanie (2026-07-23)
+
+Ukonczona - ostatnia faza planu. `content.pl.tsx`/`content.en.tsx` (osobne komponenty tresci, nie CMS - tresc prawna dluzsza niz typowe UI stringi). `page.tsx` async, `getLocale()` wybiera wariant. Metadata (`title`, `description`, `robots: noindex`) pozostaje statyczna PL - swiadomie poza scope tej fazy (Faza 7 nie wymieniala tego pliku).
+
+Zweryfikowane manualnie w przegladarce: PL domyslnie, EN po ustawieniu cookie - naglowki, tresc sekcji, link powrotny i stopka poprawnie przelaczaja jezyk, zero mieszania PL/EN, URL bez zmian (`/polityka-prywatnosci` identyczny w obu jezykach, zgodnie z R5).
+
+## Podsumowanie calego planu
+
+Wszystkie 8 faz ukonczone. Strona mcraft ma teraz pelnoprawna wersje angielska: dropdown PL/EN w nawigacji (desktop + mobile), tresc CMS lokalizowana natywnym mechanizmem Payload z automatycznym fallbackiem do PL, statyczne teksty UI przez wlasny slownik, wybor jezyka trwaly w cookie bez zmiany URL, meta dane i JSON-LD przelaczajace sie z jezykiem, polityka prywatnosci w obu jezykach.
+
+**Kluczowe odkrycia w trakcie implementacji (nie przewidziane w planie):**
+1. Payload `required: true` + `localized: true` blokuje zapis czesciowych tlumaczen - required usuniety z lokalizowanych pol (Faza 1).
+2. Array items bez `id` przy zapisie innego locale tworza nowy element, nie aktualizuja istniejacego (odkryte w testach Fazy 1).
+3. `server-only` i `next/font/google` wymagaja mockowania w Vitest (nie dzialaja poza kompilatorem Next.js) - wzorzec ustalony w Fazach 3 i 7.
+4. **Najwazniejsze:** funkcje w obiekcie slownika i18n lamia serializacje React Server Components przy przekazywaniu do Client Components - crash calej strony w trybie EN, niewykrywalny przez testy jednostkowe, wymagal weryfikacji w prawdziwej przegladarce (Faza 6).
+
+**Braki operacyjne (nie bledy, ograniczenia srodowiska deweloperskiego):**
+- Testy E2E (Playwright) napisane w kazdej fazie, ale NIE uruchomione automatycznie w tej sesji - port 3000 na maszynie deweloperskiej byl zajety przez niepowiazany projekt uzytkownika ("KCRAFT") przez cala sesje. Logika kazdego testu zweryfikowana manualnie w przegladarce (real Chrome, nie jsdom) z identycznymi krokami. Rekomendacja: uruchomic `pnpm test:e2e` na wolnym porcie 3000 przed wdrozeniem produkcyjnym.
+- `pnpm add server-only` - nowa zaleznosc dodana (0 zaleznosci wlasnych, oficjalna paczka Vercel/React), wymagana przez plan, nie byla wczesniej w projekcie.
+
+**Notatki operacyjne z checklisty (wymagaja akcji uzytkownika, nie kodu):**
+- Przed pierwszym wdrozeniem produkcyjnym: zweryfikuj `Vary: Cookie`/cache config na hostingu (Coolify) - ryzyko mixed-language cache leak.
+- Po wdrozeniu: przypomnij klientowi ze tlumaczenia EN w CMS sa jego odpowiedzialnoscia (panel admina ma juz podpowiedz przy kazdym lokalizowanym polu).
+- Rozwaz `/dev-compound` - warto udokumentowac w `docs/solutions/` odkrycie #4 (funkcje w i18n dictionary vs RSC) jako osobny wpis, to nieoczywisty i kosztowny w debugowaniu problem dla przyszlych projektow Next.js z i18n.
+
+## Review Fazy 8 (2026-07-23)
+
+4 rownolegle agenty review (Security, Performance, Architecture/TS, Test coverage) + swiadomie pominiety Agent 5 E2E (wszystkie checkboxy Weryfikacja juz odznaczone). Werdykt: ⚠️ KONTYNUUJ Z ZASTRZEZENIAMI (0×P1, 2×P2, 4×P3). Pelny raport: [review-faza-8.md](review-faza-8.md).
+
+**Kluczowy wniosek:** strona polityki prywatnosci NIE uzywa centralnego `dict` (`getDictionary()`), tylko wlasnych rownoleglych obiektow tekstow ktore duplikuja `dict.footer.copyrightSuffix`/`dict.notFound.backHome` bajt-w-bajt. Kazda inna zlokalizowana strona w repo (w tym `not-found.tsx` - najblizszy precedens: "statyczna strona + link powrotny + stopka") idzie przez `getDictionary(locale)`. Do poprawy w nastepnej iteracji `/dev-docs-execute` (sekcja "Do poprawy po review fazy 8" w zadania.md).
+
+**Drugi P2:** `metadata` na tej stronie zostaje statyczny PL (swiadoma decyzja z Fazy 8 - Faza 7 nie obejmowala tego pliku), ale to oznacza ze EN-jezyczny odwiedzajacy widzi polski `<title>`/opis meta na stronie ktora ta faza mial przetlumaczyc. Warty swiadomej kontynuacji, nie jest to bug wprowadzony przez Faze 8, tylko luka odziedziczona z zakresu Fazy 7.
+
+Port 3000 nadal zajety przez niepowiazany projekt ("KCRAFT") - potwierdzone niezaleznie przez agenta review (netstat+curl). E2E testy calego planu i18n nigdy nie zostaly uruchomione automatycznie w zadnej sesji tego zadania - do zrobienia na wolnym porcie przed produkcyjnym wdrozeniem.
+
+## Poprawki po review Fazy 8 (2026-07-23)
+
+Oba P2 i oba P3 z review naprawione:
+- `content.pl.tsx`/`content.en.tsx` eksportuja teraz TYLKO komponent JSX - usunieto rownolegle obiekty tekstow.
+- `page.tsx` uzywa `getDictionary(locale)`, reuzywa `dict.footer.copyrightSuffix` i `dict.notFound.backHome` zamiast duplikowac je.
+- Dodano `dict.meta.privacyPolicy.{title,description}` do slownika; `page.tsx` ma teraz `generateMetadata()` zamiast statycznego `export const metadata` - `<title>` poprawnie przelacza sie PL/EN (zweryfikowane w przegladarce: "Polityka prywatności | MCRAFT" bez cookie, "Privacy Policy | MCRAFT" z `locale=en`).
+- Jeden lookup `ContentComponent` zamiast dwoch osobnych ternary.
+- Test PL ma teraz symetryczna asercje negatywna wzgledem EN.
+
+Wszystkie testy (45/45), typecheck, lint, build przechodza po poprawkach.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

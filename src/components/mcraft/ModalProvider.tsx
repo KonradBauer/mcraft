@@ -3,6 +3,7 @@
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { BioModal, CvModal, StatTile } from '@/payload-types'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
 
@@ -15,6 +16,8 @@ export interface ScopeModalContent {
 
 interface ModalContextValue {
   openModal: (key: ModalKey, el: HTMLElement, content?: ScopeModalContent) => void
+  closeModal: () => void
+  isOpen: boolean
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null)
@@ -23,6 +26,12 @@ export function useModal() {
   const ctx = useContext(ModalContext)
   if (!ctx) throw new Error('useModal outside ModalProvider')
   return ctx
+}
+
+/** Jak useModal(), ale zwraca null zamiast rzucac - dla komponentow renderowanych
+ *  tez poza ModalProvider (np. MobileNav na stronie realizacji/[slug]). */
+export function useOptionalModal() {
+  return useContext(ModalContext)
 }
 
 /* ─── modal sub-components ─── */
@@ -84,59 +93,59 @@ function CvLi({ year, title, sub }: { year: string; title: string; sub?: string 
   )
 }
 
-function ModalCV({ cvModal }: { cvModal: CvModal }) {
+function ModalCV({ cvModal, dict }: { cvModal: CvModal; dict: Dictionary }) {
   const hasData = (cvModal.experience?.length ?? 0) > 0
   const cvFileUrl = mediaUrl(cvModal.cvFile) ?? undefined
 
   return (
     <>
-      <ModalHead eyebrowText="Dowiedz się więcej" title="Dr inż. Michał Macherzyński" sub="CV zawodowe - doświadczenie i kwalifikacje" />
+      <ModalHead eyebrowText={dict.modal.cv.eyebrow} title={dict.modal.cv.title} sub={dict.modal.cv.sub} />
       <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         {hasData ? (
           <>
             {cvModal.experience && cvModal.experience.length > 0 && (
-              <ModalBodySection title="Doświadczenie zawodowe">
+              <ModalBodySection title={dict.modal.cv.sections.experience}>
                 <ul className="flex flex-col gap-2">
                   {cvModal.experience.map((item) => (
-                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} sub={item.company ?? undefined} />
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description ?? ''} sub={item.company ?? undefined} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
             {cvModal.qualifications && cvModal.qualifications.length > 0 && (
-              <ModalBodySection title="Kwalifikacje">
+              <ModalBodySection title={dict.modal.cv.sections.qualifications}>
                 <ul className="flex flex-col gap-2">
                   {cvModal.qualifications.map((item) => (
-                    <CvLi key={item.id ?? item.code} year={item.code} title={item.description} />
+                    <CvLi key={item.id ?? item.code} year={item.code} title={item.description ?? ''} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
             {cvModal.education && cvModal.education.length > 0 && (
-              <ModalBodySection title="Edukacja">
+              <ModalBodySection title={dict.modal.cv.sections.education}>
                 <ul className="flex flex-col gap-2">
                   {cvModal.education.map((item) => (
-                    <CvLi key={item.id ?? item.year + item.institution} year={item.year} title={item.institution} sub={item.description ?? undefined} />
+                    <CvLi key={item.id ?? item.year + item.institution} year={item.year} title={item.institution ?? ''} sub={item.description ?? undefined} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
             {cvModal.additionalQualifications && cvModal.additionalQualifications.length > 0 && (
-              <ModalBodySection title="Dodatkowe kwalifikacje">
+              <ModalBodySection title={dict.modal.cv.sections.additionalQualifications}>
                 <ul className="flex flex-col gap-2">
                   {cvModal.additionalQualifications.map((item) => (
-                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description} />
+                    <CvLi key={item.id ?? item.year} year={item.year} title={item.description ?? ''} />
                   ))}
                 </ul>
               </ModalBodySection>
             )}
             {cvModal.skills && (
-              <ModalBodySection title="Umiejętności">
+              <ModalBodySection title={dict.modal.cv.sections.skills}>
                 <p className="text-[13.5px] leading-[1.65] text-[#56544e] whitespace-pre-line">{cvModal.skills}</p>
               </ModalBodySection>
             )}
             {cvModal.interests && (
-              <ModalBodySection title="Zainteresowania i hobby">
+              <ModalBodySection title={dict.modal.cv.sections.interests}>
                 <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{cvModal.interests}</p>
               </ModalBodySection>
             )}
@@ -192,19 +201,22 @@ function ModalCV({ cvModal }: { cvModal: CvModal }) {
           </>
         )}
       </div>
-      <ModalDownloadBtn label="Pobierz CV (PDF)" href={cvFileUrl} />
+      <ModalDownloadBtn label={dict.modal.cv.downloadLabel} href={cvFileUrl} />
     </>
   )
 }
 
-function ModalBio({ bioModal }: { bioModal: BioModal }) {
-  const hasData = (bioModal.sections?.length ?? 0) > 0
+function ModalBio({ bioModal, dict }: { bioModal: BioModal; dict: Dictionary }) {
+  const sectionsWithContent = (bioModal.sections ?? []).filter(
+    (s): s is typeof s & { title: string; content: NonNullable<typeof s.content> } => Boolean(s.title) && Boolean(s.content),
+  )
+  const hasData = sectionsWithContent.length > 0
   return (
     <>
-      <ModalHead eyebrowText="Więcej o mnie" title="Michał Macherzyński" sub="Życiorys - droga i pasja" />
+      <ModalHead eyebrowText={dict.modal.bio.eyebrow} title={dict.modal.bio.title} sub={dict.modal.bio.sub} />
       <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
         {hasData ? (
-          bioModal.sections!.map((section) => (
+          sectionsWithContent.map((section) => (
             <ModalBodySection key={section.id ?? section.title} title={section.title}>
               <div className="prose-mcraft">
                 <RichText data={section.content} />
@@ -229,10 +241,10 @@ function ModalBio({ bioModal }: { bioModal: BioModal }) {
   )
 }
 
-function ModalTilesContent({ tiles }: { tiles: StatTile[] }) {
+function ModalTilesContent({ tiles, dict }: { tiles: StatTile[]; dict: Dictionary }) {
   return (
     <>
-      <ModalHead title="Doświadczenie i kwalifikacje" />
+      <ModalHead title={dict.modal.tiles.title} />
       <div className="grid grid-cols-4 p-[20px_48px_24px] max-[980px]:grid-cols-2 max-[980px]:p-5 max-[560px]:grid-cols-1">
         {tiles.map((t) => {
           const Icon = getTileIcon(t.number, t.icon)
@@ -250,10 +262,10 @@ function ModalTilesContent({ tiles }: { tiles: StatTile[] }) {
   )
 }
 
-function ModalScopeContent({ title, description }: ScopeModalContent) {
+function ModalScopeContent({ title, description, dict }: ScopeModalContent & { dict: Dictionary }) {
   return (
     <>
-      <ModalHead eyebrowText="Zakres usług" title={title} />
+      <ModalHead eyebrowText={dict.modal.scope.eyebrow} title={title} />
       <div className="px-12 pt-4 pb-8 max-[980px]:px-7">
         <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{description}</p>
       </div>
@@ -268,9 +280,10 @@ interface ModalProviderProps {
   cvModal?: CvModal
   bioModal?: BioModal
   tiles?: StatTile[]
+  dict: Dictionary
 }
 
-export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProviderProps) {
+export function ModalProvider({ children, cvModal, bioModal, tiles, dict }: ModalProviderProps) {
   const [modalKey, setModalKey] = useState<ModalKey | null>(null)
   const [scopeContent, setScopeContent] = useState<ScopeModalContent | null>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -322,7 +335,7 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
   }, [isOpen, closeModal])
 
   return (
-    <ModalContext.Provider value={{ openModal }}>
+    <ModalContext.Provider value={{ openModal, closeModal, isOpen }}>
       {children}
 
       <div
@@ -338,15 +351,15 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
         <button
           className="absolute top-4 right-4 z-[5] w-[42px] h-[42px] border border-white/35 bg-black/[0.18] text-white rounded-full text-xl leading-none cursor-pointer flex items-center justify-center transition-all duration-200 hover:bg-accent hover:border-accent"
           onClick={closeModal}
-          aria-label="Zamknij"
+          aria-label={dict.modal.closeAria}
         >
           &times;
         </button>
         <div className="overflow-y-auto h-full flex flex-col modal-scroll">
-          {modalKey === 'cv' && cvModal && <ModalCV cvModal={cvModal} />}
-          {modalKey === 'bio' && bioModal && <ModalBio bioModal={bioModal} />}
-          {modalKey === 'tiles' && tiles && <ModalTilesContent tiles={tiles} />}
-          {modalKey === 'scope' && scopeContent && <ModalScopeContent {...scopeContent} />}
+          {modalKey === 'cv' && cvModal && <ModalCV cvModal={cvModal} dict={dict} />}
+          {modalKey === 'bio' && bioModal && <ModalBio bioModal={bioModal} dict={dict} />}
+          {modalKey === 'tiles' && tiles && <ModalTilesContent tiles={tiles} dict={dict} />}
+          {modalKey === 'scope' && scopeContent && <ModalScopeContent {...scopeContent} dict={dict} />}
         </div>
       </div>
     </ModalContext.Provider>

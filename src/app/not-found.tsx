@@ -1,5 +1,7 @@
 ﻿import { Barlow, Montserrat } from 'next/font/google'
 import Link from 'next/link'
+import { getLocale } from '@/lib/i18n/locale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 import './(frontend)/styles.css'
 
 const montserrat = Montserrat({
@@ -20,9 +22,12 @@ export const metadata = {
   title: '404 - Nie znaleziono strony | MCRAFT',
 }
 
-export default function NotFound() {
+export default async function NotFound() {
+  const locale = await getLocale()
+  const dict = await getDictionary(locale)
+
   return (
-    <html lang="pl" className={`${montserrat.variable} ${barlow.variable}`}>
+    <html lang={locale} className={`${montserrat.variable} ${barlow.variable}`}>
       <body className="bg-ink text-light min-h-screen flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
           <div className="font-montserrat font-semibold text-[120px] leading-none text-white/[0.06] select-none max-[560px]:text-[80px]">
@@ -31,13 +36,13 @@ export default function NotFound() {
           <div className="-mt-6 relative z-10">
             <div className="w-10 h-px bg-accent mx-auto mb-6" />
             <span className="block font-montserrat text-[11px] font-semibold tracking-[0.28em] uppercase text-accent mb-4">
-              Błąd nawigacji
+              {dict.notFound.eyebrow}
             </span>
             <h1 className="font-light text-[32px] uppercase tracking-[0.04em] text-white mb-3 max-[560px]:text-[24px]">
-              Strona nie istnieje
+              {dict.notFound.title}
             </h1>
             <p className="text-[15px] leading-[1.75] text-light-muted font-light max-w-[360px] mx-auto mb-10">
-              Podany adres jest nieprawidłowy lub strona została przeniesiona.
+              {dict.notFound.description}
             </p>
             <Link
               href="/"
@@ -46,13 +51,13 @@ export default function NotFound() {
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.6" className="w-[22px] h-[10px]">
                 <path d="M30 6H2M7 1 2 6l5 5" />
               </svg>
-              Wróć na stronę główną
+              {dict.notFound.backHome}
             </Link>
           </div>
         </div>
 
         <footer className="py-6 text-center font-montserrat text-[11px] tracking-[0.14em] uppercase text-light-faint">
-          MCRAFT - Dr inż. Michał Macherzyński
+          {dict.notFound.footer}
         </footer>
       </body>
     </html>

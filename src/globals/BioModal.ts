@@ -18,13 +18,19 @@ export const BioModal: GlobalConfig = {
           name: 'title',
           label: 'Tytuł sekcji',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         {
           name: 'content',
           label: 'Treść',
           type: 'richText',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
           hooks: {
             afterRead: [
               ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),

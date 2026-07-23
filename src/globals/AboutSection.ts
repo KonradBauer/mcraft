@@ -17,6 +17,10 @@ export const AboutSection: GlobalConfig = {
       name: 'bioText',
       label: 'Tekst bio (paragraf)',
       type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
   ],
 }

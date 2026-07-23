@@ -23,11 +23,19 @@ export const HeroSection: GlobalConfig = {
       name: 'subtitle',
       label: 'Podtytuł (np. Inżynier spawalnik / IWE / IWI)',
       type: 'text',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'description',
       label: 'Opis (paragraf pod podtytułem)',
       type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
   ],
 }

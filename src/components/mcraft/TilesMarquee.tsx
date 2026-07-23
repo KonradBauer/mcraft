@@ -2,10 +2,11 @@
 
 import { useCallback } from 'react'
 import type { StatTile } from '@/payload-types'
+import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { getTileIcon } from '@/lib/tileIcons'
 import { useModal } from './ModalProvider'
 
-export function TilesMarquee({ tiles }: { tiles: StatTile[] }) {
+export function TilesMarquee({ tiles, dict }: { tiles: StatTile[]; dict: Dictionary }) {
   const { openModal } = useModal()
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -24,7 +25,7 @@ export function TilesMarquee({ tiles }: { tiles: StatTile[] }) {
       className="group relative mt-[18px] border border-hairline-light bg-white/35 cursor-pointer overflow-hidden hover:border-accent"
       role="button"
       tabIndex={0}
-      aria-label="Zobacz wszystkie liczby"
+      aria-label={dict.tiles.seeAllAria}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
@@ -42,7 +43,7 @@ export function TilesMarquee({ tiles }: { tiles: StatTile[] }) {
               ))
             : (
                 <div className="flex-none px-6 pt-[30px] pb-[26px] text-[11px] font-montserrat tracking-[0.1em] uppercase text-dark-muted">
-                  Dodaj kafelki statystyk w panelu admina
+                  {dict.tiles.emptyState}
                 </div>
               )
           }

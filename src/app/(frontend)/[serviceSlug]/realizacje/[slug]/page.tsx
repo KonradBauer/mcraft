@@ -10,26 +10,14 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
+import { getLocale } from '@/lib/i18n/locale'
+import { getDictionary } from '@/lib/i18n/getDictionary'
 
 const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe']
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink =
   'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
-
-const NAV_LINKS = [
-  { href: '/#about', label: 'O mnie' },
-  { href: '/#areas', label: 'Obszary' },
-  {
-    label: 'Realizacje',
-    sub: [
-      { href: '/nadzor-spawalniczy', label: 'Nadzór spawalniczy' },
-      { href: '/meble-premium', label: 'Meble premium' },
-      { href: '/konstrukcje-stalowe', label: 'Konstrukcje stalowe' },
-    ],
-  },
-  { href: '/#contact', label: 'Kontakt' },
-]
 
 function resolveUrl(field: string | Media | null | undefined): string | null {
   if (!field || typeof field === 'string') return null
@@ -45,10 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!PORTFOLIO_PAGES.includes(serviceSlug)) return {}
 
   const payload = await getPayload({ config })
+  const locale = await getLocale()
   const { docs } = await payload.find({
     collection: 'portfolio-projects',
     where: { slug: { equals: slug } },
     limit: 1,
+    locale,
   })
 
   const item = docs[0]
@@ -65,12 +55,29 @@ export default async function RealizacjaPage({ params }: Props) {
   if (!PORTFOLIO_PAGES.includes(serviceSlug)) notFound()
 
   const payload = await getPayload({ config })
+  const locale = await getLocale()
+  const dict = await getDictionary(locale)
+
+  const NAV_LINKS = [
+    { href: '/#about', label: dict.nav.about },
+    { href: '/#areas', label: dict.nav.areas },
+    {
+      label: dict.nav.realizations,
+      sub: [
+        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+        { href: '/meble-premium', label: dict.areas.names.meblePremium },
+        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+      ],
+    },
+    { href: '/#contact', label: dict.nav.contact },
+  ]
 
   const { docs } = await payload.find({
     collection: 'portfolio-projects',
     where: { slug: { equals: slug } },
     depth: 2,
     limit: 1,
+    locale,
   })
 
   const item = docs[0]
@@ -84,7 +91,7 @@ export default async function RealizacjaPage({ params }: Props) {
 
   const galleryImages = (item.images ?? []).reduce<{ url: string; alt: string }[]>((acc, g) => {
     const url = resolveUrl(g.image)
-    if (url) acc.push({ url, alt: g.alt ?? item.title })
+    if (url) acc.push({ url, alt: g.alt ?? item.title ?? '' })
     return acc
   }, [])
 
@@ -100,12 +107,12 @@ export default async function RealizacjaPage({ params }: Props) {
               </span>
             </Link>
             <div className="flex gap-[38px] max-[980px]:hidden">
-              <Link href="/#about" className={navLink}>O mnie</Link>
-              <Link href="/#areas" className={navLink}>Obszary</Link>
-              <NavRealizacjeDropdown triggerClass={navLink} />
-              <Link href="/#contact" className={navLink}>Kontakt</Link>
+              <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
+              <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
+              <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
+              <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
             </div>
-            <MobileNav links={NAV_LINKS} />
+            <MobileNav links={NAV_LINKS} locale={locale} dict={dict} />
           </nav>
         </div>
       </div>
@@ -124,7 +131,7 @@ export default async function RealizacjaPage({ params }: Props) {
             {sp.title ?? serviceSlug}
           </Link>
           <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">
-            Realizacja
+            {dict.realizacjaPage.eyebrow}
           </span>
           <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] max-[560px]:text-[30px]">
             {item.title}
@@ -139,7 +146,7 @@ export default async function RealizacjaPage({ params }: Props) {
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
             {/* Left (desktop) / top (mobile): gallery */}
             <div className="min-w-0 overflow-hidden">
-              <RealizacjaGaleria images={galleryImages} />
+              <RealizacjaGaleria images={galleryImages} dict={dict} />
             </div>
 
             {/* Right (desktop) / below (mobile): description */}
@@ -151,7 +158,7 @@ export default async function RealizacjaPage({ params }: Props) {
                 />
               ) : (
                 <p className="text-dark-muted font-light text-base leading-relaxed">
-                  Brak opisu realizacji.
+                  {dict.realizacjaPage.noDescription}
                 </p>
               )}
             </div>
@@ -163,13 +170,13 @@ export default async function RealizacjaPage({ params }: Props) {
       <section className="bg-cream-2 py-16 text-center">
         <div className={wrap}>
           <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">
-            Zainteresowany podobnym projektem?
+            {dict.realizacjaPage.ctaSimilarProject}
           </h2>
           <Link
             href="/#contact"
             className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
           >
-            Skontaktuj się
+            {dict.subpage.ctaButton}
             <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
               <path d="M0 6h28M23 1l5 5-5 5" />
             </svg>
@@ -183,10 +190,10 @@ export default async function RealizacjaPage({ params }: Props) {
           <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
             <div>
               <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">
-                Porozmawiajmy o Twoim projekcie
+                {dict.footer.eyebrow}
               </span>
               <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">
-                Skontaktuj się
+                {dict.footer.title}
               </h2>
               <div className="mb-[22px]">
                 <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">
@@ -237,24 +244,24 @@ export default async function RealizacjaPage({ params }: Props) {
 
             <div className="border-l border-white/10 pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-white/10 max-[768px]:pt-[34px] overflow-hidden">
               <iframe
-                src="https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed"
+                src={`https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed&hl=${locale}`}
                 width="100%"
                 height="300"
                 style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Lokalizacja MCRAFT"
+                title={dict.footer.mapsTitle}
               />
             </div>
           </div>
 
           <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
-            <span>© {new Date().getFullYear()} MCRAFT Michał Macherzyński. Wszystkie prawa zastrzeżone.</span>
+            <span>© {new Date().getFullYear()} {dict.footer.copyrightSuffix}</span>
             <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">
-              Polityka prywatności
+              {dict.footer.privacyPolicy}
             </Link>
             <span>
-              Wykonanie:{' '}
+              {dict.footer.builtBy}{' '}
               <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">
                 studiocodeart.pl
               </a>

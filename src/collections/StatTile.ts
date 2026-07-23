@@ -21,7 +21,10 @@ export const StatTile: CollectionConfig = {
       name: 'label',
       label: 'Etykieta (np. Lat doświadczenia)',
       type: 'text',
-      required: true,
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'icon',
@@ -75,7 +78,10 @@ export const StatTile: CollectionConfig = {
       name: 'description',
       label: 'Opis szczegółowy (widoczny w popupie)',
       type: 'textarea',
-      required: true,
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'order',

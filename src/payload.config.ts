@@ -35,6 +35,14 @@ export default buildConfig({
   },
   collections: [Users, Media, Documents, StatTile, ServicePage, Portfolio],
   globals: [HeroSection, AboutSection, CvModal, BioModal],
+  localization: {
+    locales: [
+      { code: 'pl', label: 'Polski' },
+      { code: 'en', label: 'English' },
+    ],
+    defaultLocale: 'pl',
+    fallback: true,
+  },
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

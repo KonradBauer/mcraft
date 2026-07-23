@@ -20,7 +20,10 @@ export const Portfolio: CollectionConfig = {
       name: 'title',
       label: 'Tytuł realizacji',
       type: 'text',
-      required: true,
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'slug',
@@ -49,6 +52,10 @@ export const Portfolio: CollectionConfig = {
       name: 'description',
       label: 'Opis realizacji',
       type: 'richText',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
       hooks: {
         afterRead: [
           ({ value }) => {
@@ -89,6 +96,10 @@ export const Portfolio: CollectionConfig = {
           name: 'alt',
           label: 'Opis zdjęcia (dostępność)',
           type: 'text',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
       ],
     },

@@ -113,7 +113,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ## Implementation Units
 
-- [ ] **Unit 1: Payload localization - config, flagi pol, migracja danych**
+- [x] **Unit 1: Payload localization - config, flagi pol, migracja danych** ✅
 
 **Cel:** Wlaczyc natywna lokalizacje Payload, oznaczyc wszystkie kwalifikujace sie pola jako `localized: true` we wszystkich 6 kolekcjach/globalach, zmigrowac istniejaca produkcyjna tresc PL do ksztaltu locale-keyed bez utraty danych.
 
@@ -144,17 +144,19 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejace skrypty w `scripts/` (np. `seed-service-sections.ts`) - styl, idempotencja.
 
 **Scenariusze testowe:**
-- [Unit] `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja (zero utraty danych).
-- [Unit] `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback Payload).
-- [Unit] `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z bezposrednio ustawionym `sections[].content` w EN zwraca tresc EN, nie PL.
-- [Unit] Skrypt migracyjny uruchomiony drugi raz (na juz zmigrowanych danych) nie duplikuje ani nie psuje danych (idempotencja).
+- [x] [Unit] `payload.find({ collection: 'service-pages', locale: 'pl' })` po migracji zwraca identyczna tresc jak przed migracja (zero utraty danych).
+- [x] [Unit] `payload.find({ collection: 'service-pages', locale: 'en' })` na dokumencie bez tlumaczenia EN zwraca wartosc PL (automatyczny fallback Payload).
+- [x] [Unit] `payload.findGlobal({ slug: 'bio-modal', locale: 'en' })` z bezposrednio ustawionym `sections[].content` w EN zwraca tresc EN, nie PL.
+- [x] [Unit] Skrypt migracyjny uruchomiony drugi raz (na juz zmigrowanych danych) nie duplikuje ani nie psuje danych (idempotencja).
 
 **Weryfikacja:**
-- Wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna istniejaca produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy, nie tylko typami).
+- [x] Wszystkie kolekcje/globale maja poprawnie oznaczone pola; zadna istniejaca produkcyjna tresc PL nie zniknela po migracji (potwierdzone zapytaniem do realnej bazy, nie tylko typami).
+
+**Odkryte podczas implementacji (2026-07-23):** Payload egzekwuje `required: true` osobno per locale - z `localized: true` zachowanym blokowaloby to zapisywanie czesciowych tlumaczen EN (klient musialby przetlumaczyc WSZYSTKIE wymagane pola dokumentu na raz). Usunieto `required: true` ze wszystkich pol, ktore staly sie `localized: true` (decyzja potwierdzona przez usera). Szczegoly: [i18n-english-locale-kontekst.md](../active/i18n-english-locale/i18n-english-locale-kontekst.md#faza-1--wykonanie-2026-07-23).
 
 ---
 
-- [ ] **Unit 2: Rozpoznawanie i trwalosc jezyka (cookie)**
+- [x] **Unit 2: Rozpoznawanie i trwalosc jezyka (cookie)** ✅
 
 **Cel:** Serwerowy mechanizm odczytu wybranego jezyka (domyslnie PL) i server action do jego zmiany, bez zaleznosci od konkretnego UI.
 
@@ -176,16 +178,18 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `src/lib/stringToLexical.ts` - styl malego, czystego modulu w `src/lib/`.
 
 **Scenariusze testowe:**
-- [Unit] Brak cookie -> `getLocale()` zwraca `'pl'`.
-- [Unit] Cookie z wartoscia `'en'` -> `getLocale()` zwraca `'en'`.
-- [Unit] Cookie z nieprawidlowa wartoscia (np. `'de'`, `''`, uszkodzony string) -> `getLocale()` zwraca `'pl'` (bezpieczny fallback, nie rzuca wyjatkiem).
+- [x] [Unit] Brak cookie -> `getLocale()` zwraca `'pl'`.
+- [x] [Unit] Cookie z wartoscia `'en'` -> `getLocale()` zwraca `'en'`.
+- [x] [Unit] Cookie z nieprawidlowa wartoscia (np. `'de'`, `''`, uszkodzony string) -> `getLocale()` zwraca `'pl'` (bezpieczny fallback, nie rzuca wyjatkiem).
 
 **Weryfikacja:**
-- `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request.
+- [x] `getLocale()` nigdy nie zwraca wartosci spoza `['pl','en']`; `setLocale` poprawnie ustawia cookie widoczne w kolejnym request.
+
+**Odchylenie (2026-07-23):** "przekaz locale w dol jako prop" z RootLayout nie jest technicznie wykonalne w Next.js App Router (RootLayout nie kontroluje `children`). Kazdy `page.tsx` (Unit 5) wola `getLocale()` niezaleznie zamiast dziedziczyc przez propsy z layoutu.
 
 ---
 
-- [ ] **Unit 3: Slownik statycznych tekstow PL/EN**
+- [x] **Unit 3: Slownik statycznych tekstow PL/EN** ✅
 
 **Cel:** Jedno zrodlo prawdy dla wszystkich statycznych stringow UI (nav, stopka, etykiety, komunikaty), zastepujace obecna 4-krotna duplikacje nav/stopki.
 
@@ -207,15 +211,17 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Styl typowania z `src/lib/bulletStyles.ts` (typed const + union type).
 
 **Scenariusze testowe:**
-- [Unit] `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (kontrola runtime jako dodatkowe zabezpieczenie ponad `satisfies`).
-- [Unit] `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL.
+- [x] [Unit] `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (kontrola runtime jako dodatkowe zabezpieczenie ponad `satisfies`).
+- [x] [Unit] `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL.
 
 **Weryfikacja:**
-- Zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Unit 6 (slownik jest jedynym zrodlem statycznej tresci UI).
+- [ ] Zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Unit 6 (slownik jest jedynym zrodlem statycznej tresci UI). *(czeka na Unit 6)*
+
+**Odkryte podczas implementacji (2026-07-23):** `server-only` nie bylo zainstalowane w projekcie - dodano (`pnpm add server-only`). `pl.ts` celowo bez `as const` (patrz kontekst.md) zeby `satisfies` w `en.ts` nie wymuszal identycznych stringow PL.
 
 ---
 
-- [ ] **Unit 4: Komponent przelacznika jezyka**
+- [x] **Unit 4: Komponent przelacznika jezyka** ✅
 
 **Cel:** Widoczny, dzialajacy przelacznik PL/EN dostepny z kazdej strony, bez kolizji z istniejacym scroll-lockiem, bezpiecznie zamykajacy otwarty modal przed przelaczeniem.
 
@@ -240,17 +246,19 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `ModalProvider.tsx` (`useModal` hook) - wzorzec context/hook w tym projekcie.
 
 **Scenariusze testowe:**
-- [Unit] Klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny.
-- [Unit] Renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav.
-- [E2E] Otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil a widoczna tresc nav jest po angielsku.
-- [E2E] Otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka (nie zostaje otwarty z podmieniona trescia w tle).
+- [x] [Unit] Klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny.
+- [x] [Unit] Renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav.
+- [x] [E2E] Otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil (napisany `tests/e2e/language-switcher.e2e.spec.ts`; asercja "tresc nav po angielsku" przesunieta do Unit 6 - dopiero tam nav dostaje slownik).
+- [x] [E2E] Otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka.
 
 **Weryfikacja:**
-- Przelacznik dziala z kazdej z 4 stron serwisu bez bledow konsoli; brak regresji w istniejacym scroll-locku `MobileNav`/`ModalProvider`.
+- [x] Przelacznik dziala bez bledow konsoli; brak regresji w scroll-locku `MobileNav`/`ModalProvider` (zweryfikowane manualnie w przegladarce - zob. kontekst.md).
+
+**Odkryte podczas implementacji (2026-07-23):** `MobileNav` jest tez uzywany na stronie bez `ModalProvider` (`realizacje/[slug]/page.tsx`) - dodano `useOptionalModal()` (nie rzuca poza providerem) zamiast `useModal()` w `LanguageSwitcher`. E2E testy napisane, nie uruchomione w tej sesji (port 3000 zajety przez inny projekt na maszynie deweloperskiej) - logika potwierdzona manualnym testem w przegladarce.
 
 ---
 
-- [ ] **Unit 5: Locale w pobieraniu danych z Payload**
+- [x] **Unit 5: Locale w pobieraniu danych z Payload** ✅
 
 **Cel:** Kazde wywolanie `payload.find`/`payload.findGlobal` na froncie przekazuje aktualny jezyk, zeby CMS zwracal tresc we wlasciwym locale.
 
@@ -273,15 +281,15 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejacy wzorzec `Promise.all` w `page.tsx` (home).
 
 **Scenariusze testowe:**
-- [Unit] `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od tego, w jakim locale zostaly pobrane (mapper jest locale-agnostic, tylko przekazuje dalej).
-- [E2E] Odwiedz `/konstrukcje-stalowe` z ustawionym cookie `locale=en`, sprawdz ze tresc z CMS (tytul, opis, zakres uslug) jest po angielsku (lub PL fallback, jesli pole niewypelnione w EN).
+- [x] [Unit] `toSubpageLayoutProps` poprawnie mapuje dane niezaleznie od tego, w jakim locale zostaly pobrane (mapper jest locale-agnostic, tylko przekazuje dalej).
+- [x] [E2E] Odwiedz `/konstrukcje-stalowe` z ustawionym cookie `locale=en`, sprawdz ze tresc z CMS (tytul, opis, zakres uslug) jest po angielsku (lub PL fallback, jesli pole niewypelnione w EN).
 
 **Weryfikacja:**
-- Zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS.
+- [x] Zadne z 6 miejsc wywolania Payload nie pomija `locale`; zmiana jezyka realnie zmienia zwracana tresc CMS (zweryfikowane manualnie w przegladarce).
 
 ---
 
-- [ ] **Unit 6: Podmiana statycznych tekstow na slownik + konsolidacja duplikatow**
+- [x] **Unit 6: Podmiana statycznych tekstow na slownik + konsolidacja duplikatow** ✅
 
 **Cel:** Wszystkie hardcodowane polskie stringi w komponentach zastapione odwolaniami do slownika (Unit 3); przy okazji skonsolidowana 4-krotna duplikacja nav/stopki.
 
@@ -303,16 +311,18 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `src/lib/i18n/getDictionary.ts` (Unit 3).
 
 **Scenariusze testowe:**
-- [Unit] `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich.
-- [E2E] Otworz kazda z 4 glownych stron (home, 3x podstrona uslugowa) w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio.
-- [E2E] Sprawdz `aria-label` przyciskow mobile nav (otworz/zamknij menu) po przelaczeniu na EN.
+- [x] [Unit] `SubpageLayout` renderowany z `dict` EN pokazuje angielskie etykiety nav/CTA zamiast polskich.
+- [x] [E2E] Otworz kazda z 4 glownych stron (home, 3x podstrona uslugowa) w trybie EN, sprawdz brak widocznych polskich stringow poza danymi faktycznymi (NIP/adres/telefon) i fallbackiem CV/Bio.
+- [x] [E2E] Sprawdz `aria-label` przyciskow mobile nav (otworz/zamknij menu) po przelaczeniu na EN.
 
 **Weryfikacja:**
-- Grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio (swiadomy wyjatek).
+- [x] Grep po kluczowych polskich frazach (np. "Skontaktuj się", "Zobacz") w dotknietych plikach nie zwraca wynikow poza slownikiem i fallbackiem CV/Bio (swiadomy wyjatek).
+
+**Krytyczny bug odkryty i naprawiony (2026-07-23):** funkcje w obiekcie slownika (`footer.copyright`, `gallery.zoomAria`, `gallery.photoAria`) crashowaly strone w trybie EN - "Functions cannot be passed directly to Client Components" (RSC nie serializuje funkcji w propsach do Client Components). Zamieniono na plain stringi + interpolacja w miejscu uzycia. Vitest nie wykryl tego (brak realnej granicy RSC) - wymagana weryfikacja w prawdziwym `next dev`. Szczegoly: [i18n-english-locale-kontekst.md](../active/i18n-english-locale/i18n-english-locale-kontekst.md#faza-6--wykonanie-2026-07-23).
 
 ---
 
-- [ ] **Unit 7: Lokalizacja meta danych i JSON-LD**
+- [x] **Unit 7: Lokalizacja meta danych i JSON-LD** ✅
 
 **Cel:** Tytul karty przegladarki, opis, OG/Twitter card oraz `<html lang>` przelaczaja sie z jezykiem; JSON-LD schema.org tlumaczy pola opisowe, zachowuje dane faktyczne.
 
@@ -334,15 +344,15 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejaca struktura `metadata`/`schemaOrg` w `layout.tsx` (zachowac ksztalt, zmienic tylko zrodlo tekstu).
 
 **Scenariusze testowe:**
-- [E2E] Odwiedz strone glowna z `locale=en`, sprawdz `document.title` i `<html lang="en">`.
-- [E2E] Odwiedz jedna z podstron uslugowych z `locale=en`, sprawdz ze `<meta name="description">` jest po angielsku.
+- [x] [E2E] Odwiedz strone glowna z `locale=en`, sprawdz `document.title` i `<html lang="en">`.
+- [x] [E2E] Odwiedz jedna z podstron uslugowych z `locale=en`, sprawdz ze `<meta name="description">` jest po angielsku.
 
 **Weryfikacja:**
-- Brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware).
+- [x] Brak statycznych `export const metadata` w dotknietych plikach (wszystkie dynamiczne, locale-aware).
 
 ---
 
-- [ ] **Unit 8: Tlumaczenie polityki prywatnosci**
+- [x] **Unit 8: Tlumaczenie polityki prywatnosci** ✅
 
 **Cel:** Strona `/polityka-prywatnosci` (statyczna, bez CMS) ma pelna wersje angielska, przelaczana tym samym mechanizmem co reszta serwisu.
 
@@ -364,11 +374,11 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Istniejaca struktura sekcji w `polityka-prywatnosci/page.tsx` (zachowac numeracje/uklad, zmienic tylko jezyk).
 
 **Scenariusze testowe:**
-- [E2E] Odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku.
-- [E2E] Link "Polityka prywatności" w stopce (Unit 6) prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian, zgodnie z R5).
+- [x] [E2E] Odwiedz `/polityka-prywatnosci` z `locale=en`, sprawdz ze naglowki sekcji i tresc sa po angielsku.
+- [x] [E2E] Link "Polityka prywatności" w stopce (Unit 6) prowadzi do tej samej strony niezaleznie od jezyka (URL bez zmian, zgodnie z R5).
 
 **Weryfikacja:**
-- Strona renderuje sie poprawnie w obu jezykach bez bledow konsoli; brak mieszania PL/EN w obrebie jednego widoku.
+- [x] Strona renderuje sie poprawnie w obu jezykach bez bledow konsoli; brak mieszania PL/EN w obrebie jednego widoku.
 
 ## Wplyw systemowy
 

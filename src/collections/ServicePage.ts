@@ -20,7 +20,7 @@ const richTextItemField = {
   name: 'text' as const,
   label: 'Treść punktu',
   type: 'richText' as const,
-  required: true,
+  localized: true,
   hooks: {
     afterRead: [
       ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),
@@ -59,17 +59,28 @@ export const ServicePage: CollectionConfig = {
       name: 'eyebrow',
       label: 'Nadtytuł (mały tekst nad tytułem)',
       type: 'text',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'title',
       label: 'Tytuł strony',
       type: 'text',
-      required: true,
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'description',
       label: 'Opis (lead pod tytułem)',
       type: 'textarea',
+      localized: true,
+      admin: {
+        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+      },
     },
     {
       name: 'scopeItems',
@@ -134,19 +145,27 @@ export const ServicePage: CollectionConfig = {
           name: 'text',
           label: 'Tytuł punktu',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         {
           name: 'description',
           label: 'Opis punktu (opcjonalny, krótki - widoczny na karcie)',
           type: 'textarea',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         {
           name: 'modalDescription',
           label: 'Rozwinięty opis (w oknie modal po kliknięciu)',
           type: 'textarea',
+          localized: true,
           admin: {
-            description: 'Jeśli puste, w oknie modal użyty zostanie krótki opis z karty.',
+            description: 'Jeśli puste, w oknie modal użyty zostanie krótki opis z karty. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
           },
         },
       ],
@@ -156,8 +175,9 @@ export const ServicePage: CollectionConfig = {
       label: 'Tytuł sekcji "Dla kogo?"',
       type: 'text',
       defaultValue: 'Dla kogo?',
+      localized: true,
       admin: {
-        description: 'Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla.',
+        description: 'Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
       },
     },
     bulletStyleField('audienceBulletStyle', 'Styl punktora listy "Dla kogo?"'),
@@ -187,7 +207,10 @@ export const ServicePage: CollectionConfig = {
           name: 'title',
           label: 'Tytuł sekcji',
           type: 'text',
-          required: true,
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
         },
         bulletStyleField('bulletStyle', 'Styl punktora'),
         {
@@ -208,16 +231,18 @@ export const ServicePage: CollectionConfig = {
       label: 'Nagłówek sekcji CTA (na dole strony)',
       type: 'text',
       defaultValue: 'Zainteresowany współpracą?',
+      localized: true,
       admin: {
-        description: 'Tekst nad przyciskiem "Skontaktuj się" na dole podstrony.',
+        description: 'Tekst nad przyciskiem "Skontaktuj się" na dole podstrony. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
       },
     },
     {
       name: 'thumbnailTitle',
       label: 'Tytuł kafelka na stronie głównej',
       type: 'text',
+      localized: true,
       admin: {
-        description: 'Tekst widoczny w sekcji "Obszary działalności" na stronie głównej',
+        description: 'Tekst widoczny w sekcji "Obszary działalności" na stronie głównej. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
       },
     },
     {
