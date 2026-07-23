@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 2)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 3)
 
 ## Powiazane pliki
 
@@ -86,6 +86,18 @@ Ukonczona. `src/lib/i18n/locale.ts` (`getLocale`, `Locale` type, `LOCALE_COOKIE_
 **Test next/headers w Vitest:** `cookies()` z `next/headers` wymaga kontekstu requestu Next.js i rzuca poza nim - `tests/int/locale.int.spec.ts` mockuje caly modul `next/headers` (`vi.mock`) i dynamicznie importuje `getLocale` per test, zeby uniknac tego problemu. Wzorzec do powielenia w Fazie 7 (metadata) jesli tam tez potrzebny bedzie test dotykajacy `cookies()`.
 
 Build (`pnpm run build`) przeszedl czysto po zmianie RootLayout na async server component.
+
+## Faza 3 — wykonanie (2026-07-23)
+
+Ukonczona. `src/lib/i18n/dictionaries/pl.ts` (`Dictionary` typ), `dictionaries/en.ts` (`satisfies Dictionary`), `src/lib/i18n/getDictionary.ts`.
+
+**Odkryta zaleznosc:** `server-only` (paczka Vercela wymagana przez plan - `import 'server-only'` w `getDictionary.ts`) nie byla zainstalowana w projekcie (`pnpm add server-only`, wersja 0.0.1, zero zaleznosci). Bez niej import w ogole by sie nie zresolvowal.
+
+**Wazny detal implementacyjny:** `pl.ts` NIE uzywa `as const` - to celowe. Gdyby uzyc `as const`, `type Dictionary = typeof pl` zwezalby kazdy string do jego DOKLADNEJ literalnej wartosci, a wtedy `en.ts satisfies Dictionary` wymuszalby identyczne stringi PL w en.ts (kompilacja by sie nie powiodla przy jakiejkolwiek realnej translacji). Bez `as const` TypeScript naturalnie szerzy typy stringow do `string`, co pozwala `en.ts` miec zupelnie inna tresc przy zachowaniu identycznego ksztaltu kluczy.
+
+**`server-only` w testach:** paczka `server-only` rzuca wyjatkiem zawsze poza kontekstem RSC Next.js (warunek `exports["react-server"]` nie jest ustawiony w plain Node/Vitest) - `tests/int/i18n-dictionary.int.spec.ts` mockuje cala paczke (`vi.mock('server-only', () => ({}))`) zeby zaimportowac `getDictionary`.
+
+Slownik pokrywa wszystkie statyczne stringi UI znalezione w: `HomeContent.tsx`, `SubpageLayout.tsx`, `MobileNav.tsx`, `NavRealizacjeDropdown.tsx`, `TilesMarquee.tsx`, `RealizacjaGaleria.tsx`, `ModalProvider.tsx` (etykiety UI, NIE hardcodowany fallback CV/Bio - ten zostaje PL na zawsze, zgodnie z decyzja planu), `[serviceSlug]/realizacje/[slug]/page.tsx`, `not-found.tsx`. Nazwy obszarow dzialalnosci (`areas.names.*`) trzymane jako pojedyncza linia tekstu (bez recznego `\n`) - podzial na dwie linie wukladzie kafelka homepage to decyzja wizualna Fazy 6, nie danych slownika.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

@@ -40,13 +40,14 @@
 
 ---
 
-## Faza 3 — Slownik statycznych tekstow PL/EN
+## Faza 3 — Slownik statycznych tekstow PL/EN ✅
 
-- [ ] Stworz `src/lib/i18n/dictionaries/pl.ts` — pelny slownik PL (nav, stopka, etykiety hero/about/areas, modale, aria-labels), namespaced per sekcja
-- [ ] Stworz `src/lib/i18n/dictionaries/en.ts` — `satisfies Dictionary` z `pl.ts`
-- [ ] Stworz `src/lib/i18n/getDictionary.ts` z `import 'server-only'` i `getDictionary(locale): Promise<Dictionary>`
-- [ ] Test: `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (runtime check ponad `satisfies`)
-- [ ] Test: `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL — stworz `tests/int/i18n-dictionary.int.spec.ts`
+- [x] Stworz `src/lib/i18n/dictionaries/pl.ts` — pelny slownik PL (nav, stopka, etykiety hero/about/areas, modale, aria-labels), namespaced per sekcja
+- [x] Stworz `src/lib/i18n/dictionaries/en.ts` — `satisfies Dictionary` z `pl.ts`
+- [x] Stworz `src/lib/i18n/getDictionary.ts` z `import 'server-only'` i `getDictionary(locale): Promise<Dictionary>`
+- [x] (odkryte podczas Fazy 3) `pnpm add server-only` — paczka wymagana przez plan nie byla zainstalowana w projekcie
+- [x] Test: `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (runtime check ponad `satisfies`)
+- [x] Test: `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL — stworzono `tests/int/i18n-dictionary.int.spec.ts`
 - [ ] Weryfikacja: zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Fazy 6 (slownik jedynym zrodlem statycznej tresci UI)
 
 ---

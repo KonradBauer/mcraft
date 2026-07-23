@@ -189,7 +189,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 3: Slownik statycznych tekstow PL/EN**
+- [x] **Unit 3: Slownik statycznych tekstow PL/EN** ✅
 
 **Cel:** Jedno zrodlo prawdy dla wszystkich statycznych stringow UI (nav, stopka, etykiety, komunikaty), zastepujace obecna 4-krotna duplikacje nav/stopki.
 
@@ -211,11 +211,13 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - Styl typowania z `src/lib/bulletStyles.ts` (typed const + union type).
 
 **Scenariusze testowe:**
-- [Unit] `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (kontrola runtime jako dodatkowe zabezpieczenie ponad `satisfies`).
-- [Unit] `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL.
+- [x] [Unit] `en.ts` eksportuje dokladnie te same top-level klucze co `pl.ts` (kontrola runtime jako dodatkowe zabezpieczenie ponad `satisfies`).
+- [x] [Unit] `getDictionary('en')` zwraca slownik EN, `getDictionary('pl')` zwraca slownik PL.
 
 **Weryfikacja:**
-- Zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Unit 6 (slownik jest jedynym zrodlem statycznej tresci UI).
+- [ ] Zero stringow PL zakodowanych bezposrednio w komponentach po zakonczeniu Unit 6 (slownik jest jedynym zrodlem statycznej tresci UI). *(czeka na Unit 6)*
+
+**Odkryte podczas implementacji (2026-07-23):** `server-only` nie bylo zainstalowane w projekcie - dodano (`pnpm add server-only`). `pl.ts` celowo bez `as const` (patrz kontekst.md) zeby `satisfies` w `en.ts` nie wymuszal identycznych stringow PL.
 
 ---
 
