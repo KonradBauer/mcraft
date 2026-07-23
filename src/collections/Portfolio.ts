@@ -31,8 +31,9 @@ export const Portfolio: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      localized: true,
       admin: {
-        description: 'Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy',
+        description: 'Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola) - jeśli puste, używany jest polski slug.',
       },
     },
     {

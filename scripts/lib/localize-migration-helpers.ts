@@ -53,6 +53,7 @@ export function migrateServicePage(doc: Doc): boolean {
 export function migratePortfolio(doc: Doc): boolean {
   let changed = false
   if (localizeField(doc, 'title')) changed = true
+  if (localizeField(doc, 'slug')) changed = true
   if (localizeField(doc, 'description')) changed = true
   if (localizeArrayField(doc, 'images', ['alt'])) changed = true
   return changed
