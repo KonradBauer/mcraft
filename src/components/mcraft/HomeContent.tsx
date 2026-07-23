@@ -9,9 +9,11 @@ import type {
   ServicePage,
   StatTile,
 } from '@/payload-types'
+import type { Locale } from '@/lib/i18n/locale'
 import { mediaUrl } from '@/lib/mediaUrl'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileNav } from './MobileNav'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 import { ModalProvider } from './ModalProvider'
@@ -25,6 +27,7 @@ export interface HomeContentProps {
   bioModal: BioModal
   tiles: StatTile[]
   areas: Pick<ServicePage, 'slug' | 'thumbnailTitle' | 'thumbnailImage'>[]
+  locale?: Locale
 }
 
 /* ─── reusable class strings ─── */
@@ -87,7 +90,7 @@ const AREA_DEFAULTS = [
 ]
 
 /* ─── main component (server) ─── */
-export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: HomeContentProps) {
+export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, locale = 'pl' }: HomeContentProps) {
   const areaBySlug = Object.fromEntries(areas.map((a) => [a.slug, a]))
 
   const heroBackground = mediaUrl(hero.backgroundImage) ?? '/hero-tlo-v2.png'
@@ -145,8 +148,9 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas }: Ho
                 <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>Obszary</a>
                 <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} />
                 <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>Kontakt</a>
+                <LanguageSwitcher locale={locale} triggerClassName={`${navLink} text-black/70 hover:text-black`} />
               </div>
-              <MobileNav links={HOME_NAV_LINKS} />
+              <MobileNav links={HOME_NAV_LINKS} locale={locale} />
             </nav>
 
             <div className="flex items-start justify-between pt-[clamp(24px,2.92vw,56px)] pb-[clamp(30px,4.69vw,90px)] max-[980px]:pt-[24px] max-[980px]:pb-[16px] max-[980px]:block">

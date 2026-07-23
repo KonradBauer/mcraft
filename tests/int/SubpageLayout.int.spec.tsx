@@ -1,8 +1,17 @@
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
 import { DEFAULT_BULLET_STYLE } from '@/lib/bulletStyles'
 import { stringToLexical } from '@/lib/stringToLexical'
+
+// SubpageLayout renderuje LanguageSwitcher (Faza 4), ktory wymaga next/navigation router
+// context oraz wywoluje server action setLocale - obie zaleznosci zewnetrzne w tym tescie.
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}))
+vi.mock('@/lib/i18n/setLocale', () => ({
+  setLocale: vi.fn().mockResolvedValue(undefined),
+}))
 
 afterEach(cleanup)
 

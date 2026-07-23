@@ -15,6 +15,8 @@ export interface ScopeModalContent {
 
 interface ModalContextValue {
   openModal: (key: ModalKey, el: HTMLElement, content?: ScopeModalContent) => void
+  closeModal: () => void
+  isOpen: boolean
 }
 
 const ModalContext = createContext<ModalContextValue | null>(null)
@@ -23,6 +25,12 @@ export function useModal() {
   const ctx = useContext(ModalContext)
   if (!ctx) throw new Error('useModal outside ModalProvider')
   return ctx
+}
+
+/** Jak useModal(), ale zwraca null zamiast rzucac - dla komponentow renderowanych
+ *  tez poza ModalProvider (np. MobileNav na stronie realizacji/[slug]). */
+export function useOptionalModal() {
+  return useContext(ModalContext)
 }
 
 /* ─── modal sub-components ─── */
@@ -325,7 +333,7 @@ export function ModalProvider({ children, cvModal, bioModal, tiles }: ModalProvi
   }, [isOpen, closeModal])
 
   return (
-    <ModalContext.Provider value={{ openModal }}>
+    <ModalContext.Provider value={{ openModal, closeModal, isOpen }}>
       {children}
 
       <div

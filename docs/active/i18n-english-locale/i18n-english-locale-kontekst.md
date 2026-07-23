@@ -1,7 +1,7 @@
 # Angielska wersja jezykowa strony (i18n) — Kontekst
 
 **Branch:** `feature/i18n-english-locale`
-**Ostatnia aktualizacja:** 2026-07-23 (Faza 3)
+**Ostatnia aktualizacja:** 2026-07-23 (Faza 4)
 
 ## Powiazane pliki
 
@@ -98,6 +98,20 @@ Ukonczona. `src/lib/i18n/dictionaries/pl.ts` (`Dictionary` typ), `dictionaries/e
 **`server-only` w testach:** paczka `server-only` rzuca wyjatkiem zawsze poza kontekstem RSC Next.js (warunek `exports["react-server"]` nie jest ustawiony w plain Node/Vitest) - `tests/int/i18n-dictionary.int.spec.ts` mockuje cala paczke (`vi.mock('server-only', () => ({}))`) zeby zaimportowac `getDictionary`.
 
 Slownik pokrywa wszystkie statyczne stringi UI znalezione w: `HomeContent.tsx`, `SubpageLayout.tsx`, `MobileNav.tsx`, `NavRealizacjeDropdown.tsx`, `TilesMarquee.tsx`, `RealizacjaGaleria.tsx`, `ModalProvider.tsx` (etykiety UI, NIE hardcodowany fallback CV/Bio - ten zostaje PL na zawsze, zgodnie z decyzja planu), `[serviceSlug]/realizacje/[slug]/page.tsx`, `not-found.tsx`. Nazwy obszarow dzialalnosci (`areas.names.*`) trzymane jako pojedyncza linia tekstu (bez recznego `\n`) - podzial na dwie linie wukladzie kafelka homepage to decyzja wizualna Fazy 6, nie danych slownika.
+
+## Faza 4 — wykonanie (2026-07-23)
+
+Ukonczona. `src/components/mcraft/LanguageSwitcher.tsx` (dropdown, click-based nie hover-based - musi dzialac na dotyku w MobileNav), wpieto w `HomeContent.tsx`/`SubpageLayout.tsx` (desktop nav, po "Kontakt") i `MobileNav.tsx` (osobny wiersz nad LinkedIn).
+
+**Kluczowa poprawka projektowa:** `ModalProvider` dostal `useOptionalModal()` obok istniejacego `useModal()`. Powod: `MobileNav` (ktory teraz zawsze renderuje `LanguageSwitcher`) jest uzywany takze na `[serviceSlug]/realizacje/[slug]/page.tsx`, ktora NIE ma `<ModalProvider>` w drzewie (ta strona nie jest w scope Fazy 4 do modyfikacji). `useModal()` rzucalby wyjatkiem przy kazdym renderze tej strony. `useOptionalModal()` zwraca `null` zamiast rzucac, `LanguageSwitcher` uzywa `modal?.isOpen`/`modal?.closeModal()` bezpiecznie.
+
+**Locale jako prop, nie z `getLocale()` bezposrednio:** `HomeContentProps`/`SubpageLayoutProps`/`MobileNavProps` dostaly opcjonalny `locale?: Locale` (default `'pl'`) zamiast wymagac go od razu - unika zlamania typow w `page.tsx` plikach, ktore jeszcze nie wolaja `getLocale()` (to Faza 5). Po Fazie 5 realna wartosc bedzie zawsze przekazywana, default stanie sie martwym kodem tylko na wypadek braku propa.
+
+**Test jsdom - `aria-hidden` na dropdownie:** panel dropdownu jest zawsze w DOM (widocznosc przez klasy CSS `invisible`/`opacity-0`), ale jsdom w Vitest NIE parsuje prawdziwego Tailwind CSS - `getByRole`/`getByText` widzialyby ukryte opcje jako dostepne. Naprawione dodaniem `aria-hidden={!open}` na kontenerze dropdownu (realna poprawka accessibility, nie tylko test hack - screen reader tez nie powinien widziec ukrytego menu).
+
+**Weryfikacja manualna w przegladarce (real Chrome, nie jsdom):** otwarto mobile nav, kliknieto przelacznik -> dropdown pokazal PL/EN poprawnie -> klik EN -> `document.cookie` = `locale=en`, `document.documentElement.lang` = `en`, URL bez zmian. Pelny flow Faza 2 + Faza 4 dziala end-to-end.
+
+**Blokada operacyjna (nie blokada kodu):** napisano `tests/e2e/language-switcher.e2e.spec.ts` (2 scenariusze: brak zmiany URL + html lang po przelaczeniu, zamkniecie modala CV przed przelaczeniem), ale NIE dalo sie ich uruchomic w tej sesji - port 3000 na tej maszynie zajety przez inny, niepowiazany projekt uzytkownika (proces node.exe serwujacy strone "KCRAFT", nie mcraft). Nie zabito tego procesu (nie nalezy do tego projektu). Logika testow zweryfikowana manualnie w przegladarce (patrz wyzej) - testy powinny przejsc przy wolnym porcie 3000 lub w CI.
 
 ## Zrodla
 - Requirements doc: [docs/dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md](../../dev-brainstorms/2026-07-21-tlumaczenie-strony-en-requirements.md)

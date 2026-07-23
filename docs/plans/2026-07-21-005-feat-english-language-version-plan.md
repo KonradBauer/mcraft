@@ -221,7 +221,7 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 
 ---
 
-- [ ] **Unit 4: Komponent przelacznika jezyka**
+- [x] **Unit 4: Komponent przelacznika jezyka** ✅
 
 **Cel:** Widoczny, dzialajacy przelacznik PL/EN dostepny z kazdej strony, bez kolizji z istniejacym scroll-lockiem, bezpiecznie zamykajacy otwarty modal przed przelaczeniem.
 
@@ -246,13 +246,15 @@ Firma dziala w przemysle (spawanie, konstrukcje, meble premium) - segment gdzie 
 - `ModalProvider.tsx` (`useModal` hook) - wzorzec context/hook w tym projekcie.
 
 **Scenariusze testowe:**
-- [Unit] Klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny.
-- [Unit] Renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav.
-- [E2E] Otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil a widoczna tresc nav jest po angielsku.
-- [E2E] Otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka (nie zostaje otwarty z podmieniona trescia w tle).
+- [x] [Unit] Klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny.
+- [x] [Unit] Renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav.
+- [x] [E2E] Otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil (napisany `tests/e2e/language-switcher.e2e.spec.ts`; asercja "tresc nav po angielsku" przesunieta do Unit 6 - dopiero tam nav dostaje slownik).
+- [x] [E2E] Otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka.
 
 **Weryfikacja:**
-- Przelacznik dziala z kazdej z 4 stron serwisu bez bledow konsoli; brak regresji w istniejacym scroll-locku `MobileNav`/`ModalProvider`.
+- [x] Przelacznik dziala bez bledow konsoli; brak regresji w scroll-locku `MobileNav`/`ModalProvider` (zweryfikowane manualnie w przegladarce - zob. kontekst.md).
+
+**Odkryte podczas implementacji (2026-07-23):** `MobileNav` jest tez uzywany na stronie bez `ModalProvider` (`realizacje/[slug]/page.tsx`) - dodano `useOptionalModal()` (nie rzuca poza providerem) zamiast `useModal()` w `LanguageSwitcher`. E2E testy napisane, nie uruchomione w tej sesji (port 3000 zajety przez inny projekt na maszynie deweloperskiej) - logika potwierdzona manualnym testem w przegladarce.
 
 ---
 

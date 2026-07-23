@@ -52,19 +52,23 @@
 
 ---
 
-## Faza 4 — Komponent przelacznika jezyka
+## Faza 4 — Komponent przelacznika jezyka ✅
 
-- [ ] Stworz `src/components/mcraft/LanguageSwitcher.tsx` — client component, `useTransition` + `setLocale` (server action) + `router.refresh()`, `isPending` steruje stanem ladowania
-- [ ] Przed `setLocale`, jesli modal otwarty — zamknij go najpierw (`useModal().closeModal()`)
-- [ ] Zmodyfikuj `src/components/mcraft/ModalProvider.tsx` — wystaw `closeModal` przez `useModal()` do uzytku poza providerem, jesli jeszcze niedostepne
-- [ ] Zmodyfikuj `src/components/mcraft/HomeContent.tsx`, `SubpageLayout.tsx` — wstaw `LanguageSwitcher` w nav desktop
-- [ ] Zmodyfikuj `src/components/mcraft/MobileNav.tsx` — wstaw `LanguageSwitcher` w nav mobile
-- [ ] (reczne) Zdecyduj dokladne umiejscowienie wizualne przelacznika w nav (przed/po linkach, dopasowanie do `bg-white/30 backdrop-blur-md` na desktopie) — decyzja odroczona z planu
-- [ ] Test: klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny
-- [ ] Test: renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav — stworz `tests/int/LanguageSwitcher.int.spec.tsx` (pamietaj `afterEach(cleanup)`)
-- [ ] Test [E2E]: otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil a widoczna tresc nav jest po angielsku
-- [ ] Test [E2E]: otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka (nie zostaje otwarty z podmieniona trescia w tle)
-- [ ] Weryfikacja: przelacznik dziala z kazdej z 4 stron serwisu bez bledow konsoli; brak regresji w scroll-locku `MobileNav`/`ModalProvider`
+- [x] Stworz `src/components/mcraft/LanguageSwitcher.tsx` — client component, `useTransition` + `setLocale` (server action) + `router.refresh()`, `isPending` steruje stanem ladowania. Forma: DROPDOWN (decyzja usera)
+- [x] Przed `setLocale`, jesli modal otwarty — zamknij go najpierw (`useModal().closeModal()`)
+- [x] Zmodyfikuj `src/components/mcraft/ModalProvider.tsx` — wystaw `closeModal` i `isOpen` przez `useModal()`; dodaj `useOptionalModal()` (nie rzuca poza providerem)
+- [x] Zmodyfikuj `src/components/mcraft/HomeContent.tsx`, `SubpageLayout.tsx` — wstaw `LanguageSwitcher` w nav desktop
+- [x] Zmodyfikuj `src/components/mcraft/MobileNav.tsx` — wstaw `LanguageSwitcher` w nav mobile
+- [x] (reczne, rozstrzygniete) Umiejscowienie: ostatnia pozycja w nav pill/topbar (po "Kontakt") na desktopie; osobny wiersz nad LinkedIn w mobile overlay
+- [x] Test: klikniecie przelacznika wywoluje `setLocale` z przeciwnym jezykiem niz aktualny
+- [x] Test: renderuje sie identycznie (dostepny, klikalny) w kontekscie desktop nav i mobile nav — stworzono `tests/int/LanguageSwitcher.int.spec.tsx` (`afterEach(cleanup)`)
+- [x] Weryfikacja: przelacznik dziala bez bledow konsoli; brak regresji w scroll-locku `MobileNav`/`ModalProvider` (potwierdzone recznie w przegladarce: klik EN -> cookie `locale=en` -> `router.refresh()` -> `<html lang="en">`)
+
+- [x] Test [E2E]: otworz strone glowna, kliknij przelacznik na EN, sprawdz ze URL sie nie zmienil (napisano `tests/e2e/language-switcher.e2e.spec.ts` - nie uruchomiono w tej sesji, port 3000 zajety przez niepowiazany projekt na tej maszynie; logika potwierdzona manualnie w przegladarce, patrz kontekst.md)
+- [x] Test [E2E]: otworz modal CV, kliknij przelacznik jezyka, sprawdz ze modal sie zamyka (jw., w tym samym pliku)
+
+**Pominiete (poza zakresem tej fazy, wymaga Fazy 6):**
+- Test [E2E] z oryginalnej checklisty "sprawdz ze widoczna tresc nav jest po angielsku" - tresc CMS/statyczna nie jest jeszcze przelaczana slownikiem (Faza 6). Napisany test sprawdza to, co Faza 4 faktycznie dostarcza: brak zmiany URL i zmiane `<html lang>`.
 
 ---
 

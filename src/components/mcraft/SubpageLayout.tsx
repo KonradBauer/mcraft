@@ -3,9 +3,11 @@ import type { DefaultTypedEditorState } from '@payloadcms/richtext-lexical'
 import Link from 'next/link'
 import React from 'react'
 import type { BulletStyle } from '@/lib/bulletStyles'
+import type { Locale } from '@/lib/i18n/locale'
 import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { MobileNav } from './MobileNav'
 import { ModalProvider } from './ModalProvider'
 import { ModalTrigger } from './ModalTrigger'
@@ -79,6 +81,7 @@ export interface SubpageLayoutProps {
   additionalSections?: { title: string; bulletStyle: BulletStyle; items: { text: DefaultTypedEditorState }[] }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
+  locale?: Locale
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -108,6 +111,7 @@ export function SubpageLayout({
   additionalSections,
   realizacje,
   ctaLabel = 'Zainteresowany współpracą?',
+  locale = 'pl',
 }: SubpageLayoutProps) {
   return (
     <ModalProvider>
@@ -123,8 +127,9 @@ export function SubpageLayout({
               <Link href="/#areas" className={navLink}>Obszary</Link>
               <NavRealizacjeDropdown triggerClass={navLink} />
               <Link href="/#contact" className={navLink}>Kontakt</Link>
+              <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
-            <MobileNav links={SUBPAGE_NAV_LINKS} />
+            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} />
           </nav>
         </div>
       </div>

@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import type { Locale } from '@/lib/i18n/locale'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 type NavItem =
   | { href: string; label: string; sub?: never }
@@ -9,9 +11,10 @@ type NavItem =
 
 interface MobileNavProps {
   links: NavItem[]
+  locale?: Locale
 }
 
-export function MobileNav({ links }: MobileNavProps) {
+export function MobileNav({ links, locale = 'pl' }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
   const scrollYRef = useRef(0)
 
@@ -114,6 +117,9 @@ export function MobileNav({ links }: MobileNavProps) {
 
         <div className="px-8 pb-10 flex-none">
           <div className="w-10 h-px bg-accent mb-6" />
+          <div className="mb-5">
+            <LanguageSwitcher locale={locale} triggerClassName="text-light/50 hover:text-accent text-[13px] font-montserrat font-semibold tracking-[0.2em] uppercase" />
+          </div>
           <a
             href="https://www.linkedin.com/in/micha%C5%82-macherzy%C5%84ski-399521276/"
             target="_blank"
