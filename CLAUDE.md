@@ -42,6 +42,11 @@ pnpm exec playwright test tests/e2e/admin.e2e.spec.ts
 $env:NODE_OPTIONS="--use-system-ca"; pnpm <command>
 ```
 
+`git push`/`git fetch`/`gh` hit the same corporate proxy issue (`SSL certificate problem: unable to get local issuer certificate`), but `NODE_OPTIONS` doesn't fix git itself - switch git's SSL backend to the Windows cert store instead:
+```bash
+git config http.sslBackend schannel
+```
+
 ## Architecture
 
 ### Route groups
