@@ -147,7 +147,7 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 
 ---
 
-- [ ] **Unit 3: Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug])**
+- [x] **Unit 3: Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug])** ✅
 
 **Cel:** Dynamiczna trasa szczegółów realizacji obsługuje obszar `mk-gym` tak samo jak pozostałe dwa obszary portfolio.
 
@@ -171,7 +171,7 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 - [E2E] Otwórz `/mk-gym/realizacje/<slug-testowej-realizacji>` bezpośrednio → sprawdź że strona się renderuje, link powrotu prowadzi do `/mk-gym` (nie do strony głównej)
 
 **Weryfikacja:**
-- Testy integracyjne przechodzą; diff commitu nie obejmuje `NAV_LINKS` w tym pliku ani `NavRealizacjeDropdown.tsx`.
+- Testy integracyjne przechodzą; diff commitu nie obejmuje `NAV_LINKS` w tym pliku ani `NavRealizacjeDropdown.tsx` (potwierdzone `git diff` — zero zmian poza jedną linią `PORTFOLIO_PAGES`). E2e w izolacji (`--workers=1`): 11/11 zielone.
 
 ## Wpływ systemowy
 

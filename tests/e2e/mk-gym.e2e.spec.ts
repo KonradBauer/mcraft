@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test'
+import { getPayload, Payload } from 'payload'
+import config from '../../src/payload.config.js'
 
 test.describe('MK Gym - hidden page', () => {
   test('loads directly at /mk-gym with expected content', async ({ page }) => {
@@ -90,5 +92,43 @@ test.describe('MK Gym - hidden page', () => {
 
     const mkGymLinks = page.locator('a[href*="mk-gym"]')
     await expect(mkGymLinks).toHaveCount(0)
+  })
+})
+
+test.describe('MK Gym - realizacja detail page', () => {
+  const slug = '__e2e-test-mk-gym-realizacja'
+  let payload: Payload
+  let portfolioId: string | undefined
+
+  test.beforeAll(async () => {
+    const payloadConfig = await config
+    payload = await getPayload({ config: payloadConfig })
+
+    const { docs } = await payload.find({
+      collection: 'service-pages',
+      where: { slug: { equals: 'mk-gym' } },
+      limit: 1,
+    })
+    const servicePageId = docs[0].id
+
+    const created = await payload.create({
+      collection: 'portfolio-projects',
+      data: { title: 'E2E Test Realizacja', slug, servicePage: servicePageId },
+    })
+    portfolioId = created.id
+  })
+
+  test.afterAll(async () => {
+    if (portfolioId) {
+      await payload.delete({ collection: 'portfolio-projects', id: portfolioId })
+    }
+  })
+
+  test('renders directly and its back link points to /mk-gym, not the homepage', async ({ page }) => {
+    await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
+    await expect(page.locator('h1').first()).toContainText('E2E Test Realizacja')
+
+    const backLink = page.getByRole('link', { name: /MK Gym/i }).first()
+    await expect(backLink).toHaveAttribute('href', '/mk-gym')
   })
 })

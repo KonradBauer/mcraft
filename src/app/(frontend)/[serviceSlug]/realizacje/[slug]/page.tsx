@@ -13,7 +13,7 @@ import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
 import { getLocale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
 
-const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe']
+const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe', 'mk-gym']
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink =

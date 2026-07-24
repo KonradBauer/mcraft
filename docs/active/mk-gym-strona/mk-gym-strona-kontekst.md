@@ -1,7 +1,7 @@
 # Ukryta podstrona MK Gym (/mk-gym) — Kontekst
 
 **Branch:** `feature/mk-gym-strona`
-**Ostatnia aktualizacja:** 2026-07-24 (Faza 2 + dopracowanie brandingu ukończone)
+**Ostatnia aktualizacja:** 2026-07-24 (Faza 3 ukończona — cały plan zrealizowany)
 
 ## Powiązane pliki
 
@@ -62,6 +62,14 @@ User poprosił o dodatkowe doszlifowanie wyglądu/brandingu strony `/mk-gym`, ż
 - **Tytuł karty przeglądarki:** `title: dict.meta.mkGym.title` (plain string) automatycznie dostawał szablon `'%s | MCRAFT'` z root layoutu → `"MK Gym | MCRAFT"`. Zmienione na `title: { absolute: dict.meta.mkGym.title }` — Next.js `absolute` jawnie pomija szablon rodzica, więc karta pokazuje dokładnie `"MK Gym"`.
 - **Loading screen:** `PageLoader` (pełnoekranowa plansza z animacją i napisem "MCRAFT", renderowana globalnie w root `layout.tsx` dla wszystkich stron) wyłączona na `/mk-gym` i jego pod-trasach przez `usePathname()` wewnątrz `PageLoader.tsx` (`DISABLED_PREFIXES = ['/mk-gym']`) — komponent zwraca `null` zamiast planszy, bez dotykania `layout.tsx` ani innych stron.
 - Nowe testy: `tests/int/PageLoader.int.spec.tsx` (3 testy: renderuje się na zwykłej stronie, nie renderuje się na `/mk-gym` i jego pod-trasach), rozszerzony `tests/int/SubpageLayout.int.spec.tsx` (asercje na rozmiar/tło loga), rozszerzony `tests/e2e/mk-gym.e2e.spec.ts` (dokładny tytuł karty, favicon różny od `/favicon.png`, brak `.weld-fill` splasha, wymiary/tło loga).
+
+## Stan po Fazie 3
+
+- `PORTFOLIO_PAGES` w `[serviceSlug]/realizacje/[slug]/page.tsx` zawiera `'mk-gym'` — jedyna zmiana w tym pliku, potwierdzona `git diff`. `NAV_LINKS` (ten sam plik) i `NavRealizacjeDropdown.tsx` bez zmian.
+- Nowy test `tests/int/realizacja-page.int.spec.ts` (3 przypadki): poprawny render dla `mk-gym`, link powrotu w nagłówku wskazuje `/mk-gym`, regresja `notFound()` dla nieznanego obszaru. Wzorzec mockowania: `next/headers`, `server-only`, `next/navigation` (`useRouter` nadpisany przez `vi.importOriginal`, żeby zachować prawdziwy `notFound`).
+- Nowy e2e scenariusz w `tests/e2e/mk-gym.e2e.spec.ts`: seeduje tymczasową realizację przez Payload Local API (`beforeAll`/`afterAll`, wzorzec `tests/helpers/seedUser.ts` już używany w `admin.e2e.spec.ts`), otwiera `/mk-gym/realizacje/<slug>` bezpośrednio, sprawdza treść i link powrotu.
+- Pełna suita `tests/int` (60 testów), typecheck, lint — zielone. E2e `tests/e2e/mk-gym.e2e.spec.ts` w izolacji (`--workers=1`): 11/11 zielone.
+- To domyka wszystkie 3 fazy planu technicznego `docs/plans/2026-07-24-006-feat-mk-gym-hidden-page-plan.md`.
 
 ## Zależności
 

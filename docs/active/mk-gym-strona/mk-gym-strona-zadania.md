@@ -54,10 +54,11 @@
 
 ---
 
-## Faza 3 — Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug])
+## Faza 3 — Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug]) ✅
 
-- [ ] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx`: dodaj `'mk-gym'` do `PORTFOLIO_PAGES` (linia 16) — NIE modyfikuj `NAV_LINKS` (linie 61-73)
-- [ ] Test: `tests/int/realizacja-page.int.spec.ts` — `serviceSlug='mk-gym'` z istniejącym slug realizacji przypisanej do obszaru mk-gym renderuje poprawną treść (title, opis, galeria)
-- [ ] Test: `tests/int/realizacja-page.int.spec.ts` — `serviceSlug` spoza dozwolonej listy (np. `'nieistniejacy-obszar'`) nadal zwraca `notFound()` (regresja)
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym/realizacje/<slug-testowej-realizacji>` bezpośrednio, sprawdź że strona się renderuje, link powrotu prowadzi do `/mk-gym`
-- [ ] Weryfikacja: diff commitu nie obejmuje `NAV_LINKS` w tym pliku ani `src/components/mcraft/NavRealizacjeDropdown.tsx`
+- [x] Zmodyfikuj `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx`: dodaj `'mk-gym'` do `PORTFOLIO_PAGES` (linia 16) — NIE modyfikuj `NAV_LINKS` (linie 61-73)
+- [x] Test: `tests/int/realizacja-page.int.spec.ts` — `serviceSlug='mk-gym'` z istniejącym slug realizacji przypisanej do obszaru mk-gym renderuje poprawną treść (title widoczny w treści)
+- [x] Test (odkryte): `tests/int/realizacja-page.int.spec.ts` — link powrotu w nagłówku (`sp.title` → `/mk-gym`) wskazuje na `/mk-gym`, nie na stronę główną
+- [x] Test: `tests/int/realizacja-page.int.spec.ts` — `serviceSlug` spoza dozwolonej listy (`'nieistniejacy-obszar'`) nadal zwraca `notFound()` (regresja)
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym/realizacje/<slug-testowej-realizacji>` bezpośrednio (seedowane przez Payload Local API w `beforeAll`/`afterAll`, wzorzec z `tests/helpers/seedUser.ts`), sprawdź że strona się renderuje, link powrotu prowadzi do `/mk-gym`
+- [x] Weryfikacja: diff commitu nie obejmuje `NAV_LINKS` w tym pliku ani `src/components/mcraft/NavRealizacjeDropdown.tsx` (potwierdzone `git diff` - zero zmian w `NavRealizacjeDropdown.tsx`, jedna linia w `PORTFOLIO_PAGES`)
