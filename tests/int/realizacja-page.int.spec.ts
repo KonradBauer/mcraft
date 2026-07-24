@@ -20,6 +20,7 @@ afterEach(cleanup)
 
 let payload: Payload
 let portfolioId: string | undefined
+let meblePremiumPortfolioId: string | undefined
 
 describe('Realizacja detail page - mk-gym support', () => {
   beforeAll(async () => {
@@ -82,6 +83,25 @@ describe('Realizacja detail page - mk-gym support', () => {
     expect(backLink?.getAttribute('href')).toBe('/mk-gym')
   })
 
+  it('topbar shows the MK Gym logo and a single mkcraft.com.pl link instead of the standard MCRAFT nav', async () => {
+    const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const jsx = await RealizacjaPage({
+      params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
+    })
+    render(jsx)
+
+    const logo = screen.getByRole('img', { name: 'MK Gym' })
+    expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
+    expect(logo.parentElement?.className).toContain('bg-white')
+
+    const backLinks = screen.getAllByRole('link', { name: 'Powrót na mkcraft.com.pl' })
+    expect(backLinks.length).toBeGreaterThan(0)
+    for (const link of backLinks) {
+      expect(link.getAttribute('href')).toBe('https://mkcraft.com.pl')
+    }
+    expect(screen.queryByRole('link', { name: 'O mnie' })).toBeNull()
+  })
+
   it('still returns notFound() for a serviceSlug outside the allowed list (regression)', async () => {
     const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
     await expect(
@@ -89,5 +109,49 @@ describe('Realizacja detail page - mk-gym support', () => {
         params: Promise.resolve({ serviceSlug: 'nieistniejacy-obszar', slug: '__test-mk-gym-realizacja-detail' }),
       }),
     ).rejects.toThrow()
+  })
+})
+
+describe('Realizacja detail page - meble-premium regression', () => {
+  beforeAll(async () => {
+    mockGet.mockReturnValue({ value: 'pl' })
+    const payloadConfig = await config
+    payload = await getPayload({ config: payloadConfig })
+
+    const { docs } = await payload.find({
+      collection: 'service-pages',
+      where: { slug: { equals: 'meble-premium' } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const servicePageId = docs[0].id
+
+    const created = await payload.create({
+      collection: 'portfolio-projects',
+      data: {
+        title: '__test-meble-premium-realizacja-detail',
+        slug: '__test-meble-premium-realizacja-detail',
+        servicePage: servicePageId,
+      },
+    })
+    meblePremiumPortfolioId = created.id
+  })
+
+  afterAll(async () => {
+    if (meblePremiumPortfolioId) {
+      await payload.delete({ collection: 'portfolio-projects', id: meblePremiumPortfolioId })
+    }
+  })
+
+  it('topbar still shows the MCRAFT wordmark and standard nav for non-mk-gym areas', async () => {
+    const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const jsx = await RealizacjaPage({
+      params: Promise.resolve({ serviceSlug: 'meble-premium', slug: '__test-meble-premium-realizacja-detail' }),
+    })
+    render(jsx)
+
+    expect(screen.getAllByText('MCRAFT').length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: 'O mnie' }).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('img', { name: 'MK Gym' })).toBeNull()
   })
 })

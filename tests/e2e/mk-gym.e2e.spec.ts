@@ -124,11 +124,26 @@ test.describe('MK Gym - realizacja detail page', () => {
     }
   })
 
-  test('renders directly and its back link points to /mk-gym, not the homepage', async ({ page }) => {
+  test('renders directly and its breadcrumb back link points to /mk-gym, not the homepage', async ({ page }) => {
     await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
     await expect(page.locator('h1').first()).toContainText('E2E Test Realizacja')
 
-    const backLink = page.getByRole('link', { name: /MK Gym/i }).first()
-    await expect(backLink).toHaveAttribute('href', '/mk-gym')
+    const breadcrumbLink = page.locator('header').getByRole('link', { name: /MK Gym/i })
+    await expect(breadcrumbLink).toHaveAttribute('href', '/mk-gym')
+  })
+
+  test('topbar shows the MK Gym logo and a single mkcraft.com.pl link, not the standard MCRAFT nav', async ({ page }) => {
+    await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
+    const topbar = page.locator('nav').first()
+
+    await expect(topbar.getByRole('img', { name: 'MK Gym' })).toBeVisible()
+    await expect(topbar.getByRole('link', { name: 'O mnie' })).toHaveCount(0)
+
+    const backLink = topbar.getByRole('link', { name: 'Powrót na mkcraft.com.pl' })
+    await expect(backLink).toBeVisible()
+    await expect(backLink).toHaveAttribute('href', 'https://mkcraft.com.pl')
+
+    const logoLink = topbar.locator('a').first()
+    await expect(logoLink).toHaveAttribute('href', 'https://mkcraft.com.pl')
   })
 })

@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!item) return {}
 
   return {
-    title: item.title,
+    title: serviceSlug === 'mk-gym' ? { absolute: item.title ?? 'MK Gym' } : item.title,
   }
 }
 
@@ -58,19 +58,23 @@ export default async function RealizacjaPage({ params }: Props) {
   const locale = await getLocale()
   const dict = await getDictionary(locale)
 
-  const NAV_LINKS = [
-    { href: '/#about', label: dict.nav.about },
-    { href: '/#areas', label: dict.nav.areas },
-    {
-      label: dict.nav.realizations,
-      sub: [
-        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
-        { href: '/meble-premium', label: dict.areas.names.meblePremium },
-        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
-      ],
-    },
-    { href: '/#contact', label: dict.nav.contact },
-  ]
+  const isMkGym = serviceSlug === 'mk-gym'
+
+  const NAV_LINKS = isMkGym
+    ? [{ href: 'https://mkcraft.com.pl', label: dict.mkGym.backToMcraft }]
+    : [
+        { href: '/#about', label: dict.nav.about },
+        { href: '/#areas', label: dict.nav.areas },
+        {
+          label: dict.nav.realizations,
+          sub: [
+            { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+            { href: '/meble-premium', label: dict.areas.names.meblePremium },
+            { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+          ],
+        },
+        { href: '/#contact', label: dict.nav.contact },
+      ]
 
   const { docs } = await payload.find({
     collection: 'portfolio-projects',
@@ -101,16 +105,29 @@ export default async function RealizacjaPage({ params }: Props) {
       <div className="bg-ink text-light">
         <div className={wrap}>
           <nav className="flex items-center justify-between py-[30px]">
-            <Link href="/">
-              <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">
-                MCRAFT
-              </span>
+            <Link href={isMkGym ? 'https://mkcraft.com.pl' : '/'}>
+              {isMkGym ? (
+                <span className="inline-flex items-center justify-center bg-white p-[10px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
+                  <img src="/mk-gym-logo.png" alt="MK Gym" className="h-[102px] w-auto" />
+                </span>
+              ) : (
+                <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">
+                  MCRAFT
+                </span>
+              )}
             </Link>
             <div className="flex gap-[38px] max-[980px]:hidden">
-              <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
-              <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
-              <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
-              <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
+              {isMkGym ? (
+                <Link href="https://mkcraft.com.pl" className={navLink}>{dict.mkGym.backToMcraft}</Link>
+              ) : (
+                <>
+                  <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
+                  <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
+                  <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
+                  <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
+                </>
+              )}
             </div>
             <MobileNav links={NAV_LINKS} locale={locale} dict={dict} />
           </nav>
