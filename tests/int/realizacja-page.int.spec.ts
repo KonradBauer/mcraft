@@ -83,16 +83,20 @@ describe('Realizacja detail page - mk-gym support', () => {
     expect(backLink?.getAttribute('href')).toBe('/mk-gym')
   })
 
-  it('topbar shows the MK Gym logo and a single mkcraft.com.pl link instead of the standard MCRAFT nav', async () => {
+  it('topbar and mobile menu both show the MK Gym logo instead of MCRAFT', async () => {
     const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
     const jsx = await RealizacjaPage({
       params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
     })
     render(jsx)
 
-    const logo = screen.getByRole('img', { name: 'MK Gym' })
-    expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
-    expect(logo.parentElement?.className).toContain('bg-white')
+    // Desktop topbar logo + MobileNav overlay header logo - both should be present.
+    const logos = screen.getAllByRole('img', { name: 'MK Gym' })
+    expect(logos.length).toBe(2)
+    for (const logo of logos) {
+      expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
+      expect(logo.parentElement?.className).toContain('bg-white')
+    }
 
     const backLinks = screen.getAllByRole('link', { name: 'Powrót na mkcraft.com.pl' })
     expect(backLinks.length).toBeGreaterThan(0)
@@ -100,6 +104,15 @@ describe('Realizacja detail page - mk-gym support', () => {
       expect(link.getAttribute('href')).toBe('https://mkcraft.com.pl')
     }
     expect(screen.queryByRole('link', { name: 'O mnie' })).toBeNull()
+  })
+
+  it('generateMetadata returns "MK Gym | <tytuł>" title and the MK Gym favicon', async () => {
+    const { generateMetadata } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
+    })
+    expect(metadata.title).toEqual({ absolute: 'MK Gym | __test-mk-gym-realizacja-detail' })
+    expect(metadata.icons).toEqual({ icon: '/mk-gym-favicon.png' })
   })
 
   it('still returns notFound() for a serviceSlug outside the allowed list (regression)', async () => {
@@ -153,5 +166,14 @@ describe('Realizacja detail page - meble-premium regression', () => {
     expect(screen.getAllByText('MCRAFT').length).toBeGreaterThan(0)
     expect(screen.getAllByRole('link', { name: 'O mnie' }).length).toBeGreaterThan(0)
     expect(screen.queryByRole('img', { name: 'MK Gym' })).toBeNull()
+  })
+
+  it('generateMetadata still returns the plain realizacja title and no custom icons (regression)', async () => {
+    const { generateMetadata } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const metadata = await generateMetadata({
+      params: Promise.resolve({ serviceSlug: 'meble-premium', slug: '__test-meble-premium-realizacja-detail' }),
+    })
+    expect(metadata.title).toBe('__test-meble-premium-realizacja-detail')
+    expect(metadata.icons).toBeUndefined()
   })
 })

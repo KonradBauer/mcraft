@@ -44,8 +44,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const item = docs[0]
   if (!item) return {}
 
+  if (serviceSlug === 'mk-gym') {
+    return {
+      title: { absolute: `MK Gym | ${item.title}` },
+      icons: { icon: '/mk-gym-favicon.png' },
+    }
+  }
+
   return {
-    title: serviceSlug === 'mk-gym' ? { absolute: item.title ?? 'MK Gym' } : item.title,
+    title: item.title,
   }
 }
 
@@ -129,7 +136,7 @@ export default async function RealizacjaPage({ params }: Props) {
                 </>
               )}
             </div>
-            <MobileNav links={NAV_LINKS} locale={locale} dict={dict} />
+            <MobileNav links={NAV_LINKS} locale={locale} dict={dict} logoImageUrl={isMkGym ? '/mk-gym-logo.png' : undefined} />
           </nav>
         </div>
       </div>

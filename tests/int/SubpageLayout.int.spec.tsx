@@ -71,14 +71,19 @@ describe('SubpageLayout', () => {
     expect(screen.queryByRole('img', { name: 'MK Gym' })).toBeNull()
   })
 
-  it('renders the logo image on a white background, 3x the base size, instead of the MCRAFT wordmark', () => {
+  it('renders the logo image on a white background, 3x the base size, instead of the MCRAFT wordmark (desktop topbar + MobileNav overlay)', () => {
     render(<SubpageLayout {...BASE_PROPS} logoImageUrl="/mk-gym-logo.png" />)
-    const logo = screen.getByRole('img', { name: 'MK Gym' })
-    expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
-    expect(logo.className).toContain('h-[102px]')
-    expect(logo.parentElement?.className).toContain('bg-white')
-    // Only the MobileNav overlay header still says "MCRAFT" - the topbar wordmark itself is gone.
-    expect(screen.getAllByText('MCRAFT').length).toBe(1)
+    // Appears twice: desktop topbar (h-[102px]) + MobileNav overlay header (smaller, h-[28px]).
+    const logos = screen.getAllByRole('img', { name: 'MK Gym' })
+    expect(logos.length).toBe(2)
+    for (const logo of logos) {
+      expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
+      expect(logo.parentElement?.className).toContain('bg-white')
+    }
+    const desktopLogo = logos.find((logo) => logo.className.includes('h-[102px]'))
+    expect(desktopLogo).toBeTruthy()
+    // "MCRAFT" text itself is gone from both the topbar and the MobileNav overlay header.
+    expect(screen.queryByText('MCRAFT')).toBeNull()
   })
 
   it('logo link uses logoHref when given, defaults to "/" otherwise', () => {
@@ -88,7 +93,11 @@ describe('SubpageLayout', () => {
     unmount()
 
     render(<SubpageLayout {...BASE_PROPS} logoImageUrl="/mk-gym-logo.png" logoHref="https://mcraft.com.pl" />)
-    const logoLink = screen.getByRole('img', { name: 'MK Gym' }).closest('a')
+    // Only the desktop topbar logo is wrapped in a link - the MobileNav overlay one is decorative.
+    const desktopLogo = screen
+      .getAllByRole('img', { name: 'MK Gym' })
+      .find((logo) => logo.className.includes('h-[102px]'))
+    const logoLink = desktopLogo?.closest('a')
     expect(logoLink?.getAttribute('href')).toBe('https://mcraft.com.pl')
   })
 

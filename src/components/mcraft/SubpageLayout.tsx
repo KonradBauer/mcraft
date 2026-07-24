@@ -155,7 +155,7 @@ export function SubpageLayout({
               )}
               <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
-            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} />
+            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} logoImageUrl={logoImageUrl} />
           </nav>
         </div>
       </div>

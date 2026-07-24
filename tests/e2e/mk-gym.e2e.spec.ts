@@ -132,6 +132,26 @@ test.describe('MK Gym - realizacja detail page', () => {
     await expect(breadcrumbLink).toHaveAttribute('href', '/mk-gym')
   })
 
+  test('browser tab title is "MK Gym | <nazwa realizacji>" and favicon is the MK Gym one', async ({ page }) => {
+    await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
+    await expect(page).toHaveTitle('MK Gym | E2E Test Realizacja')
+
+    const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href')
+    expect(iconHref).toBeTruthy()
+    expect(iconHref).not.toBe('/favicon.png')
+  })
+
+  test('mobile menu shows the MK Gym logo instead of the MCRAFT wordmark', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
+
+    await page.getByLabel('Otwórz menu').click()
+    const dialog = page.getByRole('dialog')
+    await expect(dialog).toBeVisible()
+    await expect(dialog.getByRole('img', { name: 'MK Gym' })).toBeVisible()
+    await expect(dialog.getByText('MCRAFT', { exact: true })).toHaveCount(0)
+  })
+
   test('topbar shows the MK Gym logo and a single mkcraft.com.pl link, not the standard MCRAFT nav', async ({ page }) => {
     await page.goto(`http://localhost:3000/mk-gym/realizacje/${slug}`)
     const topbar = page.locator('nav').first()
