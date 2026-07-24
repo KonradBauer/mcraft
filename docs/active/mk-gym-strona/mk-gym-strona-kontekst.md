@@ -9,7 +9,10 @@
 - `src/collections/Portfolio.ts:45-47` — `filterOptions.slug.in` do rozszerzenia o `'mk-gym'`; `labels.plural` do aktualizacji.
 - `scripts/seed-mk-gym.ts` (nowy) — jednorazowy skrypt seedujący początkowy rekord `ServicePage` (slug `mk-gym`).
 - `src/app/(frontend)/meble-premium/page.tsx` — wzorzec do skopiowania 1:1 dla nowej strony `/mk-gym`.
-- `src/app/(frontend)/mk-gym/page.tsx` (nowy) — nowa strona, kopia wzorca meble-premium.
+- `src/app/(frontend)/mk-gym/page.tsx` (nowy) — nowa strona, kopia wzorca meble-premium; przekazuje `logoImageUrl="/mk-gym-logo.png"` do `SubpageLayout`.
+- `public/mk-gym-logo.png` (dodany przez usera, 500x500 PNG) — logo widoczne w topbarze WYŁĄCZNIE na `/mk-gym`, w miejscu napisu "MCRAFT".
+- `src/components/mcraft/SubpageLayout.tsx:107-138` — współdzielony topbar wszystkich podstron usługowych; rozszerzony o opcjonalne propy `logoImageUrl`, `logoHref`, `navOverride` (domyślnie brak → zachowanie bez zmian dla pozostałych podstron).
+- `src/components/mcraft/MobileNav.tsx` — bez zmian; przyjmuje generyczną tablicę `NavItem[]`, więc pojedynczy link powrotu przechodzi bez modyfikacji komponentu.
 - `src/lib/servicePageData.ts` — `toSubpageLayoutProps` + `toRealizacjeProps`, slug-agnostyczne, reużyte bez zmian.
 - `src/lib/i18n/dictionaries/pl.ts`, `src/lib/i18n/dictionaries/en.ts` — dodanie sekcji `meta.mkGym` analogicznej do `meta.meblePremium`.
 - `src/app/(frontend)/[serviceSlug]/realizacje/[slug]/page.tsx:16` — `PORTFOLIO_PAGES` do rozszerzenia o `'mk-gym'`. `NAV_LINKS` (linie 61-73) w tym samym pliku — **NIE modyfikować**.
@@ -29,6 +32,9 @@
 - Ukrycie SEO: brak zmian w `sitemap.ts`/`robots.ts` (świadoma decyzja z brainstormu — "tylko brak linku").
 - Treść startowa (seed) dla `meta.mkGym` i `ServicePage` (slug `mk-gym`) to neutralny placeholder — realny content uzupełni redaktor przez panel po wdrożeniu.
 - Nowy rekord `ServicePage` tworzony od zera z polami `localized: true` już w configu — bezpieczny, nie wymaga migracji danych (problem z utratą danych przy `localized: true` dotyczy wyłącznie pól z istniejącą, niezmigrowaną płaską wartością).
+- Logo MK Gym w topbarze: dodajemy opcjonalny prop `logoImageUrl` do współdzielonego `SubpageLayout` zamiast forkować cały layout na osobny komponent — zmiana jest lokalna (jeden warunkowy render w topbarze), pozostałe podstrony nie przekazują tego propa więc ich zachowanie się nie zmienia. Logo ZASTĘPUJE napis "MCRAFT" (nie wyświetla się obok).
+- Nawigacja na `/mk-gym`: standardowe linki podstrony (`#about`, `#areas`, dropdown realizacji, `#contact`) są ZASTĘPOWANE pojedynczym linkiem powrotu na `https://mcraft.com.pl` (desktop + mobile menu). Language switcher (translacja PL/EN) POZOSTAJE bez zmian. Klik w logo również prowadzi na `https://mcraft.com.pl` (nie na wewnętrzne `/`). Realizowane przez propy `logoHref` i `navOverride` na `SubpageLayout` (domyślnie brak → pozostałe podstrony bez zmian). Decyzja usera, 2026-07-24.
+- Nowy klucz słownika i18n `dict.mkGym.backToMcraft` (PL: "Powrót na mcraft.com.pl" / EN: analogiczne tłumaczenie) — etykieta linku powrotu, tłumaczalna zgodnie z R5.
 
 ## Zależności
 
