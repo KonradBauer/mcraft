@@ -34,6 +34,22 @@ describe('generateMetadata locale-awareness', () => {
     expect(plMeta.title).not.toBe(enMeta.title)
   })
 
+  it('mk-gym generateMetadata returns locale-specific description for pl vs en', async () => {
+    mockGet.mockReturnValue({ value: 'pl' })
+    const { generateMetadata: generateMetadataPl } = await import('@/app/(frontend)/mk-gym/page')
+    const plMeta = await generateMetadataPl()
+
+    vi.resetModules()
+    mockGet.mockReturnValue({ value: 'en' })
+    const { generateMetadata: generateMetadataEn } = await import('@/app/(frontend)/mk-gym/page')
+    const enMeta = await generateMetadataEn()
+
+    expect(plMeta.description).toBe('MK Gym - opis zostanie uzupełniony w panelu admina.')
+    expect(enMeta.description).toBe('MK Gym - description to be added in the admin panel.')
+    expect(plMeta.description).not.toBe(enMeta.description)
+    expect(plMeta.alternates?.canonical).toBe('https://mcraft.com.pl/mk-gym')
+  })
+
   it('root layout generateMetadata returns different title and openGraph.locale for pl vs en', async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const { generateMetadata: generateMetadataPl } = await import('@/app/(frontend)/layout')

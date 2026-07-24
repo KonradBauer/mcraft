@@ -62,4 +62,51 @@ describe('SubpageLayout', () => {
     expect(screen.queryByText('Zakres')).toBeNull()
     expect(screen.queryByText('Skontaktuj się')).toBeNull()
   })
+
+  it('renders the MCRAFT wordmark and standard nav links by default (no overrides)', () => {
+    render(<SubpageLayout {...BASE_PROPS} />)
+    // Wordmark appears twice: desktop topbar + MobileNav overlay header (both always in the DOM).
+    expect(screen.getAllByText('MCRAFT').length).toBe(2)
+    expect(screen.getAllByRole('link', { name: 'O mnie' }).length).toBeGreaterThan(0)
+    expect(screen.queryByRole('img', { name: 'MK Gym' })).toBeNull()
+  })
+
+  it('renders the logo image on a white background, 3x the base size, instead of the MCRAFT wordmark', () => {
+    render(<SubpageLayout {...BASE_PROPS} logoImageUrl="/mk-gym-logo.png" />)
+    const logo = screen.getByRole('img', { name: 'MK Gym' })
+    expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
+    expect(logo.className).toContain('h-[102px]')
+    expect(logo.parentElement?.className).toContain('bg-white')
+    // Only the MobileNav overlay header still says "MCRAFT" - the topbar wordmark itself is gone.
+    expect(screen.getAllByText('MCRAFT').length).toBe(1)
+  })
+
+  it('logo link uses logoHref when given, defaults to "/" otherwise', () => {
+    const { unmount } = render(<SubpageLayout {...BASE_PROPS} />)
+    const defaultLogoLink = screen.getAllByRole('link').find((a) => a.textContent === 'MCRAFT')
+    expect(defaultLogoLink?.getAttribute('href')).toBe('/')
+    unmount()
+
+    render(<SubpageLayout {...BASE_PROPS} logoImageUrl="/mk-gym-logo.png" logoHref="https://mcraft.com.pl" />)
+    const logoLink = screen.getByRole('img', { name: 'MK Gym' }).closest('a')
+    expect(logoLink?.getAttribute('href')).toBe('https://mcraft.com.pl')
+  })
+
+  it('replaces the standard nav with a single navOverride link, but keeps the language switcher', () => {
+    render(
+      <SubpageLayout
+        {...BASE_PROPS}
+        navOverride={{ href: 'https://mcraft.com.pl', label: 'Powrót na mcraft.com.pl' }}
+      />,
+    )
+    const backLinks = screen.getAllByRole('link', { name: 'Powrót na mcraft.com.pl' })
+    expect(backLinks.length).toBeGreaterThan(0)
+    for (const link of backLinks) {
+      expect(link.getAttribute('href')).toBe('https://mcraft.com.pl')
+    }
+    expect(screen.queryByRole('link', { name: 'O mnie' })).toBeNull()
+    expect(screen.queryByRole('link', { name: 'Obszary' })).toBeNull()
+    expect(screen.queryByText('Realizacje')).toBeNull()
+    expect(screen.getAllByRole('button', { name: /PL/i }).length).toBeGreaterThan(0)
+  })
 })

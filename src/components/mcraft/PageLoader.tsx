@@ -1,16 +1,22 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 
 const MAX_VISIBLE_MS = 4000
 const FADE_OUT_MS = 550
+const DISABLED_PREFIXES = ['/mk-gym']
 
 export function PageLoader({ title }: { title: string }) {
+  const pathname = usePathname()
+  const isDisabled = DISABLED_PREFIXES.some((prefix) => pathname?.startsWith(prefix))
   const [isHiding, setIsHiding] = useState(false)
   const [isRemoved, setIsRemoved] = useState(false)
 
   useEffect(() => {
+    if (isDisabled) return
+
     const hide = () => setIsHiding(true)
 
     if (document.readyState === 'complete') {
@@ -25,9 +31,11 @@ export function PageLoader({ title }: { title: string }) {
       window.removeEventListener('load', hide)
       window.clearTimeout(fallbackTimeout)
     }
-  }, [])
+  }, [isDisabled])
 
   useEffect(() => {
+    if (isDisabled) return
+
     if (!isHiding) {
       const previousOverflow = document.body.style.overflow
       document.body.style.overflow = 'hidden'
@@ -37,9 +45,9 @@ export function PageLoader({ title }: { title: string }) {
     }
     const removeTimeout = window.setTimeout(() => setIsRemoved(true), FADE_OUT_MS)
     return () => window.clearTimeout(removeTimeout)
-  }, [isHiding])
+  }, [isHiding, isDisabled])
 
-  if (isRemoved) return null
+  if (isDisabled || isRemoved) return null
 
   return (
     <div

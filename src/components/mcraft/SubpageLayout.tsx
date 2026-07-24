@@ -84,6 +84,9 @@ export interface SubpageLayoutProps {
   ctaLabel?: string
   locale?: Locale
   dict: Dictionary
+  logoImageUrl?: string | null
+  logoHref?: string
+  navOverride?: { href: string; label: string } | null
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -101,22 +104,27 @@ export function SubpageLayout({
   ctaLabel,
   locale = 'pl',
   dict,
+  logoImageUrl,
+  logoHref = '/',
+  navOverride,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
-  const SUBPAGE_NAV_LINKS = [
-    { href: '/#about', label: dict.nav.about },
-    { href: '/#areas', label: dict.nav.areas },
-    {
-      label: dict.nav.realizations,
-      sub: [
-        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
-        { href: '/meble-premium', label: dict.areas.names.meblePremium },
-        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
-      ],
-    },
-    { href: '/#contact', label: dict.nav.contact },
-  ]
+  const SUBPAGE_NAV_LINKS = navOverride
+    ? [{ href: navOverride.href, label: navOverride.label }]
+    : [
+        { href: '/#about', label: dict.nav.about },
+        { href: '/#areas', label: dict.nav.areas },
+        {
+          label: dict.nav.realizations,
+          sub: [
+            { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
+            { href: '/meble-premium', label: dict.areas.names.meblePremium },
+            { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
+          ],
+        },
+        { href: '/#contact', label: dict.nav.contact },
+      ]
 
   return (
     <ModalProvider dict={dict}>
@@ -124,14 +132,27 @@ export function SubpageLayout({
       <div className="bg-ink text-light">
         <div className={wrap}>
           <nav className="flex items-center justify-between py-[30px]">
-            <Link href="/">
-              <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+            <Link href={logoHref}>
+              {logoImageUrl ? (
+                <span className="inline-flex items-center justify-center bg-white p-[10px]">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
+                  <img src={logoImageUrl} alt="MK Gym" className="h-[102px] w-auto" />
+                </span>
+              ) : (
+                <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+              )}
             </Link>
             <div className="flex gap-[38px] max-[980px]:hidden">
-              <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
-              <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
-              <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
-              <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
+              {navOverride ? (
+                <Link href={navOverride.href} className={navLink}>{navOverride.label}</Link>
+              ) : (
+                <>
+                  <Link href="/#about" className={navLink}>{dict.nav.about}</Link>
+                  <Link href="/#areas" className={navLink}>{dict.nav.areas}</Link>
+                  <NavRealizacjeDropdown triggerClass={navLink} dict={dict} />
+                  <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
+                </>
+              )}
               <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
             <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} />

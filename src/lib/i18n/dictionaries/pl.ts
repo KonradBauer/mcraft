@@ -129,6 +129,12 @@ export const pl = {
       ogTitle: 'Meble stalowe premium - loft i industrial',
       ogDescription: 'Meble loftowe i industrialne, projekty autorskie na zamówienie, łączenie stali z drewnem i szkłem, wykończenie premium.',
     },
+    mkGym: {
+      title: 'MK Gym',
+      description: 'MK Gym - opis zostanie uzupełniony w panelu admina.',
+      ogTitle: 'MK Gym',
+      ogDescription: 'MK Gym - opis zostanie uzupełniony w panelu admina.',
+    },
     privacyPolicy: {
       title: 'Polityka prywatności',
       description: 'Polityka prywatności serwisu mcraft.com.pl - informacje o przetwarzaniu danych osobowych.',
@@ -137,6 +143,9 @@ export const pl = {
   schemaOrg: {
     businessDescription: 'Nadzór spawalniczy, konstrukcje stalowe i meble premium. Dr inż. Michał Macherzyński - inżynier spawalnik IWE/IWI/VT2/PT2.',
     personDescription: 'Główny Spawalnik i Kierownik Projektów B+R w ZUGIL S.A. Ponad 18 lat doświadczenia w spawalnictwie.',
+  },
+  mkGym: {
+    backToMcraft: 'Powrót na mkcraft.com.pl',
   },
 }
 
