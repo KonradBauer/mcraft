@@ -12,8 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getLocale()
   const dict = await getDictionary(locale)
   return {
-    title: dict.meta.mkGym.title,
+    title: { absolute: dict.meta.mkGym.title },
     description: dict.meta.mkGym.description,
+    icons: { icon: '/mk-gym-favicon.png' },
     alternates: { canonical: 'https://mcraft.com.pl/mk-gym' },
     openGraph: {
       title: dict.meta.mkGym.ogTitle,

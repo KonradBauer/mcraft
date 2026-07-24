@@ -71,10 +71,12 @@ describe('SubpageLayout', () => {
     expect(screen.queryByRole('img', { name: 'MK Gym' })).toBeNull()
   })
 
-  it('renders the logo image instead of the MCRAFT wordmark in the topbar when logoImageUrl is given', () => {
+  it('renders the logo image on a white background, 3x the base size, instead of the MCRAFT wordmark', () => {
     render(<SubpageLayout {...BASE_PROPS} logoImageUrl="/mk-gym-logo.png" />)
     const logo = screen.getByRole('img', { name: 'MK Gym' })
     expect(logo.getAttribute('src')).toBe('/mk-gym-logo.png')
+    expect(logo.className).toContain('h-[102px]')
+    expect(logo.parentElement?.className).toContain('bg-white')
     // Only the MobileNav overlay header still says "MCRAFT" - the topbar wordmark itself is gone.
     expect(screen.getAllByText('MCRAFT').length).toBe(1)
   })

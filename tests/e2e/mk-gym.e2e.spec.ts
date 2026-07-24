@@ -9,10 +9,34 @@ test.describe('MK Gym - hidden page', () => {
     await expect(page.getByRole('heading', { name: 'Zakres' })).toBeVisible()
   })
 
-  test('topbar shows the MK Gym logo image instead of the MCRAFT wordmark', async ({ page }) => {
+  test('browser tab title is exactly "MK Gym", without the " | MCRAFT" suffix', async ({ page }) => {
+    await page.goto('http://localhost:3000/mk-gym')
+    await expect(page).toHaveTitle('MK Gym')
+  })
+
+  test('favicon is overridden for /mk-gym (does not use the site-wide favicon.png)', async ({ page }) => {
+    await page.goto('http://localhost:3000/mk-gym')
+    const iconHref = await page.locator('link[rel="icon"]').first().getAttribute('href')
+    expect(iconHref).toBeTruthy()
+    expect(iconHref).not.toBe('/favicon.png')
+  })
+
+  test('does not show the branded MCRAFT loading splash', async ({ page }) => {
+    await page.goto('http://localhost:3000/mk-gym')
+    await expect(page.locator('.weld-fill')).toHaveCount(0)
+  })
+
+  test('topbar shows the MK Gym logo image instead of the MCRAFT wordmark, on a white background, at 3x the base size', async ({ page }) => {
     await page.goto('http://localhost:3000/mk-gym')
     const topbar = page.locator('nav').first()
-    await expect(topbar.getByRole('img', { name: 'MK Gym' })).toBeVisible()
+    const logo = topbar.getByRole('img', { name: 'MK Gym' })
+    await expect(logo).toBeVisible()
+
+    const box = await logo.boundingBox()
+    expect(box?.height).toBeGreaterThanOrEqual(95)
+
+    const wrapperBg = await logo.evaluate((el) => getComputedStyle(el.parentElement as Element).backgroundColor)
+    expect(wrapperBg).toBe('rgb(255, 255, 255)')
   })
 
   test('topbar has no standard nav links, shows a back link to mcraft.com.pl, and keeps the language switcher', async ({ page }) => {

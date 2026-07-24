@@ -33,6 +33,7 @@ Kryteria akceptacji:
 - Strona główna i nawigacja pozostają bez zmian (brak kafelka, brak linku do `/mk-gym`).
 - Topbar na `/mk-gym` pokazuje logo z `public/mk-gym-logo.png` w miejscu napisu "MCRAFT"; pozostałe podstrony nadal pokazują "MCRAFT" (regresja).
 - Topbar na `/mk-gym` nie ma standardowej nawigacji podstrony (`#about`, `#areas`, dropdown realizacji, `#contact`) - zamiast niej jeden link powrotu na `https://mcraft.com.pl` (desktop i mobile). Language switcher (translacja) pozostaje. Klik w logo prowadzi na `https://mcraft.com.pl`. Pozostałe podstrony zachowują dotychczasową nawigację (regresja).
+- Logo na białym tle, 3x większe niż bazowy rozmiar wordmarku. Favicon `/mk-gym` własny (nie site-wide `/favicon.png`). Tytuł karty przeglądarki dokładnie "MK Gym" (bez sufiksu "| MCRAFT"). Brak pełnoekranowego loading screena MCRAFT na `/mk-gym` i jego pod-trasach; pozostałe strony bez zmian.
 
 ### Faza 3 — Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug])
 

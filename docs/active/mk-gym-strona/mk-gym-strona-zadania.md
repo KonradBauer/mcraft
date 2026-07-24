@@ -42,6 +42,16 @@
 - [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/`, sprawdź że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i brak linku `mk-gym` gdziekolwiek na stronie
 - [ ] Weryfikacja: grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym`
 
+### Dopracowanie brandingu (dodane po review Fazy 2, przed Fazą 3)
+
+- [x] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: logo owinięte w `<span className="bg-white p-[10px]">`, rozmiar `h-[34px]` → `h-[102px]` (3x)
+- [x] Wygeneruj `public/mk-gym-favicon.png` (logo skomponowane na białym tle 512x512 przez `sharp`) i podepnij przez `icons: { icon: '/mk-gym-favicon.png' }` w `generateMetadata` w `src/app/(frontend)/mk-gym/page.tsx`
+- [x] Zmodyfikuj `src/app/(frontend)/mk-gym/page.tsx`: `title: { absolute: dict.meta.mkGym.title }` zamiast plain string — karta przeglądarki pokazuje "MK Gym" bez szablonu "| MCRAFT" z root layoutu
+- [x] Zmodyfikuj `src/components/mcraft/PageLoader.tsx`: `usePathname()` + `DISABLED_PREFIXES = ['/mk-gym']` — komponent zwraca `null` na `/mk-gym` i pod-trasach, bez zmian w `layout.tsx` ani innych stronach
+- [x] Test: `tests/int/PageLoader.int.spec.tsx` (nowy) — renderuje się na zwykłej stronie, nie renderuje się na `/mk-gym` i `/mk-gym/realizacje/...`
+- [x] Test: `tests/int/SubpageLayout.int.spec.tsx` — asercje na `h-[102px]` i `bg-white` na wrapperze loga
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — tytuł karty dokładnie "MK Gym", favicon różny od `/favicon.png`, brak `.weld-fill` (splash), wysokość loga ≥95px i tło `rgb(255, 255, 255)`
+
 ---
 
 ## Faza 3 — Szczegóły realizacji dla MK Gym (/mk-gym/realizacje/[slug])

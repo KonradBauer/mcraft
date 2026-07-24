@@ -1,7 +1,7 @@
 # Ukryta podstrona MK Gym (/mk-gym) — Kontekst
 
 **Branch:** `feature/mk-gym-strona`
-**Ostatnia aktualizacja:** 2026-07-24 (Faza 2 ukończona)
+**Ostatnia aktualizacja:** 2026-07-24 (Faza 2 + dopracowanie brandingu ukończone)
 
 ## Powiązane pliki
 
@@ -51,6 +51,16 @@
 - Testy: 4 nowe w `tests/int/SubpageLayout.int.spec.tsx`, 1 nowy case w `tests/int/metadata.int.spec.ts`, nowy plik `tests/e2e/mk-gym.e2e.spec.ts` (7 scenariuszy). Pełna suita `tests/int` (54 testy), typecheck, lint, `pnpm build` — wszystko zielone.
 - **Napotkany i naprawiony błąd:** pierwsza wersja użyła `next/image` dla loga — przeszła typecheck/lint/build, ale w runtime dawała 500 na `/mk-gym` (Next 16 wymaga wpisu w `images.localPatterns` w konfiguracji dla lokalnych plików spoza standardowego przepływu). Wykryte dopiero przez faktyczne odpalenie e2e (build nie renderuje stron `force-dynamic`). Wycofano do zwykłego `<img>` (z `eslint-disable-next-line @next/next/no-img-element`) — prostsze, bez zmian w konfiguracji, zgodne z pierwotną checklistą.
 - **Znalezisko dot. infrastruktury testów (nie regresja):** pełne `pnpm exec playwright test` (30 testów, wszystkie pliki naraz) jest niestabilne na tej maszynie (timeouty nawigacji, prawdopodobnie obciążenie Turbopack dev + MongoDB pod Windows/proxy firmowym) — powtórzone dwukrotnie z tym samym wzorcem awarii NIEZALEŻNYM od moich zmian (dotyczy też `/`, `/admin/login`, testów niezwiązanych z mk-gym). Potwierdzone jako pre-existing: uruchomienie WYŁĄCZNIE plików sprzed tej zmiany (`frontend.e2e.spec.ts` + `language-switcher.e2e.spec.ts`) też ma 1 flaky fail (niezwiązany, kolizja kliknięcia z nakładką modala przy 2 workerach). Mój nowy `tests/e2e/mk-gym.e2e.spec.ts` uruchomiony w izolacji (`--workers=1`) przechodzi stabilnie 7/7 w dwóch niezależnych próbach.
+
+## Dopracowanie brandingu /mk-gym (po Fazie 2, przed Fazą 3)
+
+User poprosił o dodatkowe doszlifowanie wyglądu/brandingu strony `/mk-gym`, żeby sprawiała wrażenie zupełnie osobnej strony (nie sekcji MCRAFT):
+
+- **Logo:** białe tło (owinięte w `<span className="bg-white p-[10px]">`) + 3x większy rozmiar (`h-[34px]` → `h-[102px]`). Pozycja linku powrotu i klik w logo → `https://mcraft.com.pl` były już poprawnie zaimplementowane w Fazie 2, tylko potwierdzone.
+- **Favicon:** wygenerowany `public/mk-gym-favicon.png` (kompozycja loga na białym tle, 512x512, przez jednorazowy skrypt `sharp` — `flatten` + `resize contain`) i podpięty jawnie przez `icons: { icon: '/mk-gym-favicon.png' }` w `generateMetadata` strony `/mk-gym`. **Uwaga:** konwencja plikowa Next (`icon.png` w folderze route'u) NIE zadziałała, bo root `layout.tsx` ma jawne `icons: { icon: '/favicon.png' }` w swoim `generateMetadata` — jawna wartość w rodzicu przykrywa konwencję plikową w segmentach potomnych. Dlatego jawne `icons` w `mk-gym/page.tsx` (nadpisuje rodzica) + plik w `public/`, nie plik w folderze route'u.
+- **Tytuł karty przeglądarki:** `title: dict.meta.mkGym.title` (plain string) automatycznie dostawał szablon `'%s | MCRAFT'` z root layoutu → `"MK Gym | MCRAFT"`. Zmienione na `title: { absolute: dict.meta.mkGym.title }` — Next.js `absolute` jawnie pomija szablon rodzica, więc karta pokazuje dokładnie `"MK Gym"`.
+- **Loading screen:** `PageLoader` (pełnoekranowa plansza z animacją i napisem "MCRAFT", renderowana globalnie w root `layout.tsx` dla wszystkich stron) wyłączona na `/mk-gym` i jego pod-trasach przez `usePathname()` wewnątrz `PageLoader.tsx` (`DISABLED_PREFIXES = ['/mk-gym']`) — komponent zwraca `null` zamiast planszy, bez dotykania `layout.tsx` ani innych stron.
+- Nowe testy: `tests/int/PageLoader.int.spec.tsx` (3 testy: renderuje się na zwykłej stronie, nie renderuje się na `/mk-gym` i jego pod-trasach), rozszerzony `tests/int/SubpageLayout.int.spec.tsx` (asercje na rozmiar/tło loga), rozszerzony `tests/e2e/mk-gym.e2e.spec.ts` (dokładny tytuł karty, favicon różny od `/favicon.png`, brak `.weld-fill` splasha, wymiary/tło loga).
 
 ## Zależności
 
