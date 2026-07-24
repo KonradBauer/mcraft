@@ -65,8 +65,8 @@ export default async function MkGymPage() {
       locale={locale}
       dict={dict}
       logoImageUrl="/mk-gym-logo.png"
-      logoHref="https://mcraft.com.pl"
-      navOverride={{ href: 'https://mcraft.com.pl', label: dict.mkGym.backToMcraft }}
+      logoHref="https://mkcraft.com.pl"
+      navOverride={{ href: 'https://mkcraft.com.pl', label: dict.mkGym.backToMcraft }}
     />
   )
 }

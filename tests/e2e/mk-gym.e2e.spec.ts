@@ -39,7 +39,7 @@ test.describe('MK Gym - hidden page', () => {
     expect(wrapperBg).toBe('rgb(255, 255, 255)')
   })
 
-  test('topbar has no standard nav links, shows a back link to mcraft.com.pl, and keeps the language switcher', async ({ page }) => {
+  test('topbar has no standard nav links, shows a back link to mkcraft.com.pl, and keeps the language switcher', async ({ page }) => {
     await page.goto('http://localhost:3000/mk-gym')
     const topbar = page.locator('nav').first()
 
@@ -47,17 +47,17 @@ test.describe('MK Gym - hidden page', () => {
     await expect(topbar.getByRole('link', { name: 'Obszary' })).toHaveCount(0)
     await expect(topbar.getByText('Realizacje')).toHaveCount(0)
 
-    const backLink = topbar.getByRole('link', { name: 'Powrót na mcraft.com.pl' })
+    const backLink = topbar.getByRole('link', { name: 'Powrót na mkcraft.com.pl' })
     await expect(backLink).toBeVisible()
-    await expect(backLink).toHaveAttribute('href', 'https://mcraft.com.pl')
+    await expect(backLink).toHaveAttribute('href', 'https://mkcraft.com.pl')
 
     await expect(page.getByRole('button', { name: 'PL', exact: true }).first()).toBeVisible()
   })
 
-  test('logo link points to mcraft.com.pl', async ({ page }) => {
+  test('logo link points to mkcraft.com.pl', async ({ page }) => {
     await page.goto('http://localhost:3000/mk-gym')
     const logoLink = page.locator('nav a').first()
-    await expect(logoLink).toHaveAttribute('href', 'https://mcraft.com.pl')
+    await expect(logoLink).toHaveAttribute('href', 'https://mkcraft.com.pl')
   })
 
   test('mobile menu shows only the back link and the language toggle', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('MK Gym - hidden page', () => {
     await page.getByLabel('Otwórz menu').click()
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()
-    await expect(dialog.getByRole('link', { name: 'Powrót na mcraft.com.pl' })).toBeVisible()
+    await expect(dialog.getByRole('link', { name: 'Powrót na mkcraft.com.pl' })).toBeVisible()
     await expect(dialog.getByRole('link', { name: 'O mnie' })).toHaveCount(0)
     await expect(dialog.getByText('PL', { exact: true })).toBeVisible()
   })

@@ -147,6 +147,6 @@ export const en = {
     personDescription: 'Head Welder and R&D Project Manager at ZUGIL S.A. Over 18 years of experience in welding.',
   },
   mkGym: {
-    backToMcraft: 'Back to mcraft.com.pl',
+    backToMcraft: 'Back to mkcraft.com.pl',
   },
 } satisfies Dictionary

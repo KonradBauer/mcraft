@@ -145,7 +145,7 @@ export const pl = {
     personDescription: 'Główny Spawalnik i Kierownik Projektów B+R w ZUGIL S.A. Ponad 18 lat doświadczenia w spawalnictwie.',
   },
   mkGym: {
-    backToMcraft: 'Powrót na mcraft.com.pl',
+    backToMcraft: 'Powrót na mkcraft.com.pl',
   },
 }
 
