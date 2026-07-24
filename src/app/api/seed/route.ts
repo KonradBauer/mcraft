@@ -46,8 +46,14 @@ const PAGES = [
   },
 ]
 
-export async function GET() {
+export async function GET(request: Request) {
   const payload = await getPayload({ config })
+
+  const { user } = await payload.auth({ headers: request.headers })
+  if (!user) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
+  }
+
   const results: { slug: string; status: string }[] = []
 
   for (const page of PAGES) {
@@ -79,8 +85,14 @@ export async function GET() {
   return NextResponse.json({ ok: true, results })
 }
 
-export async function DELETE() {
+export async function DELETE(request: Request) {
   const payload = await getPayload({ config })
+
+  const { user } = await payload.auth({ headers: request.headers })
+  if (!user) {
+    return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
+  }
+
   const allowed = new Set(PAGES.map((p) => p.slug))
 
   const all = await payload.find({

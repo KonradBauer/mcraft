@@ -27,12 +27,24 @@ describe('Realizacja detail page - mk-gym support', () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
 
+    // Nie zakładaj, że rekord 'mk-gym' już istnieje - inne pliki testowe (np.
+    // mk-gym-collections.int.spec.ts) mogą go w tym samym momencie usuwać/tworzyć
+    // na tej samej realnej MongoDB (Vitest domyślnie uruchamia pliki równolegle).
     const { docs } = await payload.find({
       collection: 'service-pages',
       where: { slug: { equals: 'mk-gym' } },
       limit: 1,
+      overrideAccess: true,
     })
-    const servicePageId = docs[0].id
+    const servicePageId = docs[0]
+      ? docs[0].id
+      : (
+          await payload.create({
+            collection: 'service-pages',
+            data: { slug: 'mk-gym', title: 'MK Gym' },
+            overrideAccess: true,
+          })
+        ).id
 
     const created = await payload.create({
       collection: 'portfolio-projects',
