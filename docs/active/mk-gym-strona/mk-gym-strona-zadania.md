@@ -5,16 +5,17 @@
 
 ---
 
-## Faza 1 — Kolekcje Payload + seed początkowego rekordu MK Gym
+## Faza 1 — Kolekcje Payload + seed początkowego rekordu MK Gym ✅
 
-- [ ] Zmodyfikuj `src/collections/Portfolio.ts`: dodaj `'mk-gym'` do `filterOptions.slug.in` (linia ~46)
-- [ ] Zmodyfikuj `src/collections/Portfolio.ts`: zaktualizuj `labels.plural` na "Realizacje (Meble, Konstrukcje i MK Gym)"
-- [ ] Stwórz `scripts/seed-mk-gym.ts`: skrypt Local API tworzący jeden dokument `ServicePage` (slug `mk-gym`, placeholder `eyebrow`/`title`/`description` PL+EN), sprawdzający najpierw czy rekord już istnieje (idempotencja), kończący się `process.exit(0)` / `process.exit(1)` w catch (wzorzec: `scripts/seed-tiles.ts`, `scripts/seed-cv.ts`)
-- [ ] Test: `tests/int/mk-gym-collections.int.spec.ts` — utworzenie `Portfolio` z `servicePage` wskazującym na dokument o slug `mk-gym` przechodzi walidację `filterOptions`
-- [ ] Test: `tests/int/mk-gym-collections.int.spec.ts` — uruchomienie skryptu seedującego dwukrotnie tworzy dokładnie jeden dokument `ServicePage` ze slug `mk-gym` (idempotencja)
-- [ ] Test: `tests/int/mk-gym-collections.int.spec.ts` — dokument `ServicePage` ze slug `mk-gym` ma niepuste pole `title` w obu locale (`pl`, `en`) po seedzie
+- [x] Zmodyfikuj `src/collections/Portfolio.ts`: dodaj `'mk-gym'` do `filterOptions.slug.in` (linia ~46)
+- [x] Zmodyfikuj `src/collections/Portfolio.ts`: zaktualizuj `labels.plural` na "Realizacje (Meble, Konstrukcje i MK Gym)"
+- [x] Zmodyfikuj `src/app/api/seed/route.ts`: dodaj wpis `{ slug: 'mk-gym', title: 'MK Gym', eyebrow: 'Obszar działalności', thumbnailTitle: 'MK Gym', scopeItems: [] }` do tablicy `PAGES` *(odkryte podczas Fazy 1: istnieje już ustalony mechanizm seedowania `ServicePage` przez ten endpoint — GET tworzy/aktualizuje idempotentnie, DELETE usuwa rekordy spoza `PAGES` — nie tworzymy osobnego skryptu `scripts/seed-mk-gym.ts`, żeby nie duplikować logiki i nie zostawiać `mk-gym` poza allowlistą DELETE)*
+- [x] Test: `tests/int/mk-gym-collections.int.spec.ts` — utworzenie `Portfolio` z `servicePage` wskazującym na dokument o slug `mk-gym` przechodzi walidację `filterOptions`
+- [x] Test: `tests/int/mk-gym-collections.int.spec.ts` — dwukrotne wywołanie `GET` z `src/app/api/seed/route.ts` tworzy dokładnie jeden dokument `ServicePage` ze slug `mk-gym` (idempotencja: pierwsze wywołanie `status: 'created'`, drugie `status: 'updated'`)
+- [x] Test: `tests/int/mk-gym-collections.int.spec.ts` — dokument `ServicePage` ze slug `mk-gym` ma niepuste pole `title` w locale `pl` po seedzie
+- [x] Test (odkryte podczas Fazy 1): `tests/int/mk-gym-collections.int.spec.ts` — Portfolio ze `servicePage` wskazującym na obszar spoza allowlisty nadal jest odrzucane (regresja na `filterOptions`)
 - [ ] Weryfikacja: zapytanie `payload.find({ collection: 'service-pages', where: { slug: { equals: 'mk-gym' } } })` zwraca dokładnie jeden dokument
-- [ ] (ręczne) Uruchom `scripts/seed-mk-gym.ts` na środowisku produkcyjnym po deployu
+- [ ] (ręczne) Wywołaj `GET /api/seed` na środowisku produkcyjnym po deployu
 
 ---
 

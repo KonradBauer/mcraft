@@ -37,6 +37,13 @@ const PAGES = [
     thumbnailTitle: 'Nadzór spawalniczy',
     scopeItems: [],
   },
+  {
+    slug: 'mk-gym',
+    title: 'MK Gym',
+    eyebrow: 'Obszar działalności',
+    thumbnailTitle: 'MK Gym',
+    scopeItems: [],
+  },
 ]
 
 export async function GET() {

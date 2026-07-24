@@ -74,7 +74,7 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 
 ## Implementation Units
 
-- [ ] **Unit 1: Rozszerzenie kolekcji Payload + seed początkowego rekordu MK Gym**
+- [x] **Unit 1: Rozszerzenie kolekcji Payload + seed początkowego rekordu MK Gym** ✅
 
 **Cel:** Kolekcje `ServicePage` i `Portfolio` obsługują obszar `mk-gym`; istnieje jeden początkowy dokument `ServicePage` (slug `mk-gym`) gotowy do wyświetlenia i dalszej edycji przez panel.
 
@@ -84,21 +84,22 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 
 **Pliki:**
 - Modyfikuj: `src/collections/Portfolio.ts` (linia ~46: `filterOptions.slug.in` += `'mk-gym'`; `labels.plural` → "Realizacje (Meble, Konstrukcje i MK Gym)")
-- Stwórz: `scripts/seed-mk-gym.ts`
+- Modyfikuj: `src/app/api/seed/route.ts` (zamiast `scripts/seed-mk-gym.ts` — zob. notatka niżej)
 - Test (unit): `tests/int/mk-gym-collections.int.spec.ts`
 
 **Podejście:**
-- Skrypt seedujący sprawdza najpierw czy rekord ze slug `mk-gym` już istnieje (idempotencja - nie duplikuje przy ponownym uruchomieniu), inaczej tworzy jeden `ServicePage` z placeholder treścią PL i EN (`eyebrow`, `title`, `description` - pola `localized: true`) oraz kończy `process.exit(0)` / `process.exit(1)` w catch.
+- **Odkryte podczas implementacji:** repo ma już ustalony mechanizm seedowania `ServicePage` — `src/app/api/seed/route.ts` z tablicą `PAGES` (`GET` tworzy/aktualizuje idempotentnie, `DELETE` usuwa rekordy spoza `PAGES`). Zamiast nowego `scripts/seed-mk-gym.ts` dodano wpis `mk-gym` do tej tablicy — spójne z istniejącym wzorcem, unika duplikacji logiki i chroni rekord przed `DELETE`.
 - Brak potrzeby migracji danych (nowy rekord, zob. wiedza instytucjonalna).
 
 **Wzorce do naśladowania:**
-- `scripts/seed-tiles.ts`, `scripts/seed-cv.ts` (struktura skryptu + `process.exit`)
+- `src/app/api/seed/route.ts` (istniejące wpisy `PAGES` dla pozostałych 3 obszarów)
 - `src/collections/ServicePage.ts` (kształt pól)
 
 **Scenariusze testowe:**
 - [Unit] Utworzenie `Portfolio` z `servicePage` wskazującym na dokument o slug `mk-gym` przechodzi walidację `filterOptions` (nie rzuca błędu relacji)
-- [Unit] Uruchomienie skryptu seedującego dwukrotnie tworzy dokładnie jeden dokument `ServicePage` ze slug `mk-gym` (idempotencja)
-- [Unit] Dokument `ServicePage` ze slug `mk-gym` ma niepuste pola `title` w obu locale (`pl`, `en`) po seedzie
+- [Unit] Dwukrotne wywołanie `GET /api/seed` tworzy dokładnie jeden dokument `ServicePage` ze slug `mk-gym` (idempotencja: `created` → `updated`)
+- [Unit] Dokument `ServicePage` ze slug `mk-gym` ma niepuste pole `title` w locale `pl` po seedzie
+- [Unit] (odkryte) Portfolio ze `servicePage` spoza allowlisty nadal odrzucane (regresja na `filterOptions`)
 
 **Weryfikacja:**
 - Testy integracyjne przechodzą na realnej instancji MongoDB; zapytanie `payload.find({ collection: 'service-pages', where: { slug: { equals: 'mk-gym' } } })` zwraca dokładnie jeden dokument.

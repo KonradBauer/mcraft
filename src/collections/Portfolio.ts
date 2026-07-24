@@ -6,7 +6,7 @@ export const Portfolio: CollectionConfig = {
   slug: 'portfolio-projects',
   labels: {
     singular: 'Realizacja',
-    plural: 'Realizacje (Meble i Konstrukcje)',
+    plural: 'Realizacje (Meble, Konstrukcje i MK Gym)',
   },
   access: {
     read: () => true,
@@ -43,10 +43,10 @@ export const Portfolio: CollectionConfig = {
       relationTo: 'service-pages',
       required: true,
       filterOptions: {
-        slug: { in: ['meble-premium', 'konstrukcje-stalowe'] },
+        slug: { in: ['meble-premium', 'konstrukcje-stalowe', 'mk-gym'] },
       },
       admin: {
-        description: 'Tylko Meble premium lub Konstrukcje stalowe',
+        description: 'Tylko Meble premium, Konstrukcje stalowe lub MK Gym',
       },
     },
     {
