@@ -14,7 +14,7 @@
 - [x] Test: `tests/int/mk-gym-collections.int.spec.ts` — dwukrotne wywołanie `GET` z `src/app/api/seed/route.ts` tworzy dokładnie jeden dokument `ServicePage` ze slug `mk-gym` (idempotencja: pierwsze wywołanie `status: 'created'`, drugie `status: 'updated'`)
 - [x] Test: `tests/int/mk-gym-collections.int.spec.ts` — dokument `ServicePage` ze slug `mk-gym` ma niepuste pole `title` w locale `pl` po seedzie
 - [x] Test (odkryte podczas Fazy 1): `tests/int/mk-gym-collections.int.spec.ts` — Portfolio ze `servicePage` wskazującym na obszar spoza allowlisty nadal jest odrzucane (regresja na `filterOptions`)
-- [ ] Weryfikacja: zapytanie `payload.find({ collection: 'service-pages', where: { slug: { equals: 'mk-gym' } } })` zwraca dokładnie jeden dokument
+- [x] Weryfikacja: zapytanie `payload.find({ collection: 'service-pages', where: { slug: { equals: 'mk-gym' } } })` zwraca dokładnie jeden dokument (asercja `totalDocs === 1` w `tests/int/mk-gym-collections.int.spec.ts`, zielona)
 - [ ] (ręczne) Wywołaj `GET /api/seed` na środowisku produkcyjnym po deployu
 
 ---
@@ -40,7 +40,7 @@
 - [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym` w widoku mobilnym, otwórz menu, sprawdź że zawiera tylko link powrotu (bez pozostałych pozycji) i language toggle
 - [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — regresja: `/meble-premium` nadal pokazuje napis "MCRAFT", standardową nawigację i klik w logo prowadzi na `/`
 - [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/`, sprawdź że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i brak linku `mk-gym` gdziekolwiek na stronie
-- [ ] Weryfikacja: grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym`
+- [x] Weryfikacja: grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym` (potwierdzone: jedyne wystąpienie to celowy `DISABLED_PREFIXES` w `PageLoader.tsx`)
 
 ### Dopracowanie brandingu (dodane po review Fazy 2, przed Fazą 3)
 
