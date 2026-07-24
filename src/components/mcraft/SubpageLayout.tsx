@@ -262,7 +262,8 @@ export function SubpageLayout({
         <div className={wrap}>
           <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{resolvedCtaLabel}</h2>
           <Link
-            href="/#contact"
+            href={navOverride ? navOverride.href : '/#contact'}
+            {...(navOverride ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
             className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
           >
             {dict.subpage.ctaButton}
