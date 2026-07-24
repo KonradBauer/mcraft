@@ -1,7 +1,7 @@
 # Ukryta podstrona MK Gym (/mk-gym) — Kontekst
 
 **Branch:** `feature/mk-gym-strona`
-**Ostatnia aktualizacja:** 2026-07-24 (Faza 1 ukończona)
+**Ostatnia aktualizacja:** 2026-07-24 (Faza 2 ukończona)
 
 ## Powiązane pliki
 
@@ -42,6 +42,15 @@
 - `src/app/api/seed/route.ts`: `PAGES` zawiera wpis `mk-gym` (placeholder `title: 'MK Gym'`, `eyebrow: 'Obszar działalności'`, `scopeItems: []`) — `GET /api/seed` seeduje/aktualizuje go idempotentnie, `DELETE /api/seed` już go chroni (jest w allowliście).
 - Nowy test `tests/int/mk-gym-collections.int.spec.ts` (4 przypadki) — wszystkie zielone; pełna suita `tests/int` (49 testów) i typecheck/lint bez regresji.
 - Poza scope tej fazy: `src/app/api/seed/route.ts` (GET i DELETE) nie ma żadnej autoryzacji — pre-existing problem, niezwiązany z tym zadaniem, zgłoszony osobno (spawn_task) do naprawy poza tym branchem.
+
+## Stan po Fazie 2
+
+- `src/app/(frontend)/mk-gym/page.tsx` istnieje, renderuje `SubpageLayout` z danymi z CMS (seed z Fazy 1) + `logoImageUrl`/`logoHref`/`navOverride`.
+- `SubpageLayout.tsx` ma 3 nowe opcjonalne propy; bez nich zachowanie 3 pozostałych podstron niezmienione (potwierdzone testami regresji: unit + e2e).
+- Nowe klucze i18n: `mkGym.backToMcraft` (PL/EN), `meta.mkGym.*` (PL/EN, `title` celowo identyczny w obu locale — nazwa marki).
+- Testy: 4 nowe w `tests/int/SubpageLayout.int.spec.tsx`, 1 nowy case w `tests/int/metadata.int.spec.ts`, nowy plik `tests/e2e/mk-gym.e2e.spec.ts` (7 scenariuszy). Pełna suita `tests/int` (54 testy), typecheck, lint, `pnpm build` — wszystko zielone.
+- **Napotkany i naprawiony błąd:** pierwsza wersja użyła `next/image` dla loga — przeszła typecheck/lint/build, ale w runtime dawała 500 na `/mk-gym` (Next 16 wymaga wpisu w `images.localPatterns` w konfiguracji dla lokalnych plików spoza standardowego przepływu). Wykryte dopiero przez faktyczne odpalenie e2e (build nie renderuje stron `force-dynamic`). Wycofano do zwykłego `<img>` (z `eslint-disable-next-line @next/next/no-img-element`) — prostsze, bez zmian w konfiguracji, zgodne z pierwotną checklistą.
+- **Znalezisko dot. infrastruktury testów (nie regresja):** pełne `pnpm exec playwright test` (30 testów, wszystkie pliki naraz) jest niestabilne na tej maszynie (timeouty nawigacji, prawdopodobnie obciążenie Turbopack dev + MongoDB pod Windows/proxy firmowym) — powtórzone dwukrotnie z tym samym wzorcem awarii NIEZALEŻNYM od moich zmian (dotyczy też `/`, `/admin/login`, testów niezwiązanych z mk-gym). Potwierdzone jako pre-existing: uruchomienie WYŁĄCZNIE plików sprzed tej zmiany (`frontend.e2e.spec.ts` + `language-switcher.e2e.spec.ts`) też ma 1 flaky fail (niezwiązany, kolizja kliknięcia z nakładką modala przy 2 workerach). Mój nowy `tests/e2e/mk-gym.e2e.spec.ts` uruchomiony w izolacji (`--workers=1`) przechodzi stabilnie 7/7 w dwóch niezależnych próbach.
 
 ## Zależności
 

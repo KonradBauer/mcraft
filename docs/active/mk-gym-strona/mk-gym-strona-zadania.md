@@ -19,26 +19,27 @@
 
 ---
 
-## Faza 2 — Strona /mk-gym (mirror meble-premium)
+## Faza 2 — Strona /mk-gym (mirror meble-premium) ✅
 
-- [ ] Stwórz `src/app/(frontend)/mk-gym/page.tsx`: kopia struktury `meble-premium/page.tsx` (`force-dynamic`, `getLocale()` + `getDictionary()`, `payload.find` po slug `mk-gym`, `toSubpageLayoutProps` + `toRealizacjeProps(portfolioDocs, 'mk-gym')`, własny `FALLBACK`, canonical URL `https://mcraft.com.pl/mk-gym`)
-- [ ] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: dodaj opcjonalne propy `logoImageUrl?: string | null`, `logoHref?: string` (domyślnie `'/'`), `navOverride?: { href: string; label: string } | null` do `SubpageLayoutProps`
-- [ ] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: w topbarze — gdy `logoImageUrl` podany, renderuj `<img src={logoImageUrl} alt="MK Gym" />` zamiast napisu "MCRAFT"; link logo prowadzi na `logoHref` (zamiast hardcoded `/`)
-- [ ] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: gdy `navOverride` podany, zastąp CAŁĄ standardową nawigację (`#about`, `#areas`, `NavRealizacjeDropdown`, `#contact`) pojedynczym linkiem `<a href={navOverride.href}>{navOverride.label}</a>` — zarówno w desktopowym rzędzie linków, jak i w tablicy `SUBPAGE_NAV_LINKS` przekazywanej do `MobileNav`. `LanguageSwitcher`/`MobileLanguageToggle` (translacja) POZOSTAJE widoczny niezależnie od `navOverride`. Brak propa → zachowanie identyczne jak dziś (regresja na pozostałych podstronach)
-- [ ] Zmodyfikuj `src/lib/i18n/dictionaries/pl.ts`: dodaj `mkGym.backToMcraft: "Powrót na mcraft.com.pl"`
-- [ ] Zmodyfikuj `src/lib/i18n/dictionaries/en.ts`: dodaj `mkGym.backToMcraft` z angielskim tłumaczeniem
-- [ ] Zmodyfikuj `src/app/(frontend)/mk-gym/page.tsx`: przekaż do `SubpageLayout` — `logoImageUrl="/mk-gym-logo.png"`, `logoHref="https://mcraft.com.pl"`, `navOverride={{ href: 'https://mcraft.com.pl', label: dict.mkGym.backToMcraft }}`
-- [ ] Zmodyfikuj `src/lib/i18n/dictionaries/pl.ts`: dodaj `meta.mkGym: { title, description, ogTitle, ogDescription }`
-- [ ] Zmodyfikuj `src/lib/i18n/dictionaries/en.ts`: dodaj analogiczną sekcję `meta.mkGym` z angielskim tłumaczeniem
-- [ ] Test: `tests/int/metadata.int.spec.ts` — dodaj case: `generateMetadata` dla `/mk-gym` zwraca różny `title` dla `pl` i `en` (wzorzec: case `nadzor-spawalniczy`)
-- [ ] Test: `tests/int/metadata.int.spec.ts` lub równoważny — strona renderuje `FALLBACK` gdy `ServicePage` ze slug `mk-gym` nie istnieje
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym` bezpośrednio, sprawdź że hero/zakres/sekcje/CTA renderują się poprawnie zgodnie z danymi z seeda
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym`, sprawdź że w topbarze renderuje się `<img>` z `/mk-gym-logo.png` zamiast napisu "MCRAFT"
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym`, sprawdź że topbar NIE zawiera linków `#about`/`#areas`/dropdownu realizacji/`#contact`, zawiera link powrotu na `https://mcraft.com.pl` (desktop) oraz language switcher (PL/EN) nadal działa
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — klik w logo na `/mk-gym` prowadzi na `https://mcraft.com.pl`
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym` w widoku mobilnym, otwórz menu, sprawdź że zawiera tylko link powrotu (bez pozostałych pozycji) i language toggle
-- [ ] Test (e2e): `tests/e2e/frontend.e2e.spec.ts` (istniejący) lub nowy — otwórz `/meble-premium` (lub inną istniejącą podstronę), sprawdź że topbar nadal pokazuje napis "MCRAFT", standardową nawigację i klik w logo prowadzi na `/` (regresja na `SubpageLayout`)
-- [ ] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/`, sprawdź że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i dropdown realizacji nie zawiera linku do `/mk-gym`
+- [x] Stwórz `src/app/(frontend)/mk-gym/page.tsx`: kopia struktury `meble-premium/page.tsx` (`force-dynamic`, `getLocale()` + `getDictionary()`, `payload.find` po slug `mk-gym`, `toSubpageLayoutProps` + `toRealizacjeProps(portfolioDocs, 'mk-gym')`, własny `FALLBACK`, canonical URL `https://mcraft.com.pl/mk-gym`)
+- [x] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: dodaj opcjonalne propy `logoImageUrl?: string | null`, `logoHref?: string` (domyślnie `'/'`), `navOverride?: { href: string; label: string } | null` do `SubpageLayoutProps`
+- [x] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: w topbarze — gdy `logoImageUrl` podany, renderuj `<img src={logoImageUrl} alt="MK Gym" />` zamiast napisu "MCRAFT"; link logo prowadzi na `logoHref` (zamiast hardcoded `/`) *(zwykły `<img>`, nie `next/image` — next/image wymagałby konfiguracji `images.localPatterns` w Next 16 dla lokalnego pliku spoza CMS; próbowano next/image, spowodowało runtime 500 na `/mk-gym`, wycofano — zob. Blokady/decyzje niżej)*
+- [x] Zmodyfikuj `src/components/mcraft/SubpageLayout.tsx`: gdy `navOverride` podany, zastąp CAŁĄ standardową nawigację (`#about`, `#areas`, `NavRealizacjeDropdown`, `#contact`) pojedynczym linkiem — zarówno w desktopowym rzędzie linków, jak i w tablicy `SUBPAGE_NAV_LINKS` przekazywanej do `MobileNav`. `LanguageSwitcher`/`MobileLanguageToggle` (translacja) POZOSTAJE widoczny niezależnie od `navOverride`. Brak propa → zachowanie identyczne jak dziś (regresja na pozostałych podstronach)
+- [x] Zmodyfikuj `src/lib/i18n/dictionaries/pl.ts`: dodaj `mkGym.backToMcraft: "Powrót na mcraft.com.pl"`
+- [x] Zmodyfikuj `src/lib/i18n/dictionaries/en.ts`: dodaj `mkGym.backToMcraft` z angielskim tłumaczeniem
+- [x] Zmodyfikuj `src/app/(frontend)/mk-gym/page.tsx`: przekaż do `SubpageLayout` — `logoImageUrl="/mk-gym-logo.png"`, `logoHref="https://mcraft.com.pl"`, `navOverride={{ href: 'https://mcraft.com.pl', label: dict.mkGym.backToMcraft }}`
+- [x] Zmodyfikuj `src/lib/i18n/dictionaries/pl.ts`: dodaj `meta.mkGym: { title, description, ogTitle, ogDescription }`
+- [x] Zmodyfikuj `src/lib/i18n/dictionaries/en.ts`: dodaj analogiczną sekcję `meta.mkGym` z angielskim tłumaczeniem
+- [x] Test: `tests/int/metadata.int.spec.ts` — dodaj case: `generateMetadata` dla `/mk-gym` *(dostosowane: `title` to marka "MK Gym", identyczna w obu locale celowo — asercja na `description`, która faktycznie różni się pl/en, plus `alternates.canonical`)*
+- [x] Test (odkryte): pokrycie "FALLBACK gdy ServicePage nie istnieje" już istnieje ogólnie w `tests/int/servicePageData.int.spec.ts` (`toSubpageLayoutProps` jest slug-agnostyczne) — nowy duplikat pominięty świadomie
+- [x] Test (unit, dodane zamiast części E2E): `tests/int/SubpageLayout.int.spec.tsx` — 4 nowe testy: domyślny wordmark+nav, logo zamiast wordmarku, `logoHref` domyślny/`/` vs custom, `navOverride` zastępuje nav i zachowuje language switcher
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym` bezpośrednio, sprawdź że hero/zakres renderują się poprawnie zgodnie z danymi z seeda
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym`, sprawdź że w topbarze renderuje się `<img>` z alt "MK Gym" zamiast napisu "MCRAFT"
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym`, sprawdź że topbar NIE zawiera linków `#about`/`#areas`/dropdownu realizacji/`#contact`, zawiera link powrotu na `https://mcraft.com.pl` (desktop) oraz language switcher (PL/EN) nadal widoczny
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — logo na `/mk-gym` ma `href="https://mcraft.com.pl"` (asercja atrybutu, bez realnego kliku na zewnętrzną domenę)
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/mk-gym` w widoku mobilnym, otwórz menu, sprawdź że zawiera tylko link powrotu (bez pozostałych pozycji) i language toggle
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — regresja: `/meble-premium` nadal pokazuje napis "MCRAFT", standardową nawigację i klik w logo prowadzi na `/`
+- [x] Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts` — otwórz `/`, sprawdź że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i brak linku `mk-gym` gdziekolwiek na stronie
 - [ ] Weryfikacja: grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym`
 
 ---

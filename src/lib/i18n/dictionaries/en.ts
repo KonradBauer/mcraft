@@ -131,6 +131,12 @@ export const en = {
       ogTitle: 'Premium steel furniture - loft and industrial',
       ogDescription: 'Loft and industrial furniture, custom designs, combining steel with wood and glass, premium finishing.',
     },
+    mkGym: {
+      title: 'MK Gym',
+      description: 'MK Gym - description to be added in the admin panel.',
+      ogTitle: 'MK Gym',
+      ogDescription: 'MK Gym - description to be added in the admin panel.',
+    },
     privacyPolicy: {
       title: 'Privacy Policy',
       description: 'Privacy policy of mcraft.com.pl - information on personal data processing.',
@@ -139,5 +145,8 @@ export const en = {
   schemaOrg: {
     businessDescription: 'Welding supervision, steel structures and premium furniture. Dr Michał Macherzyński - welding engineer IWE/IWI/VT2/PT2.',
     personDescription: 'Head Welder and R&D Project Manager at ZUGIL S.A. Over 18 years of experience in welding.',
+  },
+  mkGym: {
+    backToMcraft: 'Back to mcraft.com.pl',
   },
 } satisfies Dictionary

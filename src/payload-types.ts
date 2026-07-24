@@ -433,7 +433,7 @@ export interface PortfolioProject {
    */
   slug: string;
   /**
-   * Tylko Meble premium lub Konstrukcje stalowe
+   * Tylko Meble premium, Konstrukcje stalowe lub MK Gym
    */
   servicePage: string | ServicePage;
   /**

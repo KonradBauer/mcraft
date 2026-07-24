@@ -106,7 +106,7 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 
 ---
 
-- [ ] **Unit 2: Strona /mk-gym (mirror meble-premium)**
+- [x] **Unit 2: Strona /mk-gym (mirror meble-premium)** ✅
 
 **Cel:** `/mk-gym` renderuje treść z CMS w layoucie identycznym z `/meble-premium`, w obu locale.
 
@@ -116,27 +116,34 @@ Zewnętrzna strona ma linkować bezpośrednio na `/mk-gym` jako wejście do doda
 
 **Pliki:**
 - Stwórz: `src/app/(frontend)/mk-gym/page.tsx`
-- Modyfikuj: `src/lib/i18n/dictionaries/pl.ts` (dodaj `meta.mkGym: { title, description, ogTitle, ogDescription }`)
+- Modyfikuj: `src/components/mcraft/SubpageLayout.tsx` (nowe opcjonalne propy `logoImageUrl`, `logoHref`, `navOverride` — dodane w tej samej fazie, żeby obsłużyć logo w topbarze i nawigację z linkiem powrotu wymagane przez usera w trakcie implementacji)
+- Modyfikuj: `src/lib/i18n/dictionaries/pl.ts` (dodaj `meta.mkGym: { title, description, ogTitle, ogDescription }` oraz `mkGym.backToMcraft`)
 - Modyfikuj: `src/lib/i18n/dictionaries/en.ts` (analogicznie, angielskie tłumaczenie)
-- Test (unit): `tests/int/metadata.int.spec.ts` (dodaj case analogiczny do `nadzor-spawalniczy`: `generateMetadata` zwraca różny `title` dla pl vs en)
+- Test (unit): `tests/int/metadata.int.spec.ts` (case dla `/mk-gym` — asercja na `description`, nie `title`, bo tytuł "MK Gym" jest celowo identyczny w obu locale)
+- Test (unit): `tests/int/SubpageLayout.int.spec.tsx` (4 nowe testy dla `logoImageUrl`/`logoHref`/`navOverride`)
 - Test (e2e): `tests/e2e/mk-gym.e2e.spec.ts`
 
 **Podejście:**
 - Kopiuj strukturę `meble-premium/page.tsx` 1:1: `force-dynamic`, `getLocale()` + `getDictionary()`, `payload.find({ collection: 'service-pages', where: { slug: { equals: 'mk-gym' } }, locale })`, `toSubpageLayoutProps` + `toRealizacjeProps(portfolioDocs, 'mk-gym')`.
 - Canonical URL: `https://mcraft.com.pl/mk-gym`. Własny `FALLBACK` placeholder (analogiczny kształt co w meble-premium) na wypadek braku rekordu w danym środowisku.
+- Logo: zwykły `<img>` (nie `next/image` — próbowano, Next 16 wymaga `images.localPatterns` w configu dla lokalnych plików spoza standardowego przepływu, dawało runtime 500; wycofano do `<img>` z `eslint-disable-next-line`).
 
 **Wzorce do naśladowania:**
 - `src/app/(frontend)/meble-premium/page.tsx` (kopiowany 1:1, zmienione stringi/slug)
 - `src/lib/servicePageData.ts` (bez zmian, reużyte funkcje)
 
 **Scenariusze testowe:**
-- [Unit] `generateMetadata` dla `/mk-gym` zwraca różny `title` dla locale `pl` i `en`
-- [Unit] Strona renderuje `FALLBACK` gdy `ServicePage` ze slug `mk-gym` nie istnieje (regresja na wzorcu z `meble-premium`)
-- [E2E] Otwórz `/mk-gym` bezpośrednio (bez nawigowania z innej strony) → sprawdź że hero, zakres, sekcje i CTA renderują się poprawnie, treść odpowiada seedowi z Unit 1
-- [E2E] Otwórz `/` (stronę główną) → sprawdź, że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i nawigacja/dropdown realizacji nie zawiera linku do `/mk-gym`
+- [Unit] `generateMetadata` dla `/mk-gym` zwraca różny `description` dla locale `pl` i `en` (tytuł identyczny celowo — nazwa marki)
+- [Unit] `SubpageLayout` bez `logoImageUrl`/`navOverride` zachowuje się identycznie jak dziś (regresja)
+- [Unit] `SubpageLayout` z `logoImageUrl` renderuje `<img>` zamiast wordmarku; z `navOverride` zastępuje nawigację, zachowuje language switcher
+- [E2E] Otwórz `/mk-gym` bezpośrednio (bez nawigowania z innej strony) → sprawdź że hero, zakres i CTA renderują się poprawnie, treść odpowiada seedowi z Unit 1
+- [E2E] Topbar `/mk-gym`: logo zamiast wordmarku, link powrotu zamiast standardowej nawigacji, language switcher działa, klik logo → `https://mcraft.com.pl`
+- [E2E] Mobile: menu na `/mk-gym` pokazuje tylko link powrotu + language toggle
+- [E2E] Regresja: `/meble-premium` topbar bez zmian (wordmark, standardowa nawigacja, logo → `/`)
+- [E2E] Otwórz `/` (stronę główną) → sprawdź, że sekcja "Obszary działalności" pokazuje dokładnie 3 kafelki (bez MK Gym) i nigdzie nie ma linku do `/mk-gym`
 
 **Weryfikacja:**
-- Strona renderuje się poprawnie z danymi z seeda w obu locale; grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym`.
+- Strona renderuje się poprawnie z danymi z seeda w obu locale; grep po `mk-gym` w `src/components/mcraft/` i `src/app/(frontend)/page.tsx` nie zwraca nowych wystąpień poza samą stroną `/mk-gym`. Potwierdzone: `pnpm build` przechodzi, e2e (izolowanie, `--workers=1`) 7/7 zielone.
 
 ---
 
