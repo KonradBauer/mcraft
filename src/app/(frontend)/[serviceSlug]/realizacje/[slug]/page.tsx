@@ -10,10 +10,38 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
-import { getLocale } from '@/lib/i18n/locale'
+import { DEFAULT_LOCALE, getLocale, type Locale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
+import type { PortfolioProject } from '@/payload-types'
 
 const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe', 'mk-gym']
+
+async function findPortfolioItemBySlug(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  slug: string,
+  locale: Locale,
+): Promise<PortfolioProject | undefined> {
+  const { docs } = await payload.find({
+    collection: 'portfolio-projects',
+    where: { slug: { equals: slug } },
+    depth: 2,
+    limit: 1,
+    locale,
+  })
+  if (docs[0]) return docs[0]
+  if (locale === DEFAULT_LOCALE) return undefined
+
+  // slug pole jest localized, ale migracja ustawiła tylko `pl` - dopasowanie po `en` slugu
+  // nie ma fallbacku (w przeciwienstwie do odczytu wartosci pola), wiec probujemy jeszcze raz po `pl`.
+  const fallback = await payload.find({
+    collection: 'portfolio-projects',
+    where: { slug: { equals: slug } },
+    depth: 2,
+    limit: 1,
+    locale: DEFAULT_LOCALE,
+  })
+  return fallback.docs[0]
+}
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink =
@@ -34,14 +62,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const payload = await getPayload({ config })
   const locale = await getLocale()
-  const { docs } = await payload.find({
-    collection: 'portfolio-projects',
-    where: { slug: { equals: slug } },
-    limit: 1,
-    locale,
-  })
-
-  const item = docs[0]
+  const item = await findPortfolioItemBySlug(payload, slug, locale)
   if (!item) return {}
 
   if (serviceSlug === 'mk-gym') {
@@ -83,15 +104,7 @@ export default async function RealizacjaPage({ params }: Props) {
         { href: '/#contact', label: dict.nav.contact },
       ]
 
-  const { docs } = await payload.find({
-    collection: 'portfolio-projects',
-    where: { slug: { equals: slug } },
-    depth: 2,
-    limit: 1,
-    locale,
-  })
-
-  const item = docs[0]
+  const item = await findPortfolioItemBySlug(payload, slug, locale)
   if (!item) notFound()
 
   const sp = typeof item.servicePage === 'object' && item.servicePage !== null
