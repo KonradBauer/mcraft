@@ -12,7 +12,7 @@ export default async function HomePage() {
   const dict = await getDictionary(locale)
 
   const [hero, about, cvModal, bioModal, tilesResult, areasResult] = await Promise.all([
-    payload.findGlobal({ slug: 'hero-section', depth: 1, locale }),
+    payload.findGlobal({ slug: 'hero-section', depth: 1, locale, fallbackLocale: false }),
     payload.findGlobal({ slug: 'about-section', depth: 1, locale }),
     payload.findGlobal({ slug: 'cv-modal', depth: 1, locale }),
     payload.findGlobal({ slug: 'bio-modal', depth: 1, locale }),

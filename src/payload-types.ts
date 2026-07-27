@@ -743,6 +743,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface HeroSection {
   id: string;
+  /**
+   * Osobne zdjęcie dla wersji angielskiej wgraj w zakładce EN edytora pola. Bez wgranego zdjęcia EN strona pokaże domyślne tło.
+   */
   backgroundImage?: (string | null) | Media;
   personPhoto?: (string | null) | Media;
   /**

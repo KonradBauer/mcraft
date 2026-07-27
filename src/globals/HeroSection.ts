@@ -12,6 +12,10 @@ export const HeroSection: GlobalConfig = {
       label: 'Zdjęcie tła',
       type: 'upload',
       relationTo: 'media',
+      localized: true,
+      admin: {
+        description: 'Osobne zdjęcie dla wersji angielskiej wgraj w zakładce EN edytora pola. Bez wgranego zdjęcia EN strona pokaże domyślne tło.',
+      },
     },
     {
       name: 'personPhoto',
