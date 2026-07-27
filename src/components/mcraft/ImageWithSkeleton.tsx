@@ -9,9 +9,10 @@ interface ImageWithSkeletonProps {
   className?: string
   style?: React.CSSProperties
   sizes?: string
+  priority?: boolean
 }
 
-export function ImageWithSkeleton({ src, alt, className, style, sizes = '100vw' }: ImageWithSkeletonProps) {
+export function ImageWithSkeleton({ src, alt, className, style, sizes = '100vw', priority = false }: ImageWithSkeletonProps) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   return (
@@ -27,6 +28,7 @@ export function ImageWithSkeleton({ src, alt, className, style, sizes = '100vw' 
         sizes={sizes}
         className={className}
         style={style}
+        priority={priority}
         onLoad={() => setIsLoaded(true)}
       />
     </>
