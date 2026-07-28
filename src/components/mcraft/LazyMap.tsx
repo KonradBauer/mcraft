@@ -31,8 +31,8 @@ export function LazyMap() {
       {shouldLoad ? (
         <iframe
           src={MAP_SRC}
-          width="100%"
           height="300"
+          className="w-full"
           style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
