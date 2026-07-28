@@ -9,6 +9,7 @@ import { ICON_REGISTRY } from '@/lib/tileIcons'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { LazyMap } from './LazyMap'
 import { MobileNav } from './MobileNav'
 import { ModalProvider } from './ModalProvider'
 import { ModalTrigger } from './ModalTrigger'
@@ -308,15 +309,7 @@ export function SubpageLayout({
             </div>
 
             <div className="border-l border-white/10 pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-white/10 max-[768px]:pt-[34px] overflow-hidden">
-              <iframe
-                src={`https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed&hl=${locale}`}
-                className="w-full"
-                height="300"
-                style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title={dict.footer.mapsTitle}
-              />
+              <LazyMap title={dict.footer.mapsTitle} locale={locale} />
             </div>
 
           </div>

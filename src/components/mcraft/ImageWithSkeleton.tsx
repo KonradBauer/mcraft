@@ -29,6 +29,7 @@ export function ImageWithSkeleton({ src, alt, className, style, sizes = '100vw',
         className={className}
         style={style}
         priority={priority}
+        fetchPriority={priority ? 'high' : undefined}
         onLoad={() => setIsLoaded(true)}
       />
     </>

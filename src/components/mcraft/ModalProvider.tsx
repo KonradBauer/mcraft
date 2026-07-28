@@ -1,12 +1,14 @@
 'use client'
 
-import { RichText } from '@payloadcms/richtext-lexical/react'
+import dynamic from 'next/dynamic'
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import type { BioModal, CvModal, StatTile } from '@/payload-types'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
-import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
+import { ModalBodySection, ModalHead } from './ModalShared'
+
+const ModalBio = dynamic(() => import('./ModalBio').then((m) => m.ModalBio))
 
 export type ModalKey = 'cv' | 'bio' | 'tiles' | 'scope'
 
@@ -45,19 +47,6 @@ function DownloadIcon() {
   )
 }
 
-function ModalHead({ eyebrowText, title, sub }: { eyebrowText?: string; title: string; sub?: string }) {
-  return (
-    <div className="bg-ink text-light px-12 pt-7 pb-6 relative overflow-hidden flex-none max-[980px]:px-7">
-      <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
-      <div className="relative">
-        {eyebrowText && <span className="font-montserrat text-[11px] font-semibold tracking-[0.26em] uppercase text-accent-bright">{eyebrowText}</span>}
-        <h2 className={`font-light text-[34px] uppercase tracking-[0.02em] text-white max-[980px]:text-[27px] ${eyebrowText ? 'mt-[14px]' : ''}`}>{preserveAcronymCase(title)}</h2>
-        {sub && <div className="font-montserrat font-light text-[14px] tracking-[0.14em] uppercase text-light-muted mt-2.5">{sub}</div>}
-      </div>
-    </div>
-  )
-}
-
 function ModalDownloadBtn({ label, href }: { label: string; href?: string }) {
   const cls = 'self-start mx-12 mb-5 mt-1 inline-flex items-center gap-3 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.16em] uppercase px-5 py-3 cursor-pointer border-none transition-all duration-[220ms] hover:bg-accent hover:text-ink max-[980px]:mx-7'
   if (href) {
@@ -68,15 +57,6 @@ function ModalDownloadBtn({ label, href }: { label: string; href?: string }) {
     )
   }
   return <button className={cls}><DownloadIcon />{label}</button>
-}
-
-function ModalBodySection({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <>
-      <h3 className="font-montserrat font-semibold text-[11px] tracking-[0.16em] uppercase text-accent mt-4 first:mt-0 mb-2 pb-1.5 border-b border-hairline-light">{title}</h3>
-      {children}
-    </>
-  )
 }
 
 const CV_ITEMS_LI = 'grid grid-cols-[130px_1fr] gap-3 text-[13.5px] leading-[1.55] text-[#56544e] max-[980px]:grid-cols-[90px_1fr]'
@@ -203,41 +183,6 @@ function ModalCV({ cvModal, dict }: { cvModal: CvModal; dict: Dictionary }) {
         )}
       </div>
       <ModalDownloadBtn label={dict.modal.cv.downloadLabel} href={cvFileUrl} />
-    </>
-  )
-}
-
-function ModalBio({ bioModal, dict }: { bioModal: BioModal; dict: Dictionary }) {
-  const sectionsWithContent = (bioModal.sections ?? []).filter(
-    (s): s is typeof s & { title: string; content: NonNullable<typeof s.content> } => Boolean(s.title) && Boolean(s.content),
-  )
-  const hasData = sectionsWithContent.length > 0
-  return (
-    <>
-      <ModalHead eyebrowText={dict.modal.bio.eyebrow} title={dict.modal.bio.title} sub={dict.modal.bio.sub} />
-      <div className="px-12 pt-4 pb-4 max-[980px]:px-7">
-        {hasData ? (
-          sectionsWithContent.map((section) => (
-            <ModalBodySection key={section.id ?? section.title} title={section.title}>
-              <div className="prose-mcraft">
-                <RichText data={section.content} />
-              </div>
-            </ModalBodySection>
-          ))
-        ) : (
-          <>
-            <ModalBodySection title="Moja droga">
-              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Tu znajdzie się bardziej osobista opowieść - życiorys, początki fascynacji metalem i spawaniem, droga od warsztatu do tytułu doktora inżyniera. Treść zostanie przygotowana i wczytana z zasobów.</p>
-            </ModalBodySection>
-            <ModalBodySection title="Pasja">
-              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Poza pracą zawodową - tworzenie unikalnych mebli stalowych, projekty autorskie i ciągłe doskonalenie rzemiosła. To miejsce na prywatną, mniej formalną część historii.</p>
-            </ModalBodySection>
-            <ModalBodySection title="Wartości">
-              <p className="text-[13.5px] leading-[1.65] text-[#56544e]">Jakość jako standard, a nie cel. Rzetelność, dbałość o detal i partnerskie podejście do każdego projektu.</p>
-            </ModalBodySection>
-          </>
-        )}
-      </div>
     </>
   )
 }

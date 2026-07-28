@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 
-const MAX_VISIBLE_MS = 4000
+const MAX_VISIBLE_MS = 1200
 const FADE_OUT_MS = 550
 const DISABLED_PREFIXES = ['/mk-gym']
 
@@ -19,16 +19,16 @@ export function PageLoader({ title }: { title: string }) {
 
     const hide = () => setIsHiding(true)
 
-    if (document.readyState === 'complete') {
+    if (document.readyState !== 'loading') {
       hide()
     } else {
-      window.addEventListener('load', hide, { once: true })
+      document.addEventListener('DOMContentLoaded', hide, { once: true })
     }
 
     const fallbackTimeout = window.setTimeout(hide, MAX_VISIBLE_MS)
 
     return () => {
-      window.removeEventListener('load', hide)
+      document.removeEventListener('DOMContentLoaded', hide)
       window.clearTimeout(fallbackTimeout)
     }
   }, [isDisabled])

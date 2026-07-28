@@ -1,10 +1,16 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { Locale } from '@/lib/i18n/locale'
 
-const MAP_SRC = 'https://maps.google.com/maps?q=ul.+%C5%BBo%C5%82nierzy+Wrze%C5%9Bnia+36,+42-152+Wilkowiecko&output=embed'
+const MAP_BASE_SRC = 'https://maps.google.com/maps?q=ul.+%C5%BBo%C5%82nierzy+Wrze%C5%9Bnia+36,+42-152+Wilkowiecko&output=embed'
 
-export function LazyMap() {
+interface LazyMapProps {
+  title: string
+  locale?: Locale
+}
+
+export function LazyMap({ title, locale = 'pl' }: LazyMapProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [shouldLoad, setShouldLoad] = useState(false)
 
@@ -30,13 +36,13 @@ export function LazyMap() {
     <div ref={containerRef} className="relative h-[300px] w-full overflow-hidden bg-white/5">
       {shouldLoad ? (
         <iframe
-          src={MAP_SRC}
+          src={`${MAP_BASE_SRC}&hl=${locale}`}
           height="300"
           className="w-full"
           style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title="Lokalizacja MCRAFT"
+          title={title}
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center">

@@ -16,6 +16,7 @@ import { preserveAcronymCase } from '@/lib/preserveAcronymCase'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { LazyMap } from './LazyMap'
 import { MobileNav } from './MobileNav'
 import { NavRealizacjeDropdown } from './NavRealizacjeDropdown'
 import { ModalProvider } from './ModalProvider'
@@ -130,6 +131,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             sizes="(max-width: 980px) 290px, 390px"
             className="h-[92%] w-auto max-[980px]:h-[420px] shrink-0"
             priority
+            fetchPriority="high"
           />
         </div>
 
@@ -356,15 +358,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             </div>
 
             <div className="border-l border-hairline-dark pl-[46px] max-[768px]:border-l-0 max-[768px]:pl-0 max-[768px]:border-t max-[768px]:border-hairline-dark max-[768px]:pt-[34px] overflow-hidden">
-              <iframe
-                src={`https://maps.google.com/maps?q=ul.+Żołnierzy+Września+36,+42-152+Wilkowiecko&output=embed&hl=${locale}`}
-                className="w-full"
-                height="300"
-                style={{ border: 0, filter: 'grayscale(1) invert(0.85) contrast(0.9)' }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                title={dict.footer.mapsTitle}
-              />
+              <LazyMap title={dict.footer.mapsTitle} locale={locale} />
             </div>
           </div>
 
