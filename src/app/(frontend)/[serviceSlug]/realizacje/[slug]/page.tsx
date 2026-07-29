@@ -7,6 +7,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Media, ServicePage } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
+import { LanguageSwitcher } from '@/components/mcraft/LanguageSwitcher'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
@@ -148,6 +149,7 @@ export default async function RealizacjaPage({ params }: Props) {
                   <Link href="/#contact" className={navLink}>{dict.nav.contact}</Link>
                 </>
               )}
+              <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
             <MobileNav links={NAV_LINKS} locale={locale} dict={dict} logoImageUrl={isMkGym ? '/mk-gym-logo.png' : undefined} />
           </nav>
