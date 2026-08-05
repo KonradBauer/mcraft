@@ -1,12 +1,11 @@
 'use client'
 
-import { useField } from '@payloadcms/ui'
+import { useField, useForm } from '@payloadcms/ui'
 import { useRef, useState } from 'react'
 
-type ImageRow = { image: string; alt?: string; id?: string }
-
 export default function BulkImageUpload() {
-  const { value, setValue } = useField<ImageRow[]>({ path: 'images' })
+  const { path, rows } = useField({ path: 'images', hasRows: true })
+  const { addFieldRow } = useForm()
   const [uploading, setUploading] = useState(false)
   const [done, setDone] = useState(0)
   const [total, setTotal] = useState(0)
@@ -17,7 +16,7 @@ export default function BulkImageUpload() {
     setDone(0)
     setTotal(files.length)
 
-    const existing: ImageRow[] = Array.isArray(value) ? [...value] : []
+    let rowIndex = rows?.length ?? 0
 
     for (let i = 0; i < files.length; i++) {
       const formData = new FormData()
@@ -27,7 +26,16 @@ export default function BulkImageUpload() {
         const res = await fetch('/api/media', { method: 'POST', body: formData })
         if (res.ok) {
           const data = await res.json()
-          existing.push({ image: data.doc.id, alt: '' })
+          addFieldRow({
+            path,
+            rowIndex,
+            schemaPath: path,
+            subFieldState: {
+              image: { value: data.doc.id, initialValue: data.doc.id, valid: true },
+              alt: { value: '', initialValue: '', valid: true },
+            },
+          })
+          rowIndex += 1
         }
       } catch {
         // skip failed uploads
@@ -36,7 +44,6 @@ export default function BulkImageUpload() {
       setDone(i + 1)
     }
 
-    setValue(existing)
     setUploading(false)
     if (inputRef.current) inputRef.current.value = ''
   }

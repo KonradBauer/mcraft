@@ -80,7 +80,7 @@ export interface SubpageLayoutProps {
   heroImageUrl?: string | null
   items: { icon?: string | null; text: string; description?: string | null; modalDescription?: string | null }[]
   audience?: { title: string; bulletStyle: BulletStyle; items: { text: DefaultTypedEditorState }[] } | null
-  additionalSections?: { title: string; bulletStyle: BulletStyle; items: { text: DefaultTypedEditorState }[] }[]
+  additionalSections?: { title: string; bulletStyle: BulletStyle; renderAfterRealizacje: boolean; items: { text: DefaultTypedEditorState }[] }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
   ctaLabel?: string
   locale?: Locale
@@ -225,9 +225,11 @@ export function SubpageLayout({
             </div>
           </div>
 
-          {additionalSections?.map((section, i) => (
-            <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} />
-          ))}
+          {additionalSections
+            ?.filter((section) => !section.renderAfterRealizacje)
+            .map((section, i) => (
+              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} />
+            ))}
 
           {realizacje && realizacje.length > 0 && (
             <div>
@@ -255,6 +257,12 @@ export function SubpageLayout({
               </div>
             </div>
           )}
+
+          {additionalSections
+            ?.filter((section) => section.renderAfterRealizacje)
+            .map((section, i) => (
+              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} />
+            ))}
         </div>
       </section>
 

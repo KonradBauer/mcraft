@@ -29,7 +29,7 @@ export interface HomeContentProps {
   cvModal: CvModal
   bioModal: BioModal
   tiles: StatTile[]
-  areas: Pick<ServicePage, 'slug' | 'thumbnailTitle' | 'thumbnailImage'>[]
+  areas: Pick<ServicePage, 'slug' | 'thumbnailTitle' | 'thumbnailImage' | 'visibleOnHomepage'>[]
   locale?: Locale
   dict: Dictionary
 }
@@ -86,24 +86,20 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
   const cvBtnClass = 'inline-flex items-center gap-[30px] mt-[clamp(30px,4.69vw,90px)] max-[980px]:hidden border border-[#3A3A3A] px-[26px] py-[clamp(12px,0.89vw,17px)] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
   const cvBtnMobileClass = 'inline-flex items-center gap-[30px] border border-[#3A3A3A] px-[26px] py-[17px] font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-light transition-all duration-[250ms] bg-transparent cursor-pointer hover:bg-accent hover:border-accent hover:text-ink'
 
+  const AREA_DEFAULTS = [
+    { href: '/nadzor-spawalniczy', slug: 'nadzor-spawalniczy', name: dict.areas.names.nadzorSpawalniczy },
+    { href: '/konstrukcje-stalowe', slug: 'konstrukcje-stalowe', name: dict.areas.names.konstrukcjeStalowe },
+    { href: '/meble-premium', slug: 'meble-premium', name: dict.areas.names.meblePremium },
+  ].filter(({ slug }) => areaBySlug[slug]?.visibleOnHomepage !== false)
+
   const HOME_NAV_LINKS = [
     { href: '#about', label: dict.nav.about },
     { href: '#areas', label: dict.nav.areas },
     {
       label: dict.nav.realizations,
-      sub: [
-        { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
-        { href: '/meble-premium', label: dict.areas.names.meblePremium },
-        { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
-      ],
+      sub: AREA_DEFAULTS.map(({ href, name }) => ({ href, label: name })),
     },
     { href: '#contact', label: dict.nav.contact },
-  ]
-
-  const AREA_DEFAULTS = [
-    { href: '/nadzor-spawalniczy', slug: 'nadzor-spawalniczy', name: dict.areas.names.nadzorSpawalniczy },
-    { href: '/konstrukcje-stalowe', slug: 'konstrukcje-stalowe', name: dict.areas.names.konstrukcjeStalowe },
-    { href: '/meble-premium', slug: 'meble-premium', name: dict.areas.names.meblePremium },
   ]
 
   return (
@@ -151,7 +147,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
               <div className="flex items-center gap-[24px] max-[980px]:hidden rounded-2xl bg-white/30 backdrop-blur-md px-1.5 py-px">
                 <a href="#about" className={`${navLink} text-black`}>{dict.nav.about}</a>
                 <a href="#areas" className={`${navLink} text-black/70 hover:text-black`}>{dict.nav.areas}</a>
-                <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} dict={dict} />
+                <NavRealizacjeDropdown triggerClass={`${navLink} text-black/70 hover:text-black`} dict={dict} areas={AREA_DEFAULTS.map(({ href, name }) => ({ href, label: name }))} />
                 <a href="#contact" className={`${navLink} text-black/70 hover:text-black`}>{dict.nav.contact}</a>
                 <LanguageSwitcher locale={locale} triggerClassName={`${navLink} text-black/70 hover:text-black`} />
               </div>
@@ -271,7 +267,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
             <span className={`${eyebrow} mb-[14px]`}>{dict.areas.eyebrow}</span>
             <h2 className="font-montserrat font-semibold text-[30px] tracking-[0.04em] uppercase text-dark-text">{dict.areas.title}</h2>
           </div>
-          <div className="grid grid-cols-3 gap-[26px] mt-[42px] max-[980px]:grid-cols-1">
+          <div className={`grid gap-[26px] mt-[42px] max-[980px]:grid-cols-1 ${AREA_DEFAULTS.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
             {AREA_DEFAULTS.map(({ href, slug, name }) => {
               const cmsArea = areaBySlug[slug]
               const displayName = cmsArea?.thumbnailTitle ?? name

@@ -56,6 +56,15 @@ export const ServicePage: CollectionConfig = {
       },
     },
     {
+      name: 'visibleOnHomepage',
+      label: 'Widoczne na stronie głównej',
+      type: 'checkbox',
+      defaultValue: true,
+      admin: {
+        description: 'Odznacz, żeby tymczasowo ukryć tę sekcję w obszarach działalności na stronie głównej. Podstrona i dane w panelu pozostają bez zmian.',
+      },
+    },
+    {
       name: 'eyebrow',
       label: 'Nadtytuł (mały tekst nad tytułem)',
       type: 'text',
@@ -223,6 +232,15 @@ export const ServicePage: CollectionConfig = {
             },
           },
           fields: [richTextItemField],
+        },
+        {
+          name: 'renderAfterRealizacje',
+          label: 'Wyświetl po sekcji Realizacje (np. dla FAQ)',
+          type: 'checkbox',
+          defaultValue: false,
+          admin: {
+            description: 'Domyślnie sekcja renderuje się między Zakresem a Realizacjami. Zaznacz, żeby przenieść ją niżej, między Realizacje a sekcję kontaktową.',
+          },
         },
       ],
     },

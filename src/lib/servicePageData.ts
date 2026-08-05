@@ -46,6 +46,7 @@ export function toSubpageLayoutProps(
       .map((section) => ({
         title: section.title,
         bulletStyle: section.bulletStyle ?? DEFAULT_BULLET_STYLE,
+        renderAfterRealizacje: section.renderAfterRealizacje ?? false,
         items: (section.items ?? [])
           .filter((item): item is typeof item & { text: NonNullable<typeof item.text> } => Boolean(item.text))
           .map((item) => ({ text: item.text })),

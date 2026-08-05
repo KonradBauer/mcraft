@@ -60,8 +60,22 @@ describe('toSubpageLayoutProps', () => {
     expect(result.additionalSections?.[0]).toEqual({
       title: 'Jak przygotować zapytanie?',
       bulletStyle: DEFAULT_BULLET_STYLE,
+      renderAfterRealizacje: false,
       items: [{ text: text('rodzaj konstrukcji') }, { text: text('rysunki lub szkice') }],
     })
+  })
+
+  it('maps renderAfterRealizacje true through, defaulting missing values to false', () => {
+    const page: ServicePage = {
+      ...BASE_PAGE,
+      additionalSections: [
+        { title: 'FAQ', renderAfterRealizacje: true, items: [{ text: text('punkt') }] },
+        { title: 'Zakres', items: [{ text: text('punkt') }] },
+      ],
+    }
+    const result = toSubpageLayoutProps(page, FALLBACK)
+    expect(result.additionalSections?.[0].renderAfterRealizacje).toBe(true)
+    expect(result.additionalSections?.[1].renderAfterRealizacje).toBe(false)
   })
 
   it('filters out additional sections that have no items', () => {

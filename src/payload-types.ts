@@ -273,6 +273,10 @@ export interface ServicePage {
    */
   slug: string;
   /**
+   * Odznacz, żeby tymczasowo ukryć tę sekcję w obszarach działalności na stronie głównej. Podstrona i dane w panelu pozostają bez zmian.
+   */
+  visibleOnHomepage?: boolean | null;
+  /**
    * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   eyebrow?: string | null;
@@ -396,6 +400,10 @@ export interface ServicePage {
               id?: string | null;
             }[]
           | null;
+        /**
+         * Domyślnie sekcja renderuje się między Zakresem a Realizacjami. Zaznacz, żeby przenieść ją niżej, między Realizacje a sekcję kontaktową.
+         */
+        renderAfterRealizacje?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -636,6 +644,7 @@ export interface StatTilesSelect<T extends boolean = true> {
  */
 export interface ServicePagesSelect<T extends boolean = true> {
   slug?: T;
+  visibleOnHomepage?: T;
   eyebrow?: T;
   title?: T;
   description?: T;
@@ -667,6 +676,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
               text?: T;
               id?: T;
             };
+        renderAfterRealizacje?: T;
         id?: T;
       };
   ctaHeader?: T;

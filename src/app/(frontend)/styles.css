@@ -132,6 +132,11 @@ img {
   font-style: italic;
   margin: 1em 0;
 }
+.prose-mcraft-list blockquote {
+  border-left: none;
+  padding-left: 0;
+  margin: 0;
+}
 
 @keyframes marquee {
   from { transform: translateX(0); }

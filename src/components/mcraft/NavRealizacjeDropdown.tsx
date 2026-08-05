@@ -7,12 +7,13 @@ import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 interface NavRealizacjeDropdownProps {
   triggerClass: string
   dict: Dictionary
+  areas?: { href: string; label: string }[]
 }
 
-export function NavRealizacjeDropdown({ triggerClass, dict }: NavRealizacjeDropdownProps) {
+export function NavRealizacjeDropdown({ triggerClass, dict, areas }: NavRealizacjeDropdownProps) {
   const [open, setOpen] = useState(false)
 
-  const AREAS = [
+  const AREAS = areas ?? [
     { href: '/nadzor-spawalniczy', label: dict.areas.names.nadzorSpawalniczy },
     { href: '/meble-premium', label: dict.areas.names.meblePremium },
     { href: '/konstrukcje-stalowe', label: dict.areas.names.konstrukcjeStalowe },
