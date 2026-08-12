@@ -1,7 +1,8 @@
 import { getPayload, Payload } from 'payload'
 import config from '@/payload.config'
 import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { screen, cleanup } from '@testing-library/react'
+import { renderServerComponent } from '../helpers/renderServerComponent'
 
 const mockGet = vi.fn()
 vi.mock('next/headers', () => ({
@@ -69,7 +70,7 @@ describe('Realizacja detail page - mk-gym support', () => {
     const jsx = await RealizacjaPage({
       params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
     })
-    render(jsx)
+    await renderServerComponent(jsx)
     expect(screen.getByText('__test-mk-gym-realizacja-detail')).toBeTruthy()
   })
 
@@ -78,7 +79,7 @@ describe('Realizacja detail page - mk-gym support', () => {
     const jsx = await RealizacjaPage({
       params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
     })
-    render(jsx)
+    await renderServerComponent(jsx)
     const backLink = screen.getByText('MK Gym').closest('a')
     expect(backLink?.getAttribute('href')).toBe('/mk-gym')
   })
@@ -88,7 +89,7 @@ describe('Realizacja detail page - mk-gym support', () => {
     const jsx = await RealizacjaPage({
       params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-mk-gym-realizacja-detail' }),
     })
-    render(jsx)
+    await renderServerComponent(jsx)
 
     // Desktop topbar logo + MobileNav overlay header logo - both should be present.
     const logos = screen.getAllByRole('img', { name: 'MK Gym' })
@@ -117,11 +118,10 @@ describe('Realizacja detail page - mk-gym support', () => {
 
   it('still returns notFound() for a serviceSlug outside the allowed list (regression)', async () => {
     const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
-    await expect(
-      RealizacjaPage({
-        params: Promise.resolve({ serviceSlug: 'nieistniejacy-obszar', slug: '__test-mk-gym-realizacja-detail' }),
-      }),
-    ).rejects.toThrow()
+    const jsx = await RealizacjaPage({
+      params: Promise.resolve({ serviceSlug: 'nieistniejacy-obszar', slug: '__test-mk-gym-realizacja-detail' }),
+    })
+    await expect(renderServerComponent(jsx)).rejects.toThrow()
   })
 })
 
@@ -161,7 +161,7 @@ describe('Realizacja detail page - meble-premium regression', () => {
     const jsx = await RealizacjaPage({
       params: Promise.resolve({ serviceSlug: 'meble-premium', slug: '__test-meble-premium-realizacja-detail' }),
     })
-    render(jsx)
+    await renderServerComponent(jsx)
 
     expect(screen.getAllByText('MCRAFT').length).toBeGreaterThan(0)
     expect(screen.getAllByRole('link', { name: 'O mnie' }).length).toBeGreaterThan(0)

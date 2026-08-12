@@ -6,10 +6,11 @@ import { pl } from '@/lib/i18n/dictionaries/pl'
 
 afterEach(cleanup)
 
-const mockRefresh = vi.fn()
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({ refresh: mockRefresh }),
-}))
+const mockReload = vi.fn()
+Object.defineProperty(window, 'location', {
+  value: { ...window.location, reload: mockReload },
+  writable: true,
+})
 
 const mockSetLocale = vi.fn().mockResolvedValue(undefined)
 vi.mock('@/lib/i18n/setLocale', () => ({
@@ -35,7 +36,9 @@ describe('LanguageSwitcher', () => {
     fireEvent.click(screen.getByText('EN'))
 
     await waitFor(() => expect(mockSetLocale).toHaveBeenCalledWith('en'))
-    await waitFor(() => expect(mockRefresh).toHaveBeenCalled())
+    // router.refresh() nie odświeżał poprawnie zawartości owiniętej w <Suspense> pod
+    // Cache Components - selectLocale robi teraz pełny window.location.reload().
+    await waitFor(() => expect(mockReload).toHaveBeenCalled())
   })
 
   it('renders without crashing when there is no ModalProvider ancestor', () => {

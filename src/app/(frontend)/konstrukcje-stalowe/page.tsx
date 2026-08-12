@@ -1,9 +1,9 @@
-export const dynamic = 'force-dynamic'
-
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { SubpageLayout } from '@/components/mcraft/SubpageLayout'
+import { PageFallback } from '@/components/mcraft/PageFallback'
 import { toSubpageLayoutProps, toRealizacjeProps } from '@/lib/servicePageData'
 import { getLocale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
@@ -36,10 +36,21 @@ const FALLBACK = {
   ],
 }
 
-export default async function KonstrukcjeStalowePage() {
-  const payload = await getPayload({ config })
+export default function KonstrukcjeStalowePage() {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <KonstrukcjeStalowePageContent />
+    </Suspense>
+  )
+}
+
+async function KonstrukcjeStalowePageContent() {
+  // getLocale() (cookies()) musi wykonać się przed getPayload() - Payload przy zimnym
+  // starcie połączenia z DB wewnętrznie odwołuje się do zegara, a Next wymaga żeby
+  // rozpoznane dynamiczne API (cookies/headers) zadziałało jako pierwsze.
   const locale = await getLocale()
   const dict = await getDictionary(locale)
+  const payload = await getPayload({ config })
   const { docs } = await payload.find({
     collection: 'service-pages',
     where: { slug: { equals: 'konstrukcje-stalowe' } },

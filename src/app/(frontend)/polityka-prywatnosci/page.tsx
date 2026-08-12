@@ -1,8 +1,10 @@
+import { Suspense } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { LanguageSwitcher } from '@/components/mcraft/LanguageSwitcher'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
+import { PageFallback } from '@/components/mcraft/PageFallback'
 import { getLocale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
 import { PolitykaPrywatnosciContentPl } from './content.pl'
@@ -21,7 +23,15 @@ export async function generateMetadata(): Promise<Metadata> {
 const wrap = 'max-w-[860px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
 
-export default async function PolitykaPrywatnosci() {
+export default function PolitykaPrywatnosci() {
+  return (
+    <Suspense fallback={<PageFallback className="bg-cream" />}>
+      <PolitykaPrywatnosciContent />
+    </Suspense>
+  )
+}
+
+async function PolitykaPrywatnosciContent() {
   const locale = await getLocale()
   const dict = await getDictionary(locale)
   const ContentComponent = locale === 'en' ? PolitykaPrywatnosciContentEn : PolitykaPrywatnosciContentPl

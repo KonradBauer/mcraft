@@ -1,7 +1,5 @@
 import Image from 'next/image'
 
-export const dynamic = 'force-static'
-
 export default function OgImagePage() {
   return (
     <div className="relative w-[1200px] h-[630px] overflow-hidden bg-ink text-light">

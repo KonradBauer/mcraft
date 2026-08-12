@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import { Barlow, Great_Vibes, Montserrat } from 'next/font/google'
 import Script from 'next/script'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { PageLoader } from '@/components/mcraft/PageLoader'
-import { getLocale, type Locale } from '@/lib/i18n/locale'
+import { DEFAULT_LOCALE, getLocale, type Locale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
 import './styles.css'
 
@@ -126,19 +126,41 @@ function buildSchemaOrg(dict: Awaited<ReturnType<typeof getDictionary>>): string
   })
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+// Locale przez cookies() blokowałby cały statyczny shell (Cache Components) - html/body renderują
+// się statycznie z domyślnym pl, a inline script koryguje `lang` przed paintem dla en (patrz
+// https://nextjs.org/docs/app/guides/preventing-flash-before-hydration).
+const LOCALE_LANG_SYNC_SCRIPT = `(function(){try{var m=document.cookie.match(/(?:^|; )locale=([^;]+)/);if(m&&m[1]==='en'){document.documentElement.lang='en'}}catch(e){}})();`
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html
+      lang={DEFAULT_LOCALE}
+      className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: LOCALE_LANG_SYNC_SCRIPT }} />
+      </head>
+      <body>
+        <Suspense fallback={null}>
+          <LocaleAwareShell />
+        </Suspense>
+        {children}
+      </body>
+    </html>
+  )
+}
+
+async function LocaleAwareShell() {
   const locale = await getLocale()
   const dict = await getDictionary(locale)
 
   return (
-    <html lang={locale} className={`${montserrat.variable} ${barlow.variable} ${greatVibes.variable}`}>
-      <body>
-        <PageLoader title={dict.modal.cv.title} />
-        {children}
-        <Script id="schema-org" type="application/ld+json">
-          {buildSchemaOrg(dict)}
-        </Script>
-      </body>
-    </html>
+    <>
+      <PageLoader title={dict.modal.cv.title} />
+      <Script id="schema-org" type="application/ld+json">
+        {buildSchemaOrg(dict)}
+      </Script>
+    </>
   )
 }

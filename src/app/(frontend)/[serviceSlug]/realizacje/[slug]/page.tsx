@@ -1,5 +1,6 @@
-export const dynamic = 'force-dynamic'
+export const instant = false
 
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -10,6 +11,7 @@ import { RichText } from '@payloadcms/richtext-lexical/react'
 import { LanguageSwitcher } from '@/components/mcraft/LanguageSwitcher'
 import { MobileNav } from '@/components/mcraft/MobileNav'
 import { NavRealizacjeDropdown } from '@/components/mcraft/NavRealizacjeDropdown'
+import { PageFallback } from '@/components/mcraft/PageFallback'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
 import { DEFAULT_LOCALE, getLocale, type Locale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
@@ -78,14 +80,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function RealizacjaPage({ params }: Props) {
+export default function RealizacjaPage({ params }: Props) {
+  return (
+    <Suspense fallback={<PageFallback />}>
+      <RealizacjaPageContent params={params} />
+    </Suspense>
+  )
+}
+
+async function RealizacjaPageContent({ params }: Props) {
+  // getLocale() (cookies()) musi wykonać się przed getPayload() - Payload przy zimnym
+  // starcie połączenia z DB wewnętrznie odwołuje się do zegara, a Next wymaga żeby
+  // rozpoznane dynamiczne API (cookies/headers/connection) zadziałało jako pierwsze.
+  const locale = await getLocale()
+  const dict = await getDictionary(locale)
   const { serviceSlug, slug } = await params
 
   if (!PORTFOLIO_PAGES.includes(serviceSlug)) notFound()
 
   const payload = await getPayload({ config })
-  const locale = await getLocale()
-  const dict = await getDictionary(locale)
 
   const isMkGym = serviceSlug === 'mk-gym'
 

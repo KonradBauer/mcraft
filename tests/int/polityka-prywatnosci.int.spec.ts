@@ -1,5 +1,6 @@
 import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { screen, cleanup } from '@testing-library/react'
+import { renderServerComponent } from '../helpers/renderServerComponent'
 
 const mockGet = vi.fn()
 vi.mock('next/headers', () => ({
@@ -20,7 +21,7 @@ describe('PolitykaPrywatnosci page', () => {
     const { default: PolitykaPrywatnosci } = await import('@/app/(frontend)/polityka-prywatnosci/page')
 
     const jsx = await PolitykaPrywatnosci()
-    render(jsx)
+    await renderServerComponent(jsx)
 
     expect(screen.getByRole('heading', { name: 'Polityka prywatności' })).toBeTruthy()
     expect(screen.getByText('1. Administrator danych')).toBeTruthy()
@@ -33,7 +34,7 @@ describe('PolitykaPrywatnosci page', () => {
     const { default: PolitykaPrywatnosci } = await import('@/app/(frontend)/polityka-prywatnosci/page')
 
     const jsx = await PolitykaPrywatnosci()
-    render(jsx)
+    await renderServerComponent(jsx)
 
     expect(screen.getByRole('heading', { name: 'Privacy Policy' })).toBeTruthy()
     expect(screen.getByText('1. Data Controller')).toBeTruthy()
