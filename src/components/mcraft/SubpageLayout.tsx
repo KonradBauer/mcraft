@@ -25,13 +25,13 @@ function Bullet({ style, index }: { style: BulletStyle; index: number }) {
   switch (style) {
     case 'check':
       return (
-        <svg viewBox="0 0 24 24" className="w-[15px] h-[15px] mt-[6px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 24 24" className="w-[15px] h-[15px] mb-[2px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M4 12l5 5L20 6" />
         </svg>
       )
     case 'step-number':
       return (
-        <span className="font-montserrat text-[12px] font-bold tracking-[0.04em] text-accent mt-[3px] flex-none w-[20px]">
+        <span className="font-montserrat text-[12px] font-bold tracking-[0.04em] text-accent flex-none w-[20px]">
           {String(index + 1).padStart(2, '0')}
         </span>
       )
@@ -39,19 +39,19 @@ function Bullet({ style, index }: { style: BulletStyle; index: number }) {
       return <span className="w-[2px] self-stretch bg-accent flex-none" />
     case 'arrow':
       return (
-        <svg viewBox="0 0 20 12" className="w-[18px] h-[11px] mt-[8px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 20 12" className="w-[18px] h-[11px] mb-[3px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
           <path d="M1 6h15M11 1l5 5-5 5" />
         </svg>
       )
     case 'plus':
       return (
-        <svg viewBox="0 0 16 16" className="w-[13px] h-[13px] mt-[8px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+        <svg viewBox="0 0 16 16" className="w-[13px] h-[13px] mb-[2px] flex-none text-accent" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
           <path d="M8 1v14M1 8h14" />
         </svg>
       )
     case 'short-line':
     default:
-      return <span className="w-[9px] h-[2px] bg-accent mt-[11px] flex-none" />
+      return <span className="w-[9px] h-[2px] bg-accent mb-[6px] flex-none" />
   }
 }
 
@@ -61,7 +61,7 @@ function BulletList({ title, items, bulletStyle }: { title: string; items: { tex
       <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{title}</h2>
       <ul className="flex flex-col gap-4">
         {items.map((item, i) => (
-          <li key={i} className="flex items-start gap-4">
+          <li key={i} className="flex items-baseline gap-4">
             <Bullet style={bulletStyle} index={i} />
             <div className="prose-mcraft prose-mcraft-list flex-1">
               <RichText data={item.text} />
