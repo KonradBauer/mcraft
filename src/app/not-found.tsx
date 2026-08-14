@@ -1,4 +1,5 @@
 ﻿import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import { Barlow, Montserrat } from 'next/font/google'
 import Link from 'next/link'
 import { DEFAULT_LOCALE, getLocale } from '@/lib/i18n/locale'
@@ -20,8 +21,10 @@ const barlow = Barlow({
   weight: ['300', '400', '500', '600'],
 })
 
-export const metadata = {
-  title: '404 - Nie znaleziono strony | MCRAFT',
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getLocale()
+  const dict = await getDictionary(locale)
+  return { title: dict.notFound.metaTitle }
 }
 
 // Ten route ma własny root <html> (poza (frontend)/layout.tsx). Ten sam wzorzec co w

@@ -39,11 +39,5 @@ export const BioModal: GlobalConfig = {
         },
       ],
     },
-    {
-      name: 'bioFile',
-      label: 'Plik życiorysu (PDF)',
-      type: 'upload',
-      relationTo: 'media',
-    },
   ],
 }

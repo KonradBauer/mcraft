@@ -32,14 +32,5 @@ export const HeroSection: GlobalConfig = {
         description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
       },
     },
-    {
-      name: 'description',
-      label: 'Opis (paragraf pod podtytułem)',
-      type: 'textarea',
-      localized: true,
-      admin: {
-        description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
-      },
-    },
   ],
 }

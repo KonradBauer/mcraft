@@ -773,10 +773,6 @@ export interface HeroSection {
    * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   subtitle?: string | null;
-  /**
-   * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
-   */
-  description?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -893,7 +889,6 @@ export interface BioModal {
         id?: string | null;
       }[]
     | null;
-  bioFile?: (string | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -905,7 +900,6 @@ export interface HeroSectionSelect<T extends boolean = true> {
   backgroundImage?: T;
   personPhoto?: T;
   subtitle?: T;
-  description?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -975,7 +969,6 @@ export interface BioModalSelect<T extends boolean = true> {
         content?: T;
         id?: T;
       };
-  bioFile?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
