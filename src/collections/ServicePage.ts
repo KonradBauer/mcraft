@@ -62,6 +62,7 @@ export const ServicePage: CollectionConfig = {
       defaultValue: true,
       admin: {
         description: 'Odznacz, żeby tymczasowo ukryć tę sekcję w obszarach działalności na stronie głównej. Podstrona i dane w panelu pozostają bez zmian.',
+        condition: (data) => data?.slug !== 'mk-gym',
       },
     },
     {
@@ -294,6 +295,7 @@ export const ServicePage: CollectionConfig = {
       relationTo: 'media',
       admin: {
         description: 'Jeśli puste — wyświetlana jest ikona SVG',
+        condition: (data) => data?.slug !== 'mk-gym',
       },
     },
   ],
