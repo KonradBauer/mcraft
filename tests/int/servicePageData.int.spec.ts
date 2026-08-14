@@ -91,6 +91,17 @@ describe('toSubpageLayoutProps', () => {
     expect(result.additionalSections?.[0].title).toBe('Wypełniona sekcja')
   })
 
+  it('maps hideScopeSection true through', () => {
+    const page: ServicePage = { ...BASE_PAGE, hideScopeSection: true }
+    const result = toSubpageLayoutProps(page, FALLBACK)
+    expect(result.hideScopeSection).toBe(true)
+  })
+
+  it('defaults hideScopeSection to false when missing', () => {
+    const result = toSubpageLayoutProps(BASE_PAGE, FALLBACK)
+    expect(result.hideScopeSection).toBe(false)
+  })
+
   it('returns fallback unchanged when page is undefined', () => {
     const result = toSubpageLayoutProps(undefined, FALLBACK)
     expect(result).toBe(FALLBACK)

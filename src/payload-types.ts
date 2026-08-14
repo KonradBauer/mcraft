@@ -294,6 +294,7 @@ export interface ServicePage {
           | (
               | 'Award'
               | 'BadgeCheck'
+              | 'Barbell'
               | 'Box'
               | 'Briefcase'
               | 'Calendar'
@@ -303,6 +304,7 @@ export interface ServicePage {
               | 'Clock'
               | 'Cpu'
               | 'Droplets'
+              | 'Dumbbell'
               | 'Eye'
               | 'Factory'
               | 'FileSearch'
@@ -315,17 +317,21 @@ export interface ServicePage {
               | 'Layers'
               | 'Microscope'
               | 'PenTool'
+              | 'Rows3'
               | 'Ruler'
               | 'Search'
               | 'Settings2'
               | 'ShieldCheck'
+              | 'SlidersHorizontal'
               | 'Star'
               | 'Timer'
               | 'Train'
               | 'TrendingUp'
+              | 'Truck'
               | 'UserCheck'
               | 'Users'
               | 'Warehouse'
+              | 'Weight'
               | 'Wrench'
               | 'Zap'
             )
@@ -345,6 +351,10 @@ export interface ServicePage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Zaznacz, żeby ukryć sekcję Zakres na podstronie bez kasowania listy powyżej. Dane pozostają zapisane w panelu.
+   */
+  hideScopeSection?: boolean | null;
   /**
    * Renderowana jako pierwsza sekcja treści, przed Zakresem. Puste punkty listy - sekcja się nie wyświetla. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
@@ -657,6 +667,7 @@ export interface ServicePagesSelect<T extends boolean = true> {
         modalDescription?: T;
         id?: T;
       };
+  hideScopeSection?: T;
   audienceTitle?: T;
   audienceBulletStyle?: T;
   audienceItems?:

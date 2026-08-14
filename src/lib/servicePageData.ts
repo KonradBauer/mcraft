@@ -53,6 +53,7 @@ export function toSubpageLayoutProps(
       }))
       .filter((section) => section.items.length > 0),
     ctaLabel: page.ctaHeader ?? DEFAULT_CTA_HEADER,
+    hideScopeSection: page.hideScopeSection ?? false,
   }
 }
 

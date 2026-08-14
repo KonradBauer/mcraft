@@ -54,6 +54,28 @@ describe('SubpageLayout', () => {
     expect(screen.getByRole('heading', { name: 'Zakres' })).toBeTruthy()
   })
 
+  it('does not render the "Zakres" heading when hideScopeSection is true', () => {
+    render(<SubpageLayout {...BASE_PROPS} hideScopeSection />)
+    expect(screen.queryByRole('heading', { name: 'Zakres' })).toBeNull()
+  })
+
+  it('renders the "Zakres" heading when hideScopeSection is false or omitted', () => {
+    render(<SubpageLayout {...BASE_PROPS} hideScopeSection={false} />)
+    expect(screen.getByRole('heading', { name: 'Zakres' })).toBeTruthy()
+  })
+
+  it('uses realizacjeTitle as the "Realizacje" heading text when provided', () => {
+    render(
+      <SubpageLayout
+        {...BASE_PROPS}
+        realizacje={[{ href: '/mk-gym/realizacje/test', title: 'Test', thumbnailUrl: null }]}
+        realizacjeTitle="Oferta"
+      />,
+    )
+    expect(screen.getByRole('heading', { name: 'Oferta' })).toBeTruthy()
+    expect(screen.queryByRole('heading', { name: 'Realizacje' })).toBeNull()
+  })
+
   it('renders English nav/CTA labels instead of Polish when given the EN dictionary', () => {
     render(<SubpageLayout {...BASE_PROPS} dict={en} />)
     expect(screen.getByRole('heading', { name: 'Scope' })).toBeTruthy()

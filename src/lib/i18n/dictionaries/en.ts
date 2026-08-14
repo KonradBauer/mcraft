@@ -148,5 +148,6 @@ export const en = {
   },
   mkGym: {
     backToMcraft: 'Back to mkcraft.com.pl',
+    offerTitle: 'Offer',
   },
 } satisfies Dictionary

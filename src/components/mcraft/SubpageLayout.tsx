@@ -82,6 +82,8 @@ export interface SubpageLayoutProps {
   audience?: { title: string; bulletStyle: BulletStyle; items: { text: DefaultTypedEditorState }[] } | null
   additionalSections?: { title: string; bulletStyle: BulletStyle; renderAfterRealizacje: boolean; items: { text: DefaultTypedEditorState }[] }[]
   realizacje?: { href: string; title: string; thumbnailUrl: string | null }[]
+  realizacjeTitle?: string
+  hideScopeSection?: boolean
   ctaLabel?: string
   locale?: Locale
   dict: Dictionary
@@ -102,6 +104,8 @@ export function SubpageLayout({
   audience,
   additionalSections,
   realizacje,
+  realizacjeTitle,
+  hideScopeSection = false,
   ctaLabel,
   locale = 'pl',
   dict,
@@ -190,6 +194,7 @@ export function SubpageLayout({
             <BulletList title={audience.title} items={audience.items} bulletStyle={audience.bulletStyle} />
           )}
 
+          {!hideScopeSection && (
           <div>
             <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{dict.subpage.scopeTitle}</h2>
             <div className="flex flex-col gap-[18px]">
@@ -224,6 +229,7 @@ export function SubpageLayout({
               })}
             </div>
           </div>
+          )}
 
           {additionalSections
             ?.filter((section) => !section.renderAfterRealizacje)
@@ -233,7 +239,7 @@ export function SubpageLayout({
 
           {realizacje && realizacje.length > 0 && (
             <div>
-              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{dict.subpage.realizationsTitle}</h2>
+              <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{realizacjeTitle ?? dict.subpage.realizationsTitle}</h2>
               <div className="grid grid-cols-3 gap-[18px] max-[980px]:grid-cols-2 max-[560px]:grid-cols-1">
                 {realizacje.map((item, i) => (
                   <Link key={i} href={item.href} className="group block relative w-full h-[220px] overflow-hidden">

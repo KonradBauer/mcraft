@@ -146,6 +146,7 @@ export const pl = {
   },
   mkGym: {
     backToMcraft: 'Powrót na mkcraft.com.pl',
+    offerTitle: 'Oferta',
   },
 }
 

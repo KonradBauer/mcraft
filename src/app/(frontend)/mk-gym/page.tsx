@@ -73,6 +73,7 @@ async function MkGymPageContent() {
     <SubpageLayout
       {...toSubpageLayoutProps(servicePage, FALLBACK)}
       realizacje={toRealizacjeProps(portfolioDocs, 'mk-gym')}
+      realizacjeTitle={dict.mkGym.offerTitle}
       locale={locale}
       dict={dict}
       logoImageUrl="/mk-gym-logo.png"
