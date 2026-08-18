@@ -85,7 +85,7 @@ export function RealizacjaGaleria({ images, dict }: Props) {
               onClick={() => setActiveIndex(i)}
               className={`relative flex-none w-[68px] h-[50px] overflow-hidden bg-[#f0ede7] transition-opacity duration-200 ${
                 i === activeIndex
-                  ? 'outline outline-2 outline-accent opacity-100'
+                  ? 'ring-2 ring-inset ring-accent opacity-100'
                   : 'opacity-50 hover:opacity-90'
               }`}
               aria-label={`${dict.gallery.photoAriaLabel} ${i + 1}`}
@@ -183,7 +183,7 @@ export function RealizacjaGaleria({ images, dict }: Props) {
                   key={i}
                   onClick={(e) => { e.stopPropagation(); setActive(i) }}
                   className={`relative w-[52px] h-[38px] overflow-hidden flex-none bg-black/50 transition-opacity duration-200 ${
-                    i === activeIndex ? 'opacity-100 outline outline-2 outline-accent' : 'opacity-35 hover:opacity-70'
+                    i === activeIndex ? 'opacity-100 ring-2 ring-inset ring-accent' : 'opacity-35 hover:opacity-70'
                   }`}
                   aria-label={`${dict.gallery.photoAriaLabel} ${i + 1}`}
                 >
