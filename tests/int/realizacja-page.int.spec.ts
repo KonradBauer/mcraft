@@ -125,6 +125,89 @@ describe('Realizacja detail page - mk-gym support', () => {
   })
 })
 
+describe('Realizacja detail page - additionalGalleries (multiple groups)', () => {
+  let servicePageId: string
+  let mediaId: string
+  let multiGroupPortfolioId: string | undefined
+
+  beforeAll(async () => {
+    mockGet.mockReturnValue({ value: 'pl' })
+    const payloadConfig = await config
+    payload = await getPayload({ config: payloadConfig })
+
+    const { docs } = await payload.find({
+      collection: 'service-pages',
+      where: { slug: { equals: 'mk-gym' } },
+      limit: 1,
+      overrideAccess: true,
+    })
+    servicePageId = docs[0]
+      ? docs[0].id
+      : (
+          await payload.create({
+            collection: 'service-pages',
+            data: { slug: 'mk-gym', title: 'MK Gym' },
+            overrideAccess: true,
+          })
+        ).id
+
+    const onePixelPng = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+      'base64',
+    )
+    const media = await payload.create({
+      collection: 'media',
+      data: { alt: '__test-additional-gallery-media' },
+      file: { data: onePixelPng, mimetype: 'image/png', name: 'test-pixel.png', size: onePixelPng.length },
+    })
+    mediaId = media.id
+
+    const created = await payload.create({
+      collection: 'portfolio-projects',
+      data: {
+        title: '__test-multi-gallery-realizacja',
+        slug: '__test-multi-gallery-realizacja',
+        servicePage: servicePageId,
+        additionalGalleries: [
+          { title: '__test-group-akcesoria', images: [{ image: mediaId, alt: '__test-akcesoria-photo' }] },
+          { title: '__test-group-empty', images: [] },
+        ],
+      },
+    })
+    multiGroupPortfolioId = created.id
+  })
+
+  afterAll(async () => {
+    if (multiGroupPortfolioId) {
+      await payload.delete({ collection: 'portfolio-projects', id: multiGroupPortfolioId })
+    }
+    if (mediaId) {
+      await payload.delete({ collection: 'media', id: mediaId })
+    }
+  })
+
+  it('renders a group title and its photo for a group that has images', async () => {
+    const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const jsx = await RealizacjaPage({
+      params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-multi-gallery-realizacja' }),
+    })
+    await renderServerComponent(jsx)
+
+    expect(screen.getByRole('heading', { name: '__test-group-akcesoria' })).toBeTruthy()
+    expect(screen.getByAltText('__test-akcesoria-photo')).toBeTruthy()
+  })
+
+  it('does not render a title heading or gallery for a group with no images', async () => {
+    const { default: RealizacjaPage } = await import('@/app/(frontend)/[serviceSlug]/realizacje/[slug]/page')
+    const jsx = await RealizacjaPage({
+      params: Promise.resolve({ serviceSlug: 'mk-gym', slug: '__test-multi-gallery-realizacja' }),
+    })
+    await renderServerComponent(jsx)
+
+    expect(screen.queryByRole('heading', { name: '__test-group-empty' })).toBeNull()
+  })
+})
+
 describe('Realizacja detail page - meble-premium regression', () => {
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })

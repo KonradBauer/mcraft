@@ -483,6 +483,46 @@ export interface PortfolioProject {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Osobne grupy zdjęć z własnym tytułem i opisem - np. dla akcesoriów, wariantów itp. Renderowane pod głównym opisem i galerią powyżej, w kolejności jak tutaj. Dowolna liczba grup.
+   */
+  additionalGalleries?:
+    | {
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        title?: string | null;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        images?:
+          | {
+              image: string | Media;
+              /**
+               * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+               */
+              alt?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -712,6 +752,20 @@ export interface PortfolioProjectsSelect<T extends boolean = true> {
     | {
         image?: T;
         alt?: T;
+        id?: T;
+      };
+  additionalGalleries?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        images?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              id?: T;
+            };
         id?: T;
       };
   order?: T;
