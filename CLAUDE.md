@@ -5,22 +5,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This project uses the Payload CMS skill at `.claude/skills/payload/`.
 Start with `.claude/skills/payload/SKILL.md` for a quick reference, then see `.claude/skills/payload/reference/` for detailed docs.
 
-## Warsztat AI (skills/agents/rules)
-
-Osobisty zestaw skilli, agentów i reguł jest w prywatnym repo `KonradBauer/ai-workshop`. Żeby doinstalować go w nowym projekcie:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/KonradBauer/ai-workshop/main/install.sh | bash
-```
-
-PowerShell:
-
-```powershell
-iwr https://raw.githubusercontent.com/KonradBauer/ai-workshop/main/install.ps1 -UseBasicParsing | iex
-```
-
-Skrypt ściąga `.claude/skills`, `.claude/agents`, `.claude/rules` z repo do `.claude/` w bieżącym katalogu (nadpisuje pliki o tych samych nazwach - bezpieczne do ponownego odpalenia jako update).
-
 ---
 
 ## Project
