@@ -143,3 +143,71 @@ EOF
 ```
 
 Jesli `mongosh` nie istnieje w kontenerze `mcraft-mongo-1` (blad "command not found") - potrzebny fallback na legacy `mongo` shell (inna skladnia, bez async/await).
+
+# Migracja portfolio-projects -> service-pages.realizacje
+
+Przenosi realizacje MK Gym z osobnej kolekcji `portfolio-projects` do zagniezdzonego pola
+`realizacje` w `service-pages` (potrzebne zeby dzialalo natywne Collapse All + drag-drop
+w adminie). TYLKO mk-gym - meble-premium i konstrukcje-stalowe zostaja na starej kolekcji.
+Port `scripts/migrate-portfolio-to-realizacje.ts` + `scripts/lib/portfolio-to-realizacje-helpers.ts`.
+
+Niedestrukcyjna - stara kolekcja `portfolio-projects` NIE jest kasowana, tylko kopiowana.
+Idempotentna - bezpieczna do wielokrotnego odpalenia (za kazdym razem nadpisuje `realizacje`
+od nowa na podstawie aktualnego stanu `portfolio-projects`).
+
+Odpal w SSH na VPS (`root@vmi2959994`) PO wdrozeniu tego brancha na produkcje, PRZED
+przelaczeniem ruchu na nowy kod frontendu (frontend czyta juz tylko z `service-pages.realizacje`):
+
+```bash
+docker exec -i mcraft-mongo-1 mongosh mcraft <<'EOF'
+(async function () {
+  const PORTFOLIO_SERVICE_SLUGS = ['mk-gym'];
+
+  function toRealizacjaRow(portfolioDoc) {
+    return {
+      id: new ObjectId().toHexString(),
+      title: portfolioDoc.title ?? null,
+      slug: portfolioDoc.slug ?? '',
+      description: portfolioDoc.description ?? null,
+      thumbnail: portfolioDoc.thumbnail ?? null,
+      images: portfolioDoc.images ?? [],
+      additionalGalleries: portfolioDoc.additionalGalleries ?? [],
+    };
+  }
+
+  function sortByOrder(docs) {
+    return [...docs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  }
+
+  for (const slug of PORTFOLIO_SERVICE_SLUGS) {
+    const servicePageDoc = await db.getCollection('service-pages').findOne({ slug });
+    if (!servicePageDoc) {
+      print('  ' + slug + ': brak dokumentu service-pages, pomijam');
+      continue;
+    }
+
+    const portfolioDocs = await db.getCollection('portfolio-projects')
+      .find({ servicePage: servicePageDoc._id })
+      .toArray();
+
+    const realizacje = sortByOrder(portfolioDocs).map(toRealizacjaRow);
+
+    await db.getCollection('service-pages').updateOne(
+      { _id: servicePageDoc._id },
+      { $set: { realizacje } },
+    );
+    print('  ' + slug + ': ' + realizacje.length + ' realizacji zmigrowanych');
+  }
+
+  print('Migracja portfolio-projects -> service-pages.realizacje zakonczona.');
+  print('Stara kolekcja portfolio-projects NIE zostala usunieta (recznie w kolejnym kroku).');
+})()
+EOF
+```
+
+Weryfikacja po migracji (sprawdz ze liczba realizacji sie zgadza):
+
+```javascript
+db.getCollection('portfolio-projects').countDocuments()
+db.getCollection('service-pages').find({}, { slug: 1, 'realizacje.title': 1 }).toArray()
+```

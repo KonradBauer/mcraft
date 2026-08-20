@@ -418,6 +418,91 @@ export interface ServicePage {
       }[]
     | null;
   /**
+   * Realizacje wyświetlane w siatce na tej podstronie, w kolejności jak tutaj. Przeciągnij za uchwyt żeby zmienić kolejność.
+   */
+  realizacje?:
+    | {
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        title?: string | null;
+        /**
+         * Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola) - jeśli puste, używany jest polski slug.
+         */
+        slug: string;
+        /**
+         * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+         */
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        thumbnail?: (string | null) | Media;
+        images?:
+          | {
+              image: string | Media;
+              /**
+               * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+               */
+              alt?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Osobne grupy zdjęć z własnym tytułem i opisem - np. dla akcesoriów, wariantów itp. Renderowane pod głównym opisem i galerią powyżej, w kolejności jak tutaj. Dowolna liczba grup.
+         */
+        additionalGalleries?:
+          | {
+              /**
+               * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+               */
+              title?: string | null;
+              /**
+               * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+               */
+              description?: {
+                root: {
+                  type: string;
+                  children: {
+                    type: any;
+                    version: number;
+                    [k: string]: unknown;
+                  }[];
+                  direction: ('ltr' | 'rtl') | null;
+                  format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                  indent: number;
+                  version: number;
+                };
+                [k: string]: unknown;
+              } | null;
+              images?:
+                | {
+                    image: string | Media;
+                    /**
+                     * Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
+                     */
+                    alt?: string | null;
+                    id?: string | null;
+                  }[]
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * Tekst nad przyciskiem "Skontaktuj się" na dole podstrony. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).
    */
   ctaHeader?: string | null;
@@ -728,6 +813,36 @@ export interface ServicePagesSelect<T extends boolean = true> {
               id?: T;
             };
         renderAfterRealizacje?: T;
+        id?: T;
+      };
+  realizacje?:
+    | T
+    | {
+        title?: T;
+        slug?: T;
+        description?: T;
+        thumbnail?: T;
+        images?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              id?: T;
+            };
+        additionalGalleries?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              images?:
+                | T
+                | {
+                    image?: T;
+                    alt?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
         id?: T;
       };
   ctaHeader?: T;

@@ -1,6 +1,12 @@
-import type { Media, PortfolioProject, ServicePage } from '@/payload-types'
+import type { Media, ServicePage } from '@/payload-types'
 import type { SubpageLayoutProps } from '@/components/mcraft/SubpageLayout'
 import { DEFAULT_BULLET_STYLE } from '@/lib/bulletStyles'
+
+// Strukturalny typ zamiast konkretnego wygenerowanego typu - toRealizacjeProps
+// przyjmuje zarówno stare PortfolioProject[] (meble-premium, konstrukcje-stalowe),
+// jak i nowe ServicePage['realizacje'] (mk-gym), bo oba mają identyczny kształt
+// pól używanych tutaj.
+type RealizacjaLike = { title?: string | null; slug: string; thumbnail?: string | Media | null }
 
 const DEFAULT_CTA_HEADER = 'Zainteresowany współpracą?'
 
@@ -58,7 +64,7 @@ export function toSubpageLayoutProps(
 }
 
 export function toRealizacjeProps(
-  items: PortfolioProject[],
+  items: RealizacjaLike[],
   serviceSlug: string,
 ): NonNullable<SubpageLayoutProps['realizacje']> {
   return items
