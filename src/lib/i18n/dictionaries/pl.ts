@@ -147,6 +147,15 @@ export const pl = {
   mkGym: {
     backToMcraft: 'Powrót na mkcraft.com.pl',
     offerTitle: 'Oferta',
+    contactTitle: 'Skontaktuj się z nami',
+    contactNamePlaceholder: 'Imię i nazwisko',
+    contactEmailPlaceholder: 'Email',
+    contactPhonePlaceholder: 'Telefon (opcjonalnie)',
+    contactMessagePlaceholder: 'Wiadomość',
+    contactSubmit: 'Wyślij wiadomość',
+    contactSubmitting: 'Wysyłanie...',
+    contactSuccess: 'Dziękujemy! Wiadomość została wysłana.',
+    contactError: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.',
   },
 }
 
