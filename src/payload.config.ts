@@ -11,6 +11,7 @@ import { Documents } from './collections/Documents'
 import { StatTile } from './collections/StatTile'
 import { ServicePage } from './collections/ServicePage'
 import { Portfolio } from './collections/Portfolio'
+import { ContactSubmission } from './collections/ContactSubmission'
 import { HeroSection } from './globals/HeroSection'
 import { AboutSection } from './globals/AboutSection'
 import { CvModal } from './globals/CvModal'
@@ -33,7 +34,7 @@ export default buildConfig({
       },
     },
   },
-  collections: [Users, Media, Documents, StatTile, ServicePage, Portfolio],
+  collections: [Users, Media, Documents, StatTile, ServicePage, Portfolio, ContactSubmission],
   globals: [HeroSection, AboutSection, CvModal, BioModal],
   localization: {
     locales: [

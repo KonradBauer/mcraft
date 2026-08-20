@@ -149,5 +149,14 @@ export const en = {
   mkGym: {
     backToMcraft: 'Back to mkcraft.com.pl',
     offerTitle: 'Offer',
+    contactTitle: 'Get in touch',
+    contactNamePlaceholder: 'Full name',
+    contactEmailPlaceholder: 'Email',
+    contactPhonePlaceholder: 'Phone (optional)',
+    contactMessagePlaceholder: 'Message',
+    contactSubmit: 'Send message',
+    contactSubmitting: 'Sending...',
+    contactSuccess: 'Thank you! Your message has been sent.',
+    contactError: 'Failed to send the message. Please try again.',
   },
 } satisfies Dictionary

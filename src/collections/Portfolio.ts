@@ -105,6 +105,68 @@ export const Portfolio: CollectionConfig = {
       ],
     },
     {
+      name: 'additionalGalleries',
+      label: 'Dodatkowe galerie z opisem',
+      type: 'array',
+      admin: {
+        description: 'Osobne grupy zdjęć z własnym tytułem i opisem - np. dla akcesoriów, wariantów itp. Renderowane pod głównym opisem i galerią powyżej, w kolejności jak tutaj. Dowolna liczba grup.',
+        components: {
+          RowLabel: '@/components/admin/AdditionalSectionRowLabel',
+        },
+      },
+      fields: [
+        {
+          name: 'title',
+          label: 'Tytuł grupy (np. Akcesoria)',
+          type: 'text',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
+        },
+        {
+          name: 'description',
+          label: 'Opis grupy',
+          type: 'richText',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
+          hooks: {
+            afterRead: [
+              ({ value }) => {
+                if (typeof value === 'string') return stringToLexical(value)
+                return value
+              },
+            ],
+          },
+        },
+        {
+          name: 'images',
+          label: 'Zdjęcia grupy',
+          type: 'array',
+          fields: [
+            {
+              name: 'image',
+              label: 'Zdjęcie',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'alt',
+              label: 'Opis zdjęcia (dostępność)',
+              type: 'text',
+              localized: true,
+              admin: {
+                description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'order',
       label: 'Kolejność wyświetlania (mniejsza = wyżej)',
       type: 'number',

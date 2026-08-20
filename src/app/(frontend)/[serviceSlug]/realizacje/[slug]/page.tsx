@@ -55,6 +55,17 @@ function resolveUrl(field: string | Media | null | undefined): string | null {
   return field.url ?? null
 }
 
+function toGalleryImages(
+  images: { image: string | Media | null | undefined; alt?: string | null }[] | null | undefined,
+  fallbackAlt: string,
+): { url: string; alt: string }[] {
+  return (images ?? []).reduce<{ url: string; alt: string }[]>((acc, g) => {
+    const url = resolveUrl(g.image)
+    if (url) acc.push({ url, alt: g.alt ?? fallbackAlt })
+    return acc
+  }, [])
+}
+
 type Props = {
   params: Promise<{ serviceSlug: string; slug: string }>
 }
@@ -127,11 +138,15 @@ async function RealizacjaPageContent({ params }: Props) {
 
   if (!sp || sp.slug !== serviceSlug) notFound()
 
-  const galleryImages = (item.images ?? []).reduce<{ url: string; alt: string }[]>((acc, g) => {
-    const url = resolveUrl(g.image)
-    if (url) acc.push({ url, alt: g.alt ?? item.title ?? '' })
-    return acc
-  }, [])
+  const galleryImages = toGalleryImages(item.images, item.title ?? '')
+
+  const additionalGalleryGroups = (item.additionalGalleries ?? [])
+    .map((group) => ({
+      title: group.title ?? null,
+      description: group.description ?? null,
+      images: toGalleryImages(group.images, group.title ?? item.title ?? ''),
+    }))
+    .filter((group) => group.images.length > 0)
 
   return (
     <>
@@ -215,6 +230,34 @@ async function RealizacjaPageContent({ params }: Props) {
               )}
             </div>
           </div>
+
+          {additionalGalleryGroups.map((group, i) => {
+            // Naprzemienny układ: liczymy główną galerię wyżej jako "pierwszą" (normalny układ),
+            // więc pierwsza dodatkowa grupa (i=0) jest "drugą" i ma układ odwrócony, kolejna znów normalny, itd.
+            const isReversed = i % 2 === 0
+            return (
+              <div key={i} className="mt-20 pt-20 border-t border-[#e8e3d9]">
+                {group.title && (
+                  <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-8">
+                    {group.title}
+                  </h2>
+                )}
+                <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
+                  <div className={`min-w-0 overflow-hidden max-[980px]:order-1 ${isReversed ? 'order-2' : 'order-1'}`}>
+                    <RealizacjaGaleria images={group.images} dict={dict} />
+                  </div>
+                  <div className={`max-[980px]:order-2 ${isReversed ? 'order-1' : 'order-2'}`}>
+                    {group.description && (
+                      <RichText
+                        data={group.description}
+                        className="prose-mcraft"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
+          })}
         </div>
       </section>
 
