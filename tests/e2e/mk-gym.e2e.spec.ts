@@ -98,7 +98,7 @@ test.describe('MK Gym - hidden page', () => {
 test.describe('MK Gym - realizacja detail page', () => {
   const slug = '__e2e-test-mk-gym-realizacja'
   let payload: Payload
-  let portfolioId: string | undefined
+  let servicePageId: string
 
   test.beforeAll(async () => {
     const payloadConfig = await config
@@ -109,19 +109,25 @@ test.describe('MK Gym - realizacja detail page', () => {
       where: { slug: { equals: 'mk-gym' } },
       limit: 1,
     })
-    const servicePageId = docs[0].id
+    servicePageId = docs[0].id
 
-    const created = await payload.create({
-      collection: 'portfolio-projects',
-      data: { title: 'E2E Test Realizacja', slug, servicePage: servicePageId },
+    const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
+    await payload.update({
+      collection: 'service-pages',
+      id: servicePageId,
+      data: { realizacje: [...(doc.realizacje ?? []), { title: 'E2E Test Realizacja', slug }] },
+      overrideAccess: true,
     })
-    portfolioId = created.id
   })
 
   test.afterAll(async () => {
-    if (portfolioId) {
-      await payload.delete({ collection: 'portfolio-projects', id: portfolioId })
-    }
+    const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
+    await payload.update({
+      collection: 'service-pages',
+      id: servicePageId,
+      data: { realizacje: (doc.realizacje ?? []).filter((r) => r.slug !== slug) },
+      overrideAccess: true,
+    })
   })
 
   test('renders directly and its breadcrumb back link points to /mk-gym, not the homepage', async ({ page }) => {

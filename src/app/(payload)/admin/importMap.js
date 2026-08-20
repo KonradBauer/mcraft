@@ -27,6 +27,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { default as default_bca410e0b5eae56cbb8b0c2015ab832c } from '@/components/admin/RichTextItemRowLabel'
 import { default as default_5e01fe546beacdad6121ba8f93a53edc } from '@/components/admin/AdditionalSectionRowLabel'
 import { default as default_6584cd37ebc58f906dbf3d61f1facc63 } from '@/components/admin/BulkImageUpload'
+import { default as default_668e055741c8ffff27f6be52d2e54afb } from '@/components/admin/RealizacjaRowLabel'
 import { default as default_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { default as default_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -62,6 +63,7 @@ export const importMap = {
   "@/components/admin/RichTextItemRowLabel#default": default_bca410e0b5eae56cbb8b0c2015ab832c,
   "@/components/admin/AdditionalSectionRowLabel#default": default_5e01fe546beacdad6121ba8f93a53edc,
   "@/components/admin/BulkImageUpload#default": default_6584cd37ebc58f906dbf3d61f1facc63,
+  "@/components/admin/RealizacjaRowLabel#default": default_668e055741c8ffff27f6be52d2e54afb,
   "@/components/admin/Icon#default": default_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#default": default_a44df17d0fc3dcd873dae43dc3bf66bd,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1

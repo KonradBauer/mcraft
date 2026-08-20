@@ -1,6 +1,6 @@
 import { getPayload, Payload } from 'payload'
 import config from '@/payload.config'
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach, vi } from 'vitest'
 import { screen, cleanup } from '@testing-library/react'
 import { renderServerComponent } from '../helpers/renderServerComponent'
 
@@ -20,49 +20,77 @@ vi.mock('@/lib/i18n/setLocale', () => ({
 afterEach(cleanup)
 
 let payload: Payload
-let portfolioId: string | undefined
-let meblePremiumPortfolioId: string | undefined
+
+async function findOrCreateServicePage(slug: string, title: string): Promise<string> {
+  const { docs } = await payload.find({
+    collection: 'service-pages',
+    where: { slug: { equals: slug } },
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (docs[0]) return docs[0].id
+  const created = await payload.create({
+    collection: 'service-pages',
+    data: { slug, title },
+    overrideAccess: true,
+  })
+  return created.id
+}
+
+// `realizacje` to zwykłe pole array - update() zawsze zastępuje całą tablicę,
+// więc każdy test musi doczytać aktualny stan i dopisać/usunąć tylko swój wiersz,
+// żeby nie nadpisać danych dodanych przez inne describe w tym samym pliku.
+//
+// mk-gym/meble-premium to też dokumenty którymi zarządza /api/seed (patrz
+// mk-gym-collections.int.spec.ts) - Vitest odpala pliki równolegle na tej samej
+// realnej MongoDB, więc konkurencyjny update z innego pliku może "zgubić" (lost
+// update) wiersz dopisany tu w beforeAll zanim zdąży wykonać się właściwy test.
+// ensureRealizacja re-weryfikuje obecność wiersza i dopisuje go ponownie jeśli
+// zniknął - stąd wywołanie w beforeEach każdego bloku, nie tylko w beforeAll.
+async function ensureRealizacja(
+  servicePageId: string,
+  realizacja: { slug: string } & Record<string, unknown>,
+): Promise<void> {
+  const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
+  const existing = doc.realizacje ?? []
+  if (existing.some((r) => r.slug === realizacja.slug)) return
+  await payload.update({
+    collection: 'service-pages',
+    id: servicePageId,
+    data: { realizacje: [...existing, realizacja] },
+    overrideAccess: true,
+  })
+}
+
+async function removeRealizacjaBySlug(servicePageId: string, slug: string): Promise<void> {
+  const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
+  await payload.update({
+    collection: 'service-pages',
+    id: servicePageId,
+    data: { realizacje: (doc.realizacje ?? []).filter((r) => r.slug !== slug) },
+    overrideAccess: true,
+  })
+}
 
 describe('Realizacja detail page - mk-gym support', () => {
+  let servicePageId: string
+  const testRealizacja = { title: '__test-mk-gym-realizacja-detail', slug: '__test-mk-gym-realizacja-detail' }
+
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
 
-    // Nie zakładaj, że rekord 'mk-gym' już istnieje - inne pliki testowe (np.
-    // mk-gym-collections.int.spec.ts) mogą go w tym samym momencie usuwać/tworzyć
-    // na tej samej realnej MongoDB (Vitest domyślnie uruchamia pliki równolegle).
-    const { docs } = await payload.find({
-      collection: 'service-pages',
-      where: { slug: { equals: 'mk-gym' } },
-      limit: 1,
-      overrideAccess: true,
-    })
-    const servicePageId = docs[0]
-      ? docs[0].id
-      : (
-          await payload.create({
-            collection: 'service-pages',
-            data: { slug: 'mk-gym', title: 'MK Gym' },
-            overrideAccess: true,
-          })
-        ).id
+    servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
+    await ensureRealizacja(servicePageId, testRealizacja)
+  })
 
-    const created = await payload.create({
-      collection: 'portfolio-projects',
-      data: {
-        title: '__test-mk-gym-realizacja-detail',
-        slug: '__test-mk-gym-realizacja-detail',
-        servicePage: servicePageId,
-      },
-    })
-    portfolioId = created.id
+  beforeEach(async () => {
+    await ensureRealizacja(servicePageId, testRealizacja)
   })
 
   afterAll(async () => {
-    if (portfolioId) {
-      await payload.delete({ collection: 'portfolio-projects', id: portfolioId })
-    }
+    await removeRealizacjaBySlug(servicePageId, testRealizacja.slug)
   })
 
   it('renders the correct content for serviceSlug=mk-gym with a valid realizacja slug', async () => {
@@ -128,28 +156,14 @@ describe('Realizacja detail page - mk-gym support', () => {
 describe('Realizacja detail page - additionalGalleries (multiple groups)', () => {
   let servicePageId: string
   let mediaId: string
-  let multiGroupPortfolioId: string | undefined
+  let testRealizacja: { title: string; slug: string; additionalGalleries: unknown[] }
 
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
 
-    const { docs } = await payload.find({
-      collection: 'service-pages',
-      where: { slug: { equals: 'mk-gym' } },
-      limit: 1,
-      overrideAccess: true,
-    })
-    servicePageId = docs[0]
-      ? docs[0].id
-      : (
-          await payload.create({
-            collection: 'service-pages',
-            data: { slug: 'mk-gym', title: 'MK Gym' },
-            overrideAccess: true,
-          })
-        ).id
+    servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
 
     const onePixelPng = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
@@ -162,25 +176,23 @@ describe('Realizacja detail page - additionalGalleries (multiple groups)', () =>
     })
     mediaId = media.id
 
-    const created = await payload.create({
-      collection: 'portfolio-projects',
-      data: {
-        title: '__test-multi-gallery-realizacja',
-        slug: '__test-multi-gallery-realizacja',
-        servicePage: servicePageId,
-        additionalGalleries: [
-          { title: '__test-group-akcesoria', images: [{ image: mediaId, alt: '__test-akcesoria-photo' }] },
-          { title: '__test-group-empty', images: [] },
-        ],
-      },
-    })
-    multiGroupPortfolioId = created.id
+    testRealizacja = {
+      title: '__test-multi-gallery-realizacja',
+      slug: '__test-multi-gallery-realizacja',
+      additionalGalleries: [
+        { title: '__test-group-akcesoria', images: [{ image: mediaId, alt: '__test-akcesoria-photo' }] },
+        { title: '__test-group-empty', images: [] },
+      ],
+    }
+    await ensureRealizacja(servicePageId, testRealizacja)
+  })
+
+  beforeEach(async () => {
+    await ensureRealizacja(servicePageId, testRealizacja)
   })
 
   afterAll(async () => {
-    if (multiGroupPortfolioId) {
-      await payload.delete({ collection: 'portfolio-projects', id: multiGroupPortfolioId })
-    }
+    await removeRealizacjaBySlug(servicePageId, testRealizacja.slug)
     if (mediaId) {
       await payload.delete({ collection: 'media', id: mediaId })
     }
@@ -209,6 +221,10 @@ describe('Realizacja detail page - additionalGalleries (multiple groups)', () =>
 })
 
 describe('Realizacja detail page - meble-premium regression', () => {
+  // meble-premium zostaje na starym modelu (kolekcja portfolio-projects) -
+  // realizacje jako zagnieżdżona tablica dotyczy tylko mk-gym.
+  let meblePremiumPortfolioId: string | undefined
+
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const payloadConfig = await config
@@ -258,5 +274,34 @@ describe('Realizacja detail page - meble-premium regression', () => {
     })
     expect(metadata.title).toBe('__test-meble-premium-realizacja-detail')
     expect(metadata.icons).toBeUndefined()
+  })
+})
+
+describe('Realizacja slug uniqueness validation', () => {
+  let servicePageId: string
+
+  beforeAll(async () => {
+    const payloadConfig = await config
+    payload = await getPayload({ config: payloadConfig })
+    servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
+  })
+
+  it('rejects two realizacje with the same slug on the same service page', async () => {
+    const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
+    const duplicateSlug = '__test-duplicate-slug'
+    const withDuplicates = [
+      ...(doc.realizacje ?? []),
+      { title: 'A', slug: duplicateSlug },
+      { title: 'B', slug: duplicateSlug },
+    ]
+
+    await expect(
+      payload.update({
+        collection: 'service-pages',
+        id: servicePageId,
+        data: { realizacje: withDuplicates },
+        overrideAccess: true,
+      }),
+    ).rejects.toThrow()
   })
 })

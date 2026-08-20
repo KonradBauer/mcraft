@@ -6,7 +6,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import type { Media, ServicePage } from '@/payload-types'
+import type { Media, PortfolioProject, ServicePage } from '@/payload-types'
 import { RichText } from '@payloadcms/richtext-lexical/react'
 import { LanguageSwitcher } from '@/components/mcraft/LanguageSwitcher'
 import { MobileNav } from '@/components/mcraft/MobileNav'
@@ -15,9 +15,48 @@ import { PageFallback } from '@/components/mcraft/PageFallback'
 import { RealizacjaGaleria } from '@/components/mcraft/RealizacjaGaleria'
 import { DEFAULT_LOCALE, getLocale, type Locale } from '@/lib/i18n/locale'
 import { getDictionary } from '@/lib/i18n/getDictionary'
-import type { PortfolioProject } from '@/payload-types'
 
 const PORTFOLIO_PAGES = ['meble-premium', 'konstrukcje-stalowe', 'mk-gym']
+
+type RealizacjaItem = NonNullable<ServicePage['realizacje']>[number]
+
+// Tylko mk-gym ma realizacje jako zagnieżdżoną tablicę w ServicePage (natywny
+// collapse-all + drag-drop w adminie). Meble premium i konstrukcje stalowe
+// zostają na starym modelu - osobna kolekcja portfolio-projects.
+async function findMkGymRealizacja(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  slug: string,
+  locale: Locale,
+): Promise<{ servicePage: ServicePage; item: RealizacjaItem } | undefined> {
+  const { docs } = await payload.find({
+    collection: 'service-pages',
+    where: { slug: { equals: 'mk-gym' } },
+    depth: 2,
+    limit: 1,
+    locale,
+  })
+  const servicePage = docs[0]
+  if (!servicePage) return undefined
+
+  const item = (servicePage.realizacje ?? []).find((r) => r.slug === slug)
+  if (item) return { servicePage, item }
+  if (locale === DEFAULT_LOCALE) return undefined
+
+  // slug pole jest localized, ale migracja ustawiła tylko `pl` - dopasowanie po `en` slugu
+  // nie ma fallbacku (w przeciwienstwie do odczytu wartosci pola), wiec probujemy jeszcze raz po `pl`.
+  const fallback = await payload.find({
+    collection: 'service-pages',
+    where: { slug: { equals: 'mk-gym' } },
+    depth: 2,
+    limit: 1,
+    locale: DEFAULT_LOCALE,
+  })
+  const fallbackServicePage = fallback.docs[0]
+  if (!fallbackServicePage) return undefined
+  const fallbackItem = (fallbackServicePage.realizacje ?? []).find((r) => r.slug === slug)
+  if (!fallbackItem) return undefined
+  return { servicePage: fallbackServicePage, item: fallbackItem }
+}
 
 async function findPortfolioItemBySlug(
   payload: Awaited<ReturnType<typeof getPayload>>,
@@ -44,6 +83,25 @@ async function findPortfolioItemBySlug(
     locale: DEFAULT_LOCALE,
   })
   return fallback.docs[0]
+}
+
+async function findRealizacja(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  serviceSlug: string,
+  slug: string,
+  locale: Locale,
+): Promise<{ sp: ServicePage; item: RealizacjaItem | PortfolioProject } | undefined> {
+  if (serviceSlug === 'mk-gym') {
+    const found = await findMkGymRealizacja(payload, slug, locale)
+    if (!found) return undefined
+    return { sp: found.servicePage, item: found.item }
+  }
+
+  const item = await findPortfolioItemBySlug(payload, slug, locale)
+  if (!item) return undefined
+  const sp = typeof item.servicePage === 'object' && item.servicePage !== null ? (item.servicePage as ServicePage) : null
+  if (!sp || sp.slug !== serviceSlug) return undefined
+  return { sp, item }
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -76,8 +134,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const payload = await getPayload({ config })
   const locale = await getLocale()
-  const item = await findPortfolioItemBySlug(payload, slug, locale)
-  if (!item) return {}
+  const found = await findRealizacja(payload, serviceSlug, slug, locale)
+  if (!found) return {}
+  const { item } = found
 
   if (serviceSlug === 'mk-gym') {
     return {
@@ -129,14 +188,9 @@ async function RealizacjaPageContent({ params }: Props) {
         { href: '/#contact', label: dict.nav.contact },
       ]
 
-  const item = await findPortfolioItemBySlug(payload, slug, locale)
-  if (!item) notFound()
-
-  const sp = typeof item.servicePage === 'object' && item.servicePage !== null
-    ? (item.servicePage as ServicePage)
-    : null
-
-  if (!sp || sp.slug !== serviceSlug) notFound()
+  const found = await findRealizacja(payload, serviceSlug, slug, locale)
+  if (!found) notFound()
+  const { sp, item } = found
 
   const galleryImages = toGalleryImages(item.images, item.title ?? '')
 

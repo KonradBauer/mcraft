@@ -3,8 +3,13 @@
 import { useField, useForm } from '@payloadcms/ui'
 import { useRef, useState } from 'react'
 
-export default function BulkImageUpload() {
-  const { path, rows } = useField({ path: 'images', hasRows: true })
+type Props = {
+  path: string
+}
+
+export default function BulkImageUpload({ path: ownPath }: Props) {
+  const imagesPath = ownPath.replace(/bulkUploadImages$/, 'images')
+  const { path, rows } = useField({ path: imagesPath, hasRows: true })
   const { addFieldRow } = useForm()
   const [uploading, setUploading] = useState(false)
   const [done, setDone] = useState(0)

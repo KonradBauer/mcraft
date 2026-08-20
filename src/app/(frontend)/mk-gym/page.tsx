@@ -50,29 +50,17 @@ async function MkGymPageContent() {
   const { docs } = await payload.find({
     collection: 'service-pages',
     where: { slug: { equals: 'mk-gym' } },
-    depth: 1,
+    depth: 2,
     limit: 1,
     locale,
   })
 
   const servicePage = docs[0]
-  const portfolioDocs = servicePage
-    ? (
-        await payload.find({
-          collection: 'portfolio-projects',
-          where: { servicePage: { equals: servicePage.id } },
-          sort: 'order',
-          depth: 1,
-          limit: 100,
-          locale,
-        })
-      ).docs
-    : []
 
   return (
     <SubpageLayout
       {...toSubpageLayoutProps(servicePage, FALLBACK)}
-      realizacje={toRealizacjeProps(portfolioDocs, 'mk-gym')}
+      realizacje={toRealizacjeProps(servicePage?.realizacje ?? [], 'mk-gym')}
       realizacjeTitle={dict.mkGym.offerTitle}
       locale={locale}
       dict={dict}

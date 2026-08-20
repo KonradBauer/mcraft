@@ -261,6 +261,155 @@ export const ServicePage: CollectionConfig = {
       ],
     },
     {
+      name: 'realizacje',
+      label: 'Realizacje',
+      type: 'array',
+      admin: {
+        description: 'Realizacje wyświetlane w siatce na tej podstronie, w kolejności jak tutaj. Przeciągnij za uchwyt żeby zmienić kolejność.',
+        components: {
+          RowLabel: '@/components/admin/RealizacjaRowLabel',
+        },
+        condition: (data) => data?.slug === 'mk-gym',
+      },
+      fields: [
+        {
+          name: 'title',
+          label: 'Tytuł realizacji',
+          type: 'text',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
+        },
+        {
+          name: 'slug',
+          label: 'Slug URL',
+          type: 'text',
+          required: true,
+          localized: true,
+          admin: {
+            description: 'Używany w adresie URL. Małe litery, myślniki zamiast spacji. Nie zmieniaj po opublikowaniu. Np. stol-loftowy-debowy. Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola) - jeśli puste, używany jest polski slug.',
+          },
+          validate: (value: string | null | undefined, { data }: { data?: { realizacje?: { slug?: string | null }[] } }) => {
+            if (!value) return true
+            const duplicates = (data?.realizacje ?? []).filter((r) => r.slug === value).length
+            return duplicates > 1 ? 'Ten slug jest już użyty w innej realizacji tej podstrony - musi być unikalny.' : true
+          },
+        },
+        {
+          name: 'description',
+          label: 'Opis realizacji',
+          type: 'richText',
+          localized: true,
+          admin: {
+            description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+          },
+          hooks: {
+            afterRead: [
+              ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),
+            ],
+          },
+        },
+        {
+          name: 'thumbnail',
+          label: 'Zdjęcie okładki (kafelek)',
+          type: 'upload',
+          relationTo: 'media',
+        },
+        {
+          name: 'bulkUploadImages',
+          type: 'ui',
+          admin: {
+            components: {
+              Field: '@/components/admin/BulkImageUpload',
+            },
+          },
+        },
+        {
+          name: 'images',
+          label: 'Zdjęcia galerii',
+          type: 'array',
+          fields: [
+            {
+              name: 'image',
+              label: 'Zdjęcie',
+              type: 'upload',
+              relationTo: 'media',
+              required: true,
+            },
+            {
+              name: 'alt',
+              label: 'Opis zdjęcia (dostępność)',
+              type: 'text',
+              localized: true,
+              admin: {
+                description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+              },
+            },
+          ],
+        },
+        {
+          name: 'additionalGalleries',
+          label: 'Dodatkowe galerie z opisem',
+          type: 'array',
+          admin: {
+            description: 'Osobne grupy zdjęć z własnym tytułem i opisem - np. dla akcesoriów, wariantów itp. Renderowane pod głównym opisem i galerią powyżej, w kolejności jak tutaj. Dowolna liczba grup.',
+            components: {
+              RowLabel: '@/components/admin/AdditionalSectionRowLabel',
+            },
+          },
+          fields: [
+            {
+              name: 'title',
+              label: 'Tytuł grupy (np. Akcesoria)',
+              type: 'text',
+              localized: true,
+              admin: {
+                description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+              },
+            },
+            {
+              name: 'description',
+              label: 'Opis grupy',
+              type: 'richText',
+              localized: true,
+              admin: {
+                description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+              },
+              hooks: {
+                afterRead: [
+                  ({ value }: { value?: unknown }) => (typeof value === 'string' ? stringToLexical(value) : value),
+                ],
+              },
+            },
+            {
+              name: 'images',
+              label: 'Zdjęcia grupy',
+              type: 'array',
+              fields: [
+                {
+                  name: 'image',
+                  label: 'Zdjęcie',
+                  type: 'upload',
+                  relationTo: 'media',
+                  required: true,
+                },
+                {
+                  name: 'alt',
+                  label: 'Opis zdjęcia (dostępność)',
+                  type: 'text',
+                  localized: true,
+                  admin: {
+                    description: 'Pamiętaj o aktualizacji tłumaczenia angielskiego (zakładka EN w edytorze pola).',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
       name: 'ctaHeader',
       label: 'Nagłówek sekcji CTA (na dole strony)',
       type: 'text',
