@@ -118,7 +118,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
         <div className="absolute inset-0 z-[1] pointer-events-none max-[980px]:hidden [background:linear-gradient(to_right,rgba(14,26,23,0.95)_0%,rgba(14,26,23,0.55)_32%,rgba(14,26,23,0)_55%)]" />
         <div className="hidden max-[980px]:block absolute inset-0 z-[1] pointer-events-none [background:linear-gradient(to_right,rgba(14,26,23,0.98)_0%,rgba(14,26,23,0.85)_55%,rgba(14,26,23,0.5)_100%)]" />
 
-        <div className="absolute inset-y-0 z-[2] pointer-events-none shrink-0 flex items-end left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
+        <div className="hidden absolute inset-y-0 z-[2] pointer-events-none shrink-0 items-end left-1/2 -translate-x-[55%] max-[980px]:top-auto max-[980px]:bottom-0 max-[980px]:-translate-x-1/2 max-[980px]:opacity-100 max-[560px]:translate-x-0 max-[560px]:left-auto max-[560px]:right-0">
           <Image
             src={heroPersonPhoto}
             alt={dict.modal.cv.title}
