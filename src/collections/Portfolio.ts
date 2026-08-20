@@ -1,6 +1,13 @@
 import type { CollectionConfig } from 'payload'
 
 import { stringToLexical } from '../lib/stringToLexical'
+import { syncRealizacjeForServicePage } from '../lib/portfolioToRealizacje'
+
+function relationshipId(value: unknown): string | undefined {
+  if (typeof value === 'string') return value
+  if (value && typeof value === 'object' && 'id' in value) return String((value as { id: unknown }).id)
+  return undefined
+}
 
 export const Portfolio: CollectionConfig = {
   slug: 'portfolio-projects',
@@ -14,6 +21,25 @@ export const Portfolio: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'servicePage', 'order'],
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, previousDoc, req }) => {
+        const currentServicePage = relationshipId(doc.servicePage)
+        if (currentServicePage) await syncRealizacjeForServicePage(req.payload, currentServicePage)
+
+        const previousServicePage = relationshipId(previousDoc?.servicePage)
+        if (previousServicePage && previousServicePage !== currentServicePage) {
+          await syncRealizacjeForServicePage(req.payload, previousServicePage)
+        }
+      },
+    ],
+    afterDelete: [
+      async ({ doc, req }) => {
+        const servicePage = relationshipId(doc.servicePage)
+        if (servicePage) await syncRealizacjeForServicePage(req.payload, servicePage)
+      },
+    ],
   },
   fields: [
     {

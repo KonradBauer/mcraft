@@ -1,6 +1,6 @@
 import { getPayload, Payload } from 'payload'
 import config from '@/payload.config'
-import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach, vi } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from 'vitest'
 import { screen, cleanup } from '@testing-library/react'
 import { renderServerComponent } from '../helpers/renderServerComponent'
 
@@ -37,60 +37,37 @@ async function findOrCreateServicePage(slug: string, title: string): Promise<str
   return created.id
 }
 
-// `realizacje` to zwykłe pole array - update() zawsze zastępuje całą tablicę,
-// więc każdy test musi doczytać aktualny stan i dopisać/usunąć tylko swój wiersz,
-// żeby nie nadpisać danych dodanych przez inne describe w tym samym pliku.
-//
-// mk-gym/meble-premium to też dokumenty którymi zarządza /api/seed (patrz
-// mk-gym-collections.int.spec.ts) - Vitest odpala pliki równolegle na tej samej
-// realnej MongoDB, więc konkurencyjny update z innego pliku może "zgubić" (lost
-// update) wiersz dopisany tu w beforeAll zanim zdąży wykonać się właściwy test.
-// ensureRealizacja re-weryfikuje obecność wiersza i dopisuje go ponownie jeśli
-// zniknął - stąd wywołanie w beforeEach każdego bloku, nie tylko w beforeAll.
-async function ensureRealizacja(
-  servicePageId: string,
-  realizacja: { slug: string } & Record<string, unknown>,
-): Promise<void> {
-  const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
-  const existing = doc.realizacje ?? []
-  if (existing.some((r) => r.slug === realizacja.slug)) return
-  await payload.update({
-    collection: 'service-pages',
-    id: servicePageId,
-    data: { realizacje: [...existing, realizacja] },
-    overrideAccess: true,
-  })
-}
-
-async function removeRealizacjaBySlug(servicePageId: string, slug: string): Promise<void> {
-  const doc = await payload.findByID({ collection: 'service-pages', id: servicePageId, overrideAccess: true })
-  await payload.update({
-    collection: 'service-pages',
-    id: servicePageId,
-    data: { realizacje: (doc.realizacje ?? []).filter((r) => r.slug !== slug) },
-    overrideAccess: true,
-  })
-}
-
+// `Portfolio.ts` ma afterChange/afterDelete hook (src/lib/portfolioToRealizacje.ts) który
+// synchronizuje portfolio-projects -> service-pages.realizacje automatycznie po każdym
+// zapisie/usunięciu - dokładnie tak jak w prawdziwym adminie. Testy tworzą dane przez
+// portfolio-projects (nie piszą do service-pages.realizacje bezpośrednio), więc nie ma
+// wyścigu z innymi plikami testowymi które też tworzą/usuwają portfolio-projects
+// (mk-gym-collections.int.spec.ts) - każdy resync i tak czyta pełny aktualny stan
+// portfolio-projects, więc wynik jest spójny niezależnie od kolejności.
 describe('Realizacja detail page - mk-gym support', () => {
-  let servicePageId: string
-  const testRealizacja = { title: '__test-mk-gym-realizacja-detail', slug: '__test-mk-gym-realizacja-detail' }
+  let portfolioId: string | undefined
 
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
 
-    servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
-    await ensureRealizacja(servicePageId, testRealizacja)
-  })
-
-  beforeEach(async () => {
-    await ensureRealizacja(servicePageId, testRealizacja)
+    const servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
+    const created = await payload.create({
+      collection: 'portfolio-projects',
+      data: {
+        title: '__test-mk-gym-realizacja-detail',
+        slug: '__test-mk-gym-realizacja-detail',
+        servicePage: servicePageId,
+      },
+    })
+    portfolioId = created.id
   })
 
   afterAll(async () => {
-    await removeRealizacjaBySlug(servicePageId, testRealizacja.slug)
+    if (portfolioId) {
+      await payload.delete({ collection: 'portfolio-projects', id: portfolioId })
+    }
   })
 
   it('renders the correct content for serviceSlug=mk-gym with a valid realizacja slug', async () => {
@@ -154,16 +131,15 @@ describe('Realizacja detail page - mk-gym support', () => {
 })
 
 describe('Realizacja detail page - additionalGalleries (multiple groups)', () => {
-  let servicePageId: string
   let mediaId: string
-  let testRealizacja: { title: string; slug: string; additionalGalleries: unknown[] }
+  let portfolioId: string | undefined
 
   beforeAll(async () => {
     mockGet.mockReturnValue({ value: 'pl' })
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
 
-    servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
+    const servicePageId = await findOrCreateServicePage('mk-gym', 'MK Gym')
 
     const onePixelPng = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
@@ -176,23 +152,25 @@ describe('Realizacja detail page - additionalGalleries (multiple groups)', () =>
     })
     mediaId = media.id
 
-    testRealizacja = {
-      title: '__test-multi-gallery-realizacja',
-      slug: '__test-multi-gallery-realizacja',
-      additionalGalleries: [
-        { title: '__test-group-akcesoria', images: [{ image: mediaId, alt: '__test-akcesoria-photo' }] },
-        { title: '__test-group-empty', images: [] },
-      ],
-    }
-    await ensureRealizacja(servicePageId, testRealizacja)
-  })
-
-  beforeEach(async () => {
-    await ensureRealizacja(servicePageId, testRealizacja)
+    const created = await payload.create({
+      collection: 'portfolio-projects',
+      data: {
+        title: '__test-multi-gallery-realizacja',
+        slug: '__test-multi-gallery-realizacja',
+        servicePage: servicePageId,
+        additionalGalleries: [
+          { title: '__test-group-akcesoria', images: [{ image: mediaId, alt: '__test-akcesoria-photo' }] },
+          { title: '__test-group-empty', images: [] },
+        ],
+      },
+    })
+    portfolioId = created.id
   })
 
   afterAll(async () => {
-    await removeRealizacjaBySlug(servicePageId, testRealizacja.slug)
+    if (portfolioId) {
+      await payload.delete({ collection: 'portfolio-projects', id: portfolioId })
+    }
     if (mediaId) {
       await payload.delete({ collection: 'media', id: mediaId })
     }

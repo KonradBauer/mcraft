@@ -149,7 +149,12 @@ Jesli `mongosh` nie istnieje w kontenerze `mcraft-mongo-1` (blad "command not fo
 Przenosi realizacje MK Gym z osobnej kolekcji `portfolio-projects` do zagniezdzonego pola
 `realizacje` w `service-pages` (potrzebne zeby dzialalo natywne Collapse All + drag-drop
 w adminie). TYLKO mk-gym - meble-premium i konstrukcje-stalowe zostaja na starej kolekcji.
-Port `scripts/migrate-portfolio-to-realizacje.ts` + `scripts/lib/portfolio-to-realizacje-helpers.ts`.
+Port `scripts/migrate-portfolio-to-realizacje.ts` + `src/lib/portfolioToRealizacje.ts`.
+
+**Od `afterChange`/`afterDelete` hooka na `Portfolio` (src/collections/Portfolio.ts) kazdy
+zapis/usuniecie realizacji MK Gym w adminie synchronizuje sie automatycznie** - ten blok
+mongosh ponizej jest juz tylko awaryjny (np. recznie zmieniony dokument bezposrednio w
+Mongo, albo drugi resync po edycji poza appka).
 
 Niedestrukcyjna - stara kolekcja `portfolio-projects` NIE jest kasowana, tylko kopiowana.
 Idempotentna - bezpieczna do wielokrotnego odpalenia (za kazdym razem nadpisuje `realizacje`
