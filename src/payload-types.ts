@@ -73,7 +73,6 @@ export interface Config {
     'stat-tiles': StatTile;
     'service-pages': ServicePage;
     'portfolio-projects': PortfolioProject;
-    'contact-submissions': ContactSubmission;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -87,7 +86,6 @@ export interface Config {
     'stat-tiles': StatTilesSelect<false> | StatTilesSelect<true>;
     'service-pages': ServicePagesSelect<false> | ServicePagesSelect<true>;
     'portfolio-projects': PortfolioProjectsSelect<false> | PortfolioProjectsSelect<true>;
-    'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -531,19 +529,6 @@ export interface PortfolioProject {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-submissions".
- */
-export interface ContactSubmission {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string | null;
-  message: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -589,10 +574,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'portfolio-projects';
         value: string | PortfolioProject;
-      } | null)
-    | ({
-        relationTo: 'contact-submissions';
-        value: string | ContactSubmission;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -788,18 +769,6 @@ export interface PortfolioProjectsSelect<T extends boolean = true> {
         id?: T;
       };
   order?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "contact-submissions_select".
- */
-export interface ContactSubmissionsSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  message?: T;
   updatedAt?: T;
   createdAt?: T;
 }

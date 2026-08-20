@@ -6,7 +6,6 @@ import type { BulletStyle } from '@/lib/bulletStyles'
 import type { Locale } from '@/lib/i18n/locale'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { ICON_REGISTRY } from '@/lib/tileIcons'
-import { ContactForm } from './ContactForm'
 import { ImageSlot } from './ImageSlot'
 import { ImageWithSkeleton } from './ImageWithSkeleton'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -91,7 +90,6 @@ export interface SubpageLayoutProps {
   logoImageUrl?: string | null
   logoHref?: string
   navOverride?: { href: string; label: string } | null
-  contactForm?: boolean
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -114,7 +112,6 @@ export function SubpageLayout({
   logoImageUrl,
   logoHref = '/',
   navOverride,
-  contactForm = false,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -279,25 +276,16 @@ export function SubpageLayout({
       {!navOverride && (
         <section className="bg-cream-2 py-16 text-center">
           <div className={wrap}>
-            {contactForm ? (
-              <>
-                <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{dict.mkGym.contactTitle}</h2>
-                <ContactForm dict={dict} />
-              </>
-            ) : (
-              <>
-                <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{resolvedCtaLabel}</h2>
-                <Link
-                  href="/#contact"
-                  className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
-                >
-                  {dict.subpage.ctaButton}
-                  <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
-                    <path d="M0 6h28M23 1l5 5-5 5" />
-                  </svg>
-                </Link>
-              </>
-            )}
+            <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{resolvedCtaLabel}</h2>
+            <Link
+              href="/#contact"
+              className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
+            >
+              {dict.subpage.ctaButton}
+              <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
+                <path d="M0 6h28M23 1l5 5-5 5" />
+              </svg>
+            </Link>
           </div>
         </section>
       )}
