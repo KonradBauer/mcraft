@@ -51,30 +51,57 @@ export function RealizacjaGaleria({ images, dict }: Props) {
   return (
     <>
       {/* Main image */}
-      <button
-        className="relative w-full aspect-[4/3] overflow-hidden group cursor-zoom-in bg-[#f0ede7] max-h-[520px]"
-        onClick={() => setLightboxOpen(true)}
-        aria-label={`${dict.gallery.zoomAriaLabel}: ${active.alt}`}
-      >
-        <ImageWithSkeleton
-          src={active.url}
-          alt={active.alt}
-          className="object-contain"
-          sizes="(max-width: 980px) 100vw, 50vw"
-        />
+      <div className="relative w-full aspect-[4/3] overflow-hidden group bg-[#f0ede7] max-h-[520px]">
+        <button
+          className="absolute inset-0 cursor-zoom-in"
+          onClick={() => setLightboxOpen(true)}
+          aria-label={`${dict.gallery.zoomAriaLabel}: ${active.alt}`}
+        >
+          <ImageWithSkeleton
+            src={active.url}
+            alt={active.alt}
+            className="object-contain"
+            sizes="(max-width: 980px) 100vw, 50vw"
+          />
+        </button>
+
         {/* Zoom hint */}
-        <div className="absolute bottom-3 right-3 bg-black/40 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="absolute bottom-3 right-3 bg-black/40 p-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" className="w-4 h-4">
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35M11 8v6M8 11h6" strokeLinecap="round" />
           </svg>
         </div>
         {/* Counter */}
         {images.length > 1 && (
-          <div className="absolute top-3 right-3 bg-black/40 font-montserrat text-[11px] tracking-[0.12em] text-white px-2 py-0.5">
+          <div className="absolute top-3 right-3 bg-black/40 font-montserrat text-[11px] tracking-[0.12em] text-white px-2 py-0.5 pointer-events-none">
             {activeIndex + 1}&nbsp;/&nbsp;{images.length}
           </div>
         )}
-      </button>
+
+        {/* Prev/Next */}
+        {images.length > 1 && (
+          <>
+            <button
+              className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white transition-colors p-2"
+              onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length) }}
+              aria-label={dict.gallery.prevPhotoAria}
+            >
+              <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3 rotate-180">
+                <path d="M0 6h28M23 1l5 5-5 5" />
+              </svg>
+            </button>
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 hover:bg-black/60 text-white transition-colors p-2"
+              onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length) }}
+              aria-label={dict.gallery.nextPhotoAria}
+            >
+              <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
+                <path d="M0 6h28M23 1l5 5-5 5" />
+              </svg>
+            </button>
+          </>
+        )}
+      </div>
 
       {/* Thumbnails */}
       {images.length > 1 && (
