@@ -1,6 +1,7 @@
 export const instant = false
 
 import { Suspense } from 'react'
+import type { CSSProperties } from 'react'
 import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
@@ -107,7 +108,7 @@ async function findRealizacja(
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
 const navLink =
-  'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
+  'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase py-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
 
 function resolveUrl(field: string | Media | null | undefined): string | null {
   if (!field || typeof field === 'string') return null
@@ -203,25 +204,22 @@ async function RealizacjaPageContent({ params }: Props) {
     }))
     .filter((group) => group.images.length > 0)
 
-  return (
+  const page = (
     <>
       {/* Topbar */}
-      <div className="bg-ink text-light">
+      <div className={`${isMkGym ? 'bg-black' : 'bg-ink'} text-light`}>
         <div className={wrap}>
-          <nav className="flex items-center justify-between py-[30px]">
-            <Link href={isMkGym ? 'https://mkcraft.com.pl' : '/'}>
-              {isMkGym ? (
-                <span className="inline-flex items-center justify-center bg-white p-[10px]">
-                  {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
-                  <img src="/mk-gym-logo.png" alt="MK Gym" className="h-[102px] w-auto" />
-                </span>
-              ) : (
+          <nav className={`flex items-center justify-between ${isMkGym ? 'py-2' : 'py-[30px]'}`}>
+            {isMkGym ? (
+              <span />
+            ) : (
+              <Link href="/">
                 <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">
                   MCRAFT
                 </span>
-              )}
-            </Link>
-            <div className="flex gap-[38px] max-[980px]:hidden">
+              </Link>
+            )}
+            <div className="flex items-center gap-[38px] max-[980px]:hidden">
               {isMkGym ? (
                 <Link href="https://mkcraft.com.pl" className={navLink}>{dict.mkGym.backToMcraft}</Link>
               ) : (
@@ -234,7 +232,7 @@ async function RealizacjaPageContent({ params }: Props) {
               )}
               <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
-            <MobileNav links={NAV_LINKS} locale={locale} dict={dict} logoImageUrl={isMkGym ? '/mk-gym-logo.png' : undefined} />
+            <MobileNav links={NAV_LINKS} locale={locale} dict={dict} showLogo={!isMkGym} />
           </nav>
         </div>
       </div>
@@ -245,20 +243,20 @@ async function RealizacjaPageContent({ params }: Props) {
         <div className={`${wrap} relative`}>
           <Link
             href={`/${serviceSlug}`}
-            className="inline-flex items-center gap-2 font-montserrat text-xs font-semibold tracking-[0.2em] uppercase text-accent mb-[22px] hover:text-white transition-colors duration-200"
+            className={`inline-flex items-center gap-2 font-montserrat text-xs font-semibold tracking-[0.2em] uppercase mb-[22px] hover:text-white transition-colors duration-200 ${isMkGym ? 'text-white/70' : 'text-accent'}`}
           >
             <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3 rotate-180">
               <path d="M0 6h28M23 1l5 5-5 5" />
             </svg>
             {sp.title ?? serviceSlug}
           </Link>
-          <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">
+          <span className={`block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase mb-[18px] ${isMkGym ? 'text-white' : 'text-accent'}`}>
             {dict.realizacjaPage.eyebrow}
           </span>
           <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] max-[560px]:text-[30px]">
             {item.title}
           </h1>
-          <div className="w-16 h-0.5 bg-accent mt-[26px]" />
+          <div className={`w-16 h-0.5 mt-[26px] ${isMkGym ? 'bg-white' : 'bg-accent'}`} />
         </div>
       </header>
 
@@ -335,7 +333,11 @@ async function RealizacjaPageContent({ params }: Props) {
       </section>
 
       {/* Footer */}
-      <SubpageFooter isMkGym={isMkGym} locale={locale} dict={dict} />
+      <SubpageFooter isMkGym={isMkGym} locale={locale} dict={dict} logoImageUrl={isMkGym ? '/mk-gym-logo.png' : undefined} />
     </>
   )
+
+  return isMkGym ? (
+    <div style={{ '--color-accent': '#8a8a8a', '--color-accent-bright': '#a3a3a3' } as CSSProperties}>{page}</div>
+  ) : page
 }
