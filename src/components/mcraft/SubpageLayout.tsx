@@ -117,10 +117,12 @@ export interface SubpageLayoutProps {
   footerLogoImageUrl?: string | null
   titleLogoImageUrl?: string | null
   sectionBackgroundImages?: Record<string, string>
+  accentColor?: string
+  accentColorBright?: string
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
-const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase pb-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
+const navLink = 'font-montserrat text-[14px] font-semibold tracking-[0.18em] uppercase py-1.5 relative transition-colors duration-200 text-white/70 hover:text-white'
 
 export function SubpageLayout({
   eyebrow,
@@ -148,6 +150,8 @@ export function SubpageLayout({
   footerLogoImageUrl,
   titleLogoImageUrl,
   sectionBackgroundImages,
+  accentColor,
+  accentColorBright,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -167,7 +171,12 @@ export function SubpageLayout({
         { href: '/#contact', label: dict.nav.contact },
       ]
 
+  const rootStyle = accentColor
+    ? ({ '--color-accent': accentColor, '--color-accent-bright': accentColorBright ?? accentColor } as React.CSSProperties)
+    : undefined
+
   return (
+    <div style={rootStyle}>
     <ModalProvider dict={dict}>
       {/* Topbar */}
       <div className={`${topbarBgClassName} text-light`}>
@@ -339,5 +348,6 @@ export function SubpageLayout({
       {/* Footer */}
       <SubpageFooter isMkGym={Boolean(navOverride)} locale={locale} dict={dict} logoImageUrl={footerLogoImageUrl} />
     </ModalProvider>
+    </div>
   )
 }
