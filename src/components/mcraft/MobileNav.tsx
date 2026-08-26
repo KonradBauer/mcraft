@@ -103,10 +103,8 @@ export function MobileNav({ links, locale = 'pl', dict, logoImageUrl }: MobileNa
       >
         <div className="flex items-center justify-between px-5 py-[30px] border-b border-white/10 flex-none">
           {logoImageUrl ? (
-            <span className="inline-flex items-center justify-center bg-white p-[6px]">
-              {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
-              <img src={logoImageUrl} alt="MK Gym" className="h-[28px] w-auto" />
-            </span>
+            // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
+            <img src={logoImageUrl} alt="MK Gym" className="h-[28px] w-auto" />
           ) : (
             <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
           )}

@@ -67,6 +67,7 @@ async function MkGymPageContent() {
       logoImageUrl="/mk-gym-logo.png"
       logoHref="https://mkcraft.com.pl"
       navOverride={{ href: 'https://mkcraft.com.pl', label: dict.mkGym.backToMcraft }}
+      hideHeroOverlay
     />
   )
 }
