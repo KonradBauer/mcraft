@@ -91,6 +91,7 @@ export interface SubpageLayoutProps {
   logoHref?: string
   navOverride?: { href: string; label: string } | null
   hideHeroOverlay?: boolean
+  navPaddingClassName?: string
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -114,6 +115,7 @@ export function SubpageLayout({
   logoHref = '/',
   navOverride,
   hideHeroOverlay = false,
+  navPaddingClassName = 'py-[30px]',
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -138,11 +140,11 @@ export function SubpageLayout({
       {/* Topbar */}
       <div className="bg-ink text-light">
         <div className={wrap}>
-          <nav className="flex items-center justify-between py-[30px]">
+          <nav className={`flex items-center justify-between ${navPaddingClassName}`}>
             <Link href={logoHref}>
               {logoImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
-                <img src={logoImageUrl} alt="MK Gym" className="h-[102px] w-auto" />
+                <img src={logoImageUrl} alt="MK Gym" className="h-[70px] w-auto" />
               ) : (
                 <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
               )}

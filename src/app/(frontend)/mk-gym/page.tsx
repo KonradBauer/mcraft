@@ -68,6 +68,7 @@ async function MkGymPageContent() {
       logoHref="https://mkcraft.com.pl"
       navOverride={{ href: 'https://mkcraft.com.pl', label: dict.mkGym.backToMcraft }}
       hideHeroOverlay
+      navPaddingClassName="py-0"
     />
   )
 }
