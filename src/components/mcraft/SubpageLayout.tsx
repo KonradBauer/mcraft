@@ -185,7 +185,7 @@ export function SubpageLayout({
             ) : (
               <span />
             )}
-            <div className="flex gap-[38px] max-[980px]:hidden">
+            <div className="flex items-center gap-[38px] max-[980px]:hidden">
               {navOverride ? (
                 <Link href={navOverride.href} className={navLink}>{navOverride.label}</Link>
               ) : (
