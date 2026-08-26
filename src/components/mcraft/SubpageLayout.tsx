@@ -55,10 +55,10 @@ function Bullet({ style, index }: { style: BulletStyle; index: number }) {
   }
 }
 
-function BulletList({ title, items, bulletStyle }: { title: string; items: { text: DefaultTypedEditorState }[]; bulletStyle: BulletStyle }) {
-  return (
-    <div>
-      <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-6">{title}</h2>
+function BulletList({ title, items, bulletStyle, backgroundImageUrl }: { title: string; items: { text: DefaultTypedEditorState }[]; bulletStyle: BulletStyle; backgroundImageUrl?: string }) {
+  const content = (
+    <>
+      <h2 className={`font-semibold text-[26px] uppercase tracking-[0.03em] mb-6 ${backgroundImageUrl ? 'text-white' : ''}`}>{title}</h2>
       <ul className="flex flex-col gap-4">
         {items.map((item, i) => (
           <li key={i} className="flex items-baseline gap-4">
@@ -69,6 +69,24 @@ function BulletList({ title, items, bulletStyle }: { title: string; items: { tex
           </li>
         ))}
       </ul>
+    </>
+  )
+
+  if (!backgroundImageUrl) return <div>{content}</div>
+
+  return (
+    <div
+      className="relative overflow-hidden p-[42px] max-[560px]:p-6"
+      style={{
+        backgroundImage: `url(${backgroundImageUrl})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        '--color-dark-text': '#f3ece0',
+        '--color-dark-muted': 'rgba(243,236,224,0.75)',
+      } as React.CSSProperties}
+    >
+      <div className="absolute inset-0 bg-ink/70" />
+      <div className="relative">{content}</div>
     </div>
   )
 }
@@ -92,6 +110,13 @@ export interface SubpageLayoutProps {
   navOverride?: { href: string; label: string } | null
   hideHeroOverlay?: boolean
   navPaddingClassName?: string
+  topbarBgClassName?: string
+  eyebrowColorClassName?: string
+  dividerColorClassName?: string
+  showTopbarLogo?: boolean
+  footerLogoImageUrl?: string | null
+  titleLogoImageUrl?: string | null
+  sectionBackgroundImages?: Record<string, string>
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -116,6 +141,13 @@ export function SubpageLayout({
   navOverride,
   hideHeroOverlay = false,
   navPaddingClassName = 'py-[30px]',
+  topbarBgClassName = 'bg-ink',
+  eyebrowColorClassName = 'text-accent',
+  dividerColorClassName = 'bg-accent',
+  showTopbarLogo = true,
+  footerLogoImageUrl,
+  titleLogoImageUrl,
+  sectionBackgroundImages,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -138,17 +170,21 @@ export function SubpageLayout({
   return (
     <ModalProvider dict={dict}>
       {/* Topbar */}
-      <div className="bg-ink text-light">
+      <div className={`${topbarBgClassName} text-light`}>
         <div className={wrap}>
           <nav className={`flex items-center justify-between ${navPaddingClassName}`}>
-            <Link href={logoHref}>
-              {logoImageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
-                <img src={logoImageUrl} alt="MK Gym" className="h-[70px] w-auto" />
-              ) : (
-                <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
-              )}
-            </Link>
+            {showTopbarLogo ? (
+              <Link href={logoHref}>
+                {logoImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
+                  <img src={logoImageUrl} alt="MK Gym" className="h-[70px] w-auto" />
+                ) : (
+                  <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+                )}
+              </Link>
+            ) : (
+              <span />
+            )}
             <div className="flex gap-[38px] max-[980px]:hidden">
               {navOverride ? (
                 <Link href={navOverride.href} className={navLink}>{navOverride.label}</Link>
@@ -162,7 +198,7 @@ export function SubpageLayout({
               )}
               <LanguageSwitcher locale={locale} triggerClassName={navLink} />
             </div>
-            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} logoImageUrl={logoImageUrl} />
+            <MobileNav links={SUBPAGE_NAV_LINKS} locale={locale} dict={dict} logoImageUrl={logoImageUrl} showLogo={showTopbarLogo} />
           </nav>
         </div>
       </div>
@@ -179,10 +215,18 @@ export function SubpageLayout({
         )}
         <div className={`${wrap} relative`}>
           {eyebrow && (
-            <span className="block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase text-accent mb-[18px]">{eyebrow}</span>
+            <span className={`block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase ${eyebrowColorClassName} mb-[18px]`}>{eyebrow}</span>
           )}
-          <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px]">{title}</h1>
-          <div className="w-16 h-0.5 bg-accent my-[26px]" />
+          <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] flex items-center gap-4">
+            {titleLogoImageUrl ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
+                <img src={titleLogoImageUrl} alt="MK" className="h-[64px] w-auto max-[980px]:h-[46px]" />
+                GYM
+              </>
+            ) : title}
+          </h1>
+          <div className={`w-16 h-0.5 ${dividerColorClassName} my-[26px]`} />
           {description && (
             <p className="max-w-[560px] text-base leading-[1.75] text-light-muted font-light">{description}</p>
           )}
@@ -236,7 +280,7 @@ export function SubpageLayout({
           {additionalSections
             ?.filter((section) => !section.renderAfterRealizacje)
             .map((section, i) => (
-              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} />
+              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} backgroundImageUrl={sectionBackgroundImages?.[section.title]} />
             ))}
 
           {realizacje && realizacje.length > 0 && (
@@ -269,7 +313,7 @@ export function SubpageLayout({
           {additionalSections
             ?.filter((section) => section.renderAfterRealizacje)
             .map((section, i) => (
-              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} />
+              <BulletList key={i} title={section.title} items={section.items} bulletStyle={section.bulletStyle} backgroundImageUrl={sectionBackgroundImages?.[section.title]} />
             ))}
         </div>
       </section>
@@ -293,7 +337,7 @@ export function SubpageLayout({
       )}
 
       {/* Footer */}
-      <SubpageFooter isMkGym={Boolean(navOverride)} locale={locale} dict={dict} />
+      <SubpageFooter isMkGym={Boolean(navOverride)} locale={locale} dict={dict} logoImageUrl={footerLogoImageUrl} />
     </ModalProvider>
   )
 }

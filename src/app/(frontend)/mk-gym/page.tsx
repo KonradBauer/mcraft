@@ -64,11 +64,17 @@ async function MkGymPageContent() {
       realizacjeTitle={dict.mkGym.offerTitle}
       locale={locale}
       dict={dict}
-      logoImageUrl="/mk-gym-logo.png"
       logoHref="https://mkcraft.com.pl"
       navOverride={{ href: 'https://mkcraft.com.pl', label: dict.mkGym.backToMcraft }}
       hideHeroOverlay
       navPaddingClassName="py-2"
+      topbarBgClassName="bg-black"
+      eyebrowColorClassName="text-white"
+      dividerColorClassName="bg-white"
+      showTopbarLogo={false}
+      footerLogoImageUrl="/mk-gym-logo.png"
+      titleLogoImageUrl="/mk-gym-logo.png"
+      sectionBackgroundImages={{ 'Specjalizujemy się w hantlach': '/mk-gym-hantle-bg.avif' }}
     />
   )
 }

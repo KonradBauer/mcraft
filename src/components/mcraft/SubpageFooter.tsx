@@ -10,9 +10,10 @@ export interface SubpageFooterProps {
   isMkGym?: boolean
   locale?: Locale
   dict: Dictionary
+  logoImageUrl?: string | null
 }
 
-export function SubpageFooter({ isMkGym = false, locale = 'pl', dict }: SubpageFooterProps) {
+export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageUrl }: SubpageFooterProps) {
   return (
     <footer className="bg-ink-3 text-light pt-16 pb-[26px]">
       <div className={wrap}>
@@ -22,7 +23,17 @@ export function SubpageFooter({ isMkGym = false, locale = 'pl', dict }: SubpageF
             {!isMkGym && (
               <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">{dict.footer.eyebrow}</span>
             )}
-            <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">{isMkGym ? 'M&K GYM' : dict.footer.title}</h2>
+            <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">
+              {isMkGym ? (
+                <span className="inline-flex items-center gap-3">
+                  {logoImageUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
+                    <img src={logoImageUrl} alt="MK" className="h-[34px] w-auto" />
+                  )}
+                  GYM
+                </span>
+              ) : dict.footer.title}
+            </h2>
             {!isMkGym && (
               <div className="mb-[22px]">
                 <div className="font-montserrat font-semibold text-[13px] tracking-[0.08em] text-white mb-[8px]">MCRAFT Michał Macherzyński</div>

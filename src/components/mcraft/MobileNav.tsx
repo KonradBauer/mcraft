@@ -45,9 +45,10 @@ interface MobileNavProps {
   locale?: Locale
   dict: Dictionary
   logoImageUrl?: string | null
+  showLogo?: boolean
 }
 
-export function MobileNav({ links, locale = 'pl', dict, logoImageUrl }: MobileNavProps) {
+export function MobileNav({ links, locale = 'pl', dict, logoImageUrl, showLogo = true }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false)
   const scrollYRef = useRef(0)
 
@@ -102,11 +103,15 @@ export function MobileNav({ links, locale = 'pl', dict, logoImageUrl }: MobileNa
         aria-label={dict.mobileNav.menuLabelAria}
       >
         <div className="flex items-center justify-between px-5 py-[30px] border-b border-white/10 flex-none">
-          {logoImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
-            <img src={logoImageUrl} alt="MK Gym" className="h-[19px] w-auto" />
+          {showLogo ? (
+            logoImageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
+              <img src={logoImageUrl} alt="MK Gym" className="h-[19px] w-auto" />
+            ) : (
+              <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+            )
           ) : (
-            <span className="font-montserrat font-light text-[18px] tracking-[0.45em] text-white uppercase">MCRAFT</span>
+            <span />
           )}
           <button
             className="w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors duration-200 cursor-pointer bg-transparent border-none"
