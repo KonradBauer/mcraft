@@ -13,9 +13,10 @@ type GalleryImage = {
 type Props = {
   images: GalleryImage[]
   dict: Dictionary
+  frameClassName?: string
 }
 
-export function RealizacjaGaleria({ images, dict }: Props) {
+export function RealizacjaGaleria({ images, dict, frameClassName = 'bg-[#f0ede7]' }: Props) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [lightboxLoaded, setLightboxLoaded] = useState(false)
@@ -51,7 +52,7 @@ export function RealizacjaGaleria({ images, dict }: Props) {
   return (
     <>
       {/* Main image */}
-      <div className="relative w-full aspect-[4/3] overflow-hidden group bg-[#f0ede7] max-h-[520px]">
+      <div className={`relative w-full aspect-[4/3] overflow-hidden group max-h-[520px] ${frameClassName}`}>
         <button
           className="absolute inset-0 cursor-zoom-in"
           onClick={() => setLightboxOpen(true)}
@@ -110,7 +111,7 @@ export function RealizacjaGaleria({ images, dict }: Props) {
             <button
               key={i}
               onClick={() => setActiveIndex(i)}
-              className={`relative flex-none w-[68px] h-[50px] overflow-hidden bg-[#f0ede7] transition-opacity duration-200 ${
+              className={`relative flex-none w-[68px] h-[50px] overflow-hidden ${frameClassName} transition-opacity duration-200 ${
                 i === activeIndex
                   ? 'ring-2 ring-inset ring-accent opacity-100'
                   : 'opacity-50 hover:opacity-90'

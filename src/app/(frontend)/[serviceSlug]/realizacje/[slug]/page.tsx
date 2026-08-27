@@ -266,7 +266,7 @@ async function RealizacjaPageContent({ params }: Props) {
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
             {/* Left (desktop) / top (mobile): gallery */}
             <div className="min-w-0 overflow-hidden">
-              <RealizacjaGaleria images={galleryImages} dict={dict} />
+              <RealizacjaGaleria images={galleryImages} dict={dict} frameClassName={isMkGym ? 'bg-[#303030]' : undefined} />
             </div>
 
             {/* Right (desktop) / below (mobile): description */}
@@ -297,7 +297,7 @@ async function RealizacjaPageContent({ params }: Props) {
                 )}
                 <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
                   <div className={`min-w-0 overflow-hidden max-[980px]:order-1 ${isReversed ? 'order-2' : 'order-1'}`}>
-                    <RealizacjaGaleria images={group.images} dict={dict} />
+                    <RealizacjaGaleria images={group.images} dict={dict} frameClassName={isMkGym ? 'bg-[#303030]' : undefined} />
                   </div>
                   <div className={`max-[980px]:order-2 ${isReversed ? 'order-1' : 'order-2'}`}>
                     {group.description && (

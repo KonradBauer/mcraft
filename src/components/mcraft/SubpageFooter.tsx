@@ -13,9 +13,14 @@ export interface SubpageFooterProps {
   logoImageUrl?: string | null
 }
 
+const MK_GYM_GRAPHITE_GRADIENT = 'linear-gradient(135deg, #1c1c1c 0%, #303030 55%, #1c1c1c 100%)'
+
 export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageUrl }: SubpageFooterProps) {
   return (
-    <footer className="bg-ink-3 text-light pt-16 pb-[26px]">
+    <footer
+      className={`${isMkGym ? '' : 'bg-ink-3'} text-light pt-16 pb-[26px]`}
+      style={isMkGym ? { background: MK_GYM_GRAPHITE_GRADIENT } : undefined}
+    >
       <div className={wrap}>
         <div className="grid grid-cols-[1fr_1.2fr] gap-12 items-start max-[768px]:grid-cols-1">
 
@@ -23,12 +28,12 @@ export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageU
             {!isMkGym && (
               <span className="block font-montserrat text-[12px] font-semibold tracking-[0.28em] uppercase text-[#008A58] mb-[18px]">{dict.footer.eyebrow}</span>
             )}
-            <h2 className="font-semibold text-[30px] tracking-[0.04em] uppercase text-white mb-[22px]">
+            <h2 className={`font-semibold text-[30px] tracking-[0.04em] uppercase mb-[22px] ${isMkGym ? 'text-[#F0F0F0]' : 'text-white'}`}>
               {isMkGym ? (
                 <span className="inline-flex items-center gap-3">
                   {logoImageUrl && (
                     // eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo
-                    <img src={logoImageUrl} alt="MK" className="h-[34px] w-auto" />
+                    <img src={logoImageUrl} alt="MK" className="h-[50px] w-auto" />
                   )}
                   GYM
                 </span>
@@ -45,17 +50,17 @@ export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageU
             )}
             {isMkGym ? (
               <>
-                <div className="flex items-center gap-4 mb-4 text-[14.5px] text-light-muted">
+                <div className="flex items-center gap-4 mb-4 text-[14.5px] text-[#F0F0F0]">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" /></svg>
-                  <a href="tel:+48601488318" className="hover:text-light transition-colors duration-200">Michał: +48 601-488-318</a>
+                  <a href="tel:+48601488318" className="hover:opacity-75 transition-opacity duration-200">Michał: +48 601-488-318</a>
                   <span className="flex items-center gap-1.5">
                     <LocaleFlag code="pl" />
                     <LocaleFlag code="en" />
                   </span>
                 </div>
-                <div className="flex items-center gap-4 mb-4 text-[14.5px] text-light-muted">
+                <div className="flex items-center gap-4 mb-4 text-[14.5px] text-[#F0F0F0]">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" /></svg>
-                  <a href="tel:+48662050419" className="hover:text-light transition-colors duration-200">Kamil: +48 662-050-419</a>
+                  <a href="tel:+48662050419" className="hover:opacity-75 transition-opacity duration-200">Kamil: +48 662-050-419</a>
                   <span className="flex items-center gap-1.5">
                     <LocaleFlag code="pl" />
                   </span>
@@ -67,18 +72,18 @@ export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageU
                 <a href="tel:+48601488318" className="hover:text-light transition-colors duration-200">+48 601-488-318</a>
               </div>
             )}
-            <div className="flex items-center gap-4 mb-4 text-[14.5px] text-light-muted">
+            <div className={`flex items-center gap-4 mb-4 text-[14.5px] ${isMkGym ? 'text-[#F0F0F0]' : 'text-light-muted'}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" /></svg>
-              <a href="mailto:kontakt@poczta-mcraft.pl" className="hover:text-light transition-colors duration-200">kontakt@poczta-mcraft.pl</a>
+              <a href="mailto:kontakt@poczta-mcraft.pl" className={isMkGym ? 'hover:opacity-75 transition-opacity duration-200' : 'hover:text-light transition-colors duration-200'}>kontakt@poczta-mcraft.pl</a>
             </div>
-            <div className="flex items-center gap-4 mb-4 text-[14.5px] text-light-muted">
+            <div className={`flex items-center gap-4 mb-4 text-[14.5px] ${isMkGym ? 'text-[#F0F0F0]' : 'text-light-muted'}`}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="w-[17px] h-[17px] text-accent flex-none"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z" /><circle cx="12" cy="10" r="3" /></svg>
               <span>ul. Żołnierzy Września 36, 42-152 Wilkowiecko</span>
             </div>
             {isMkGym ? (
-              <div className="flex items-center gap-4 text-[14.5px] text-light-muted">
+              <div className="flex items-center gap-4 text-[14.5px] text-[#F0F0F0]">
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-[17px] h-[17px] text-accent flex-none"><path d="M22 12a10 10 0 1 0-11.5 9.9v-7H8v-2.9h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6v1.9H16l-.4 2.9h-2.1v7A10 10 0 0 0 22 12z" /></svg>
-                <a href="https://www.facebook.com/SteelHandsMKGYM" target="_blank" rel="noopener noreferrer" className="hover:text-light transition-colors duration-200">Facebook</a>
+                <a href="https://www.facebook.com/SteelHandsMKGYM" target="_blank" rel="noopener noreferrer" className="hover:opacity-75 transition-opacity duration-200">Facebook</a>
               </div>
             ) : (
               <div className="flex items-center gap-4 text-[14.5px] text-light-muted">
@@ -94,10 +99,10 @@ export function SubpageFooter({ isMkGym = false, locale = 'pl', dict, logoImageU
 
         </div>
 
-        <div className="border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] text-[rgba(236,234,228,0.4)] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2">
+        <div className={`border-t border-white/10 mt-[46px] pt-[22px] flex flex-row items-center justify-between gap-4 text-xs tracking-[0.04em] max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-2 ${isMkGym ? 'text-[#F0F0F0]/40' : 'text-[rgba(236,234,228,0.4)]'}`}>
           <span>© {new Date().getFullYear()} {dict.footer.copyrightSuffix}</span>
-          <Link href="/polityka-prywatnosci" className="hover:text-white/60 transition-colors duration-200">{dict.footer.privacyPolicy}</Link>
-          <span>{dict.footer.builtBy} <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className="hover:text-white/60 transition-colors duration-200">studiocodeart.pl</a></span>
+          <Link href="/polityka-prywatnosci" className={isMkGym ? 'hover:text-[#F0F0F0]/60 transition-colors duration-200' : 'hover:text-white/60 transition-colors duration-200'}>{dict.footer.privacyPolicy}</Link>
+          <span>{dict.footer.builtBy} <a href="https://studiocodeart.pl" target="_blank" rel="noopener noreferrer" className={isMkGym ? 'hover:text-[#F0F0F0]/60 transition-colors duration-200' : 'hover:text-white/60 transition-colors duration-200'}>studiocodeart.pl</a></span>
         </div>
       </div>
     </footer>

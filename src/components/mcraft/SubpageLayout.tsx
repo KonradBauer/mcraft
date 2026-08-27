@@ -56,10 +56,10 @@ function Bullet({ style, index }: { style: BulletStyle; index: number }) {
 }
 
 function BulletList({ title, items, bulletStyle, backgroundImageUrl }: { title: string; items: { text: DefaultTypedEditorState }[]; bulletStyle: BulletStyle; backgroundImageUrl?: string }) {
-  const bulletColorStyle = { '--color-accent': backgroundImageUrl ? '#f3ece0' : '#000000' } as React.CSSProperties
+  const bulletColorStyle = { '--color-accent': backgroundImageUrl ? '#F0F0F0' : '#000000' } as React.CSSProperties
   const content = (
     <>
-      <h2 className={`font-semibold text-[26px] uppercase tracking-[0.03em] mb-6 ${backgroundImageUrl ? 'text-white' : ''}`}>{title}</h2>
+      <h2 className={`font-semibold text-[26px] uppercase tracking-[0.03em] mb-6 ${backgroundImageUrl ? 'text-[#F0F0F0]' : ''}`}>{title}</h2>
       <ul className="flex flex-col gap-4" style={bulletColorStyle}>
         {items.map((item, i) => (
           <li key={i} className="flex items-baseline gap-4">
@@ -83,8 +83,8 @@ function BulletList({ title, items, bulletStyle, backgroundImageUrl }: { title: 
           backgroundImage: `url(${backgroundImageUrl})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          '--color-dark-text': '#f3ece0',
-          '--color-dark-muted': 'rgba(243,236,224,0.75)',
+          '--color-dark-text': '#F0F0F0',
+          '--color-dark-muted': 'rgba(240,240,240,0.75)',
         } as React.CSSProperties}
       >
         <div className="absolute inset-0 bg-ink/70" />
@@ -123,6 +123,9 @@ export interface SubpageLayoutProps {
   accentColor?: string
   accentColorBright?: string
   pageBackgroundImageUrl?: string
+  descriptionColorClassName?: string
+  tileTextColorClassName?: string
+  hideDivider?: boolean
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -157,6 +160,9 @@ export function SubpageLayout({
   accentColor,
   accentColorBright,
   pageBackgroundImageUrl,
+  descriptionColorClassName = 'text-light-muted',
+  tileTextColorClassName = 'text-white',
+  hideDivider = false,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -242,14 +248,14 @@ export function SubpageLayout({
             {titleLogoImageUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
-                <img src={titleLogoImageUrl} alt="MK" className="h-[64px] w-auto max-[980px]:h-[46px]" />
+                <img src={titleLogoImageUrl} alt="MK" className="h-[92px] w-auto max-[980px]:h-[64px]" />
                 GYM
               </>
             ) : title}
           </h1>
-          <div className={`w-16 h-0.5 ${dividerColorClassName} my-[26px]`} />
+          {!hideDivider && <div className={`w-16 h-0.5 ${dividerColorClassName} my-[26px]`} />}
           {description && (
-            <p className="max-w-[560px] text-base leading-[1.75] text-light-muted font-light">{description}</p>
+            <p className={`max-w-[560px] text-base leading-[1.75] font-light ${hideDivider ? 'mt-[26px]' : ''} ${descriptionColorClassName}`}>{description}</p>
           )}
         </div>
       </header>
@@ -321,7 +327,7 @@ export function SubpageLayout({
                       <ImageSlot placeholder={item.title} className="w-full h-full" />
                     )}
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/80 to-transparent px-4 py-3">
-                      <span className="font-montserrat text-[13px] font-semibold tracking-[0.08em] text-white uppercase">
+                      <span className={`font-montserrat text-[13px] font-semibold tracking-[0.08em] uppercase ${tileTextColorClassName}`}>
                         {item.title}
                       </span>
                     </div>

@@ -69,8 +69,8 @@ async function MkGymPageContent() {
       hideHeroOverlay
       navPaddingClassName="py-2"
       topbarBgClassName="bg-black"
-      eyebrowColorClassName="text-white"
-      dividerColorClassName="bg-white"
+      eyebrowColorClassName="text-[#F0F0F0] underline underline-offset-4"
+      hideDivider
       showTopbarLogo={false}
       footerLogoImageUrl="/mk-gym-logo.png"
       titleLogoImageUrl="/mk-gym-logo.png"
@@ -81,6 +81,8 @@ async function MkGymPageContent() {
       accentColor="#8a8a8a"
       accentColorBright="#a3a3a3"
       pageBackgroundImageUrl="/mk-gym-page-bg.avif"
+      descriptionColorClassName="text-[#F0F0F0]"
+      tileTextColorClassName="text-[#F0F0F0]"
     />
   )
 }
