@@ -314,24 +314,6 @@ async function RealizacjaPageContent({ params }: Props) {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className={`py-16 text-center ${isMkGym ? '' : 'bg-cream-2'}`}>
-        <div className={wrap}>
-          <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">
-            {dict.realizacjaPage.ctaSimilarProject}
-          </h2>
-          <Link
-            href="/#contact"
-            className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
-          >
-            {dict.subpage.ctaButton}
-            <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
-              <path d="M0 6h28M23 1l5 5-5 5" />
-            </svg>
-          </Link>
-        </div>
-      </section>
-
       {/* Footer */}
       <SubpageFooter isMkGym={isMkGym} locale={locale} dict={dict} logoImageUrl={isMkGym ? '/mk-gym-logo.png' : undefined} />
     </>
