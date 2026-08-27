@@ -251,7 +251,7 @@ export function SubpageLayout({
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
                 <img src={titleLogoImageUrl} alt="MK" className="h-[138px] w-auto max-[980px]:h-[96px]" />
-                GYM
+                <span className="text-[78px] max-[980px]:text-[57px]">GYM</span>
               </>
             ) : title}
           </h1>
