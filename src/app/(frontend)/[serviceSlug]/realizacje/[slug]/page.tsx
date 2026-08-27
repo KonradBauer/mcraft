@@ -261,7 +261,7 @@ async function RealizacjaPageContent({ params }: Props) {
       </header>
 
       {/* Main: gallery + description */}
-      <section className="py-20 bg-cream">
+      <section className={`py-20 ${isMkGym ? '' : 'bg-cream'}`}>
         <div className={wrap}>
           <div className="grid grid-cols-[1fr_1fr] gap-[56px] items-start max-[980px]:grid-cols-1 max-[980px]:gap-12">
             {/* Left (desktop) / top (mobile): gallery */}
@@ -315,7 +315,7 @@ async function RealizacjaPageContent({ params }: Props) {
       </section>
 
       {/* CTA */}
-      <section className="bg-cream-2 py-16 text-center">
+      <section className={`py-16 text-center ${isMkGym ? '' : 'bg-cream-2'}`}>
         <div className={wrap}>
           <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">
             {dict.realizacjaPage.ctaSimilarProject}
@@ -338,6 +338,18 @@ async function RealizacjaPageContent({ params }: Props) {
   )
 
   return isMkGym ? (
-    <div style={{ '--color-accent': '#8a8a8a', '--color-accent-bright': '#a3a3a3' } as CSSProperties}>{page}</div>
+    <div
+      style={{
+        '--color-accent': '#8a8a8a',
+        '--color-accent-bright': '#a3a3a3',
+        backgroundImage: 'url(/mk-gym-page-bg.avif)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'top center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      } as CSSProperties}
+    >
+      {page}
+    </div>
   ) : page
 }

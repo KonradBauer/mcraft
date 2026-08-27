@@ -56,10 +56,11 @@ function Bullet({ style, index }: { style: BulletStyle; index: number }) {
 }
 
 function BulletList({ title, items, bulletStyle, backgroundImageUrl }: { title: string; items: { text: DefaultTypedEditorState }[]; bulletStyle: BulletStyle; backgroundImageUrl?: string }) {
+  const bulletColorStyle = { '--color-accent': backgroundImageUrl ? '#f3ece0' : '#000000' } as React.CSSProperties
   const content = (
     <>
       <h2 className={`font-semibold text-[26px] uppercase tracking-[0.03em] mb-6 ${backgroundImageUrl ? 'text-white' : ''}`}>{title}</h2>
-      <ul className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-4" style={bulletColorStyle}>
         {items.map((item, i) => (
           <li key={i} className="flex items-baseline gap-4">
             <Bullet style={bulletStyle} index={i} />

@@ -74,7 +74,10 @@ async function MkGymPageContent() {
       showTopbarLogo={false}
       footerLogoImageUrl="/mk-gym-logo.png"
       titleLogoImageUrl="/mk-gym-logo.png"
-      sectionBackgroundImages={{ 'Specjalizujemy się w hantlach': '/mk-gym-hantle-bg.avif' }}
+      sectionBackgroundImages={{
+        'Specjalizujemy się w hantlach': '/mk-gym-hantle-bg.avif',
+        'Jak przebiega zamówienie?': '/mk-gym-hantle-bg.avif',
+      }}
       accentColor="#8a8a8a"
       accentColorBright="#a3a3a3"
       pageBackgroundImageUrl="/mk-gym-page-bg.avif"
