@@ -73,8 +73,8 @@ Strony w `(frontend)` używają `export const dynamic = 'force-dynamic'` - build
 ### Podstrony
 
 - `nadzor-spawalniczy/`, `konstrukcje-stalowe/`, `meble-premium/` - podstrony usług
-- `mk-gym/`, `mk-gym/realizacje/[slug]/` - mikro-marka MK-GYM z własnym brandingiem (favicon, tytuł, logo)
-- `[serviceSlug]/realizacje/` - dynamiczne strony realizacji per usługa (kolekcja Portfolio)
+- `mk-gym/`, `mk-gym/realizacje/[slug]/` - mikro-marka MK-GYM z własnym brandingiem (favicon, tytuł, logo, hero banner na stronach realizacji); realizacje mk-gym to zagnieżdżona tablica w `ServicePage`, nie osobna kolekcja
+- `[serviceSlug]/realizacje/` - dynamiczne strony realizacji per usługa; dla `meble-premium`/`konstrukcje-stalowe` z kolekcji `Portfolio`, dla `mk-gym` z tablicy `realizacje` w `ServicePage`
 - `polityka-prywatnosci/` - polityka prywatności (statyczna, bez CMS)
 - `opengraph-image.tsx` - dynamiczny obraz OG przez `next/og` (edge runtime)
 
