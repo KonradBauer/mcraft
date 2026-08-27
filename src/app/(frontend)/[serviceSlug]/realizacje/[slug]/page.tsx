@@ -239,7 +239,14 @@ async function RealizacjaPageContent({ params }: Props) {
 
       {/* Header */}
       <header className="bg-ink text-light relative overflow-hidden pt-16 pb-[64px]">
-        <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
+        {isMkGym ? (
+          <div
+            className="absolute inset-0 pointer-events-none bg-cover bg-top bg-no-repeat"
+            style={{ backgroundImage: 'url(/mk-gym-realizacje-hero.avif)' }}
+          />
+        ) : (
+          <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
+        )}
         <div className={`${wrap} relative`}>
           <Link
             href={`/${serviceSlug}`}
@@ -289,7 +296,7 @@ async function RealizacjaPageContent({ params }: Props) {
             // więc pierwsza dodatkowa grupa (i=0) jest "drugą" i ma układ odwrócony, kolejna znów normalny, itd.
             const isReversed = i % 2 === 0
             return (
-              <div key={i} className="mt-20 pt-20 border-t border-[#e8e3d9]">
+              <div key={i} className={`mt-20 pt-20 ${isMkGym ? 'border-t-2 border-black' : 'border-t border-[#e8e3d9]'}`}>
                 {group.title && (
                   <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-8">
                     {group.title}
