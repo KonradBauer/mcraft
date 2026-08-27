@@ -10,7 +10,7 @@ import { ModalBodySection, ModalHead } from './ModalShared'
 
 const ModalBio = dynamic(() => import('./ModalBio').then((m) => m.ModalBio))
 
-export type ModalKey = 'cv' | 'bio' | 'tiles' | 'scope'
+export type ModalKey = 'cv' | 'bio' | 'tiles' | 'scope' | 'contact'
 
 export interface ScopeModalContent {
   title: string
@@ -208,6 +208,31 @@ function ModalTilesContent({ tiles, dict }: { tiles: StatTile[]; dict: Dictionar
   )
 }
 
+const CONTACT_ROW = 'flex items-center gap-4 text-[14.5px] text-[#56544e]'
+const CONTACT_ICON = 'w-[17px] h-[17px] text-accent flex-none'
+
+function ModalContactContent({ dict }: { dict: Dictionary }) {
+  return (
+    <>
+      <ModalHead eyebrowText={dict.footer.eyebrow} title={dict.footer.title} />
+      <div className="px-12 pt-6 pb-8 flex flex-col gap-4 max-[980px]:px-7">
+        <div className={CONTACT_ROW}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={CONTACT_ICON}><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" /></svg>
+          <a href="tel:+48601488318" className="hover:text-dark-text transition-colors duration-200">+48 601-488-318</a>
+        </div>
+        <div className={CONTACT_ROW}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={CONTACT_ICON}><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 6 10-6" /></svg>
+          <a href="mailto:kontakt@poczta-mcraft.pl" className="hover:text-dark-text transition-colors duration-200">kontakt@poczta-mcraft.pl</a>
+        </div>
+        <div className={CONTACT_ROW}>
+          <svg viewBox="0 0 24 24" fill="currentColor" className={CONTACT_ICON}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" /><rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" /></svg>
+          <a href="https://www.linkedin.com/in/micha%C5%82-macherzy%C5%84ski-399521276/" target="_blank" rel="noopener noreferrer" className="hover:text-dark-text transition-colors duration-200">LinkedIn</a>
+        </div>
+      </div>
+    </>
+  )
+}
+
 function ModalScopeContent({ title, description, dict }: ScopeModalContent & { dict: Dictionary }) {
   return (
     <>
@@ -306,6 +331,7 @@ export function ModalProvider({ children, cvModal, bioModal, tiles, dict }: Moda
           {modalKey === 'bio' && bioModal && <ModalBio bioModal={bioModal} dict={dict} />}
           {modalKey === 'tiles' && tiles && <ModalTilesContent tiles={tiles} dict={dict} />}
           {modalKey === 'scope' && scopeContent && <ModalScopeContent {...scopeContent} dict={dict} />}
+          {modalKey === 'contact' && <ModalContactContent dict={dict} />}
         </div>
       </div>
     </ModalContext.Provider>

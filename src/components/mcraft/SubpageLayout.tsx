@@ -344,15 +344,16 @@ export function SubpageLayout({
         <section className="bg-cream-2 py-16 text-center">
           <div className={wrap}>
             <h2 className="font-semibold text-2xl uppercase tracking-[0.03em] mb-[22px]">{resolvedCtaLabel}</h2>
-            <Link
-              href="/#contact"
-              className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink"
+            <ModalTrigger
+              modalKey="contact"
+              ariaLabel={dict.subpage.ctaButton}
+              className="inline-flex items-center gap-6 bg-ink text-light font-montserrat text-xs font-semibold tracking-[0.2em] uppercase px-[28px] py-[17px] transition-all duration-[220ms] hover:bg-accent hover:text-ink cursor-pointer border-none"
             >
               {dict.subpage.ctaButton}
               <svg viewBox="0 0 30 12" fill="none" stroke="currentColor" strokeWidth="1.4" className="w-5 h-3">
                 <path d="M0 6h28M23 1l5 5-5 5" />
               </svg>
-            </Link>
+            </ModalTrigger>
           </div>
         </section>
       )}
