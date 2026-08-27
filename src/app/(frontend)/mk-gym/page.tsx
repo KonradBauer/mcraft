@@ -77,6 +77,7 @@ async function MkGymPageContent() {
       sectionBackgroundImages={{ 'Specjalizujemy się w hantlach': '/mk-gym-hantle-bg.avif' }}
       accentColor="#8a8a8a"
       accentColorBright="#a3a3a3"
+      pageBackgroundImageUrl="/mk-gym-page-bg.avif"
     />
   )
 }

@@ -75,18 +75,20 @@ function BulletList({ title, items, bulletStyle, backgroundImageUrl }: { title: 
   if (!backgroundImageUrl) return <div>{content}</div>
 
   return (
-    <div
-      className="relative overflow-hidden p-[42px] max-[560px]:p-6"
-      style={{
-        backgroundImage: `url(${backgroundImageUrl})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        '--color-dark-text': '#f3ece0',
-        '--color-dark-muted': 'rgba(243,236,224,0.75)',
-      } as React.CSSProperties}
-    >
-      <div className="absolute inset-0 bg-ink/70" />
-      <div className="relative">{content}</div>
+    <div className="relative left-1/2 -ml-[50vw] -mr-[50vw] w-screen">
+      <div
+        className="relative overflow-hidden py-[42px] max-[560px]:py-6"
+        style={{
+          backgroundImage: `url(${backgroundImageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          '--color-dark-text': '#f3ece0',
+          '--color-dark-muted': 'rgba(243,236,224,0.75)',
+        } as React.CSSProperties}
+      >
+        <div className="absolute inset-0 bg-ink/70" />
+        <div className={`relative ${wrap}`}>{content}</div>
+      </div>
     </div>
   )
 }
@@ -119,6 +121,7 @@ export interface SubpageLayoutProps {
   sectionBackgroundImages?: Record<string, string>
   accentColor?: string
   accentColorBright?: string
+  pageBackgroundImageUrl?: string
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -152,6 +155,7 @@ export function SubpageLayout({
   sectionBackgroundImages,
   accentColor,
   accentColorBright,
+  pageBackgroundImageUrl,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -171,9 +175,16 @@ export function SubpageLayout({
         { href: '/#contact', label: dict.nav.contact },
       ]
 
-  const rootStyle = accentColor
-    ? ({ '--color-accent': accentColor, '--color-accent-bright': accentColorBright ?? accentColor } as React.CSSProperties)
-    : undefined
+  const rootStyle = {
+    ...(accentColor && { '--color-accent': accentColor, '--color-accent-bright': accentColorBright ?? accentColor }),
+    ...(pageBackgroundImageUrl && {
+      backgroundImage: `url(${pageBackgroundImageUrl})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'top center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
+    }),
+  } as React.CSSProperties
 
   return (
     <div style={rootStyle}>
