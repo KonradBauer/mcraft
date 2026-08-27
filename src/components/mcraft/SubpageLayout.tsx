@@ -246,7 +246,7 @@ export function SubpageLayout({
           {!eyebrowBelowTitle && eyebrow && (
             <span className={`block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase ${eyebrowColorClassName} mb-[18px]`}>{eyebrow}</span>
           )}
-          <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] flex items-center gap-4">
+          <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] flex items-center">
             {titleLogoImageUrl ? (
               <>
                 {/* eslint-disable-next-line @next/next/no-img-element -- next/image requires images.localPatterns config for this one-off logo */}
