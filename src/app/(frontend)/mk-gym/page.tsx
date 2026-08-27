@@ -70,6 +70,7 @@ async function MkGymPageContent() {
       navPaddingClassName="py-2"
       topbarBgClassName="bg-black"
       eyebrowColorClassName="text-[#F0F0F0] underline underline-offset-4"
+      eyebrowBelowTitle
       hideDivider
       showTopbarLogo={false}
       footerLogoImageUrl="/mk-gym-logo.png"

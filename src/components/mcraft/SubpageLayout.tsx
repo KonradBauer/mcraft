@@ -126,6 +126,7 @@ export interface SubpageLayoutProps {
   descriptionColorClassName?: string
   tileTextColorClassName?: string
   hideDivider?: boolean
+  eyebrowBelowTitle?: boolean
 }
 
 const wrap = 'max-w-[1920px] mx-auto px-[56px] max-[980px]:px-[30px] max-[560px]:px-5'
@@ -163,6 +164,7 @@ export function SubpageLayout({
   descriptionColorClassName = 'text-light-muted',
   tileTextColorClassName = 'text-white',
   hideDivider = false,
+  eyebrowBelowTitle = false,
 }: SubpageLayoutProps) {
   const resolvedCtaLabel = ctaLabel ?? dict.subpage.ctaDefault
 
@@ -241,7 +243,7 @@ export function SubpageLayout({
           <div className="absolute inset-0 opacity-50 blueprint-bg pointer-events-none" />
         )}
         <div className={`${wrap} relative`}>
-          {eyebrow && (
+          {!eyebrowBelowTitle && eyebrow && (
             <span className={`block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase ${eyebrowColorClassName} mb-[18px]`}>{eyebrow}</span>
           )}
           <h1 className="font-light text-[52px] tracking-[0.01em] uppercase text-white max-[980px]:text-[38px] flex items-center gap-4">
@@ -254,8 +256,11 @@ export function SubpageLayout({
             ) : title}
           </h1>
           {!hideDivider && <div className={`w-16 h-0.5 ${dividerColorClassName} my-[26px]`} />}
+          {eyebrowBelowTitle && eyebrow && (
+            <span className={`block font-montserrat text-xs font-semibold tracking-[0.28em] uppercase ${eyebrowColorClassName} ${hideDivider ? 'mt-[26px]' : ''} mb-[14px]`}>{eyebrow}</span>
+          )}
           {description && (
-            <p className={`max-w-[560px] text-base leading-[1.75] font-light ${hideDivider ? 'mt-[26px]' : ''} ${descriptionColorClassName}`}>{description}</p>
+            <p className={`max-w-[560px] text-base leading-[1.75] font-light ${hideDivider && !eyebrowBelowTitle ? 'mt-[26px]' : ''} ${descriptionColorClassName}`}>{description}</p>
           )}
         </div>
       </header>
