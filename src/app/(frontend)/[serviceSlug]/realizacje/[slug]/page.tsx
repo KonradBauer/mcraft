@@ -126,6 +126,34 @@ function toGalleryImages(
   }, [])
 }
 
+// Grot z rozetą kresek (fletching), przycięty z zewnętrznej grafiki - zlewa się z linią separatora.
+function GalleryDividerTip({ flip = false }: { flip?: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 119 6"
+      width="104"
+      height="5"
+      preserveAspectRatio="none"
+      className={`flex-none ${flip ? '-scale-x-100' : ''}`}
+    >
+      <path d="M0 5.31091H97.5L94.114 0.310913H0V5.31091Z" fill="#000" />
+      <path d="M100.893 0.310913H97.5L100.775 5.31091H104.167L100.893 0.310913Z" fill="#000" />
+      <path d="M107.147 0.310913H103.333L107.017 5.31091H110.833L107.147 0.310913Z" fill="#000" />
+      <path d="M116.897 5.28621L118.333 2.79945L116.897 0.310913H110L113.39 5.31091H116.897V5.28621Z" fill="#000" />
+    </svg>
+  )
+}
+
+function GalleryDivider({ className = '' }: { className?: string }) {
+  return (
+    <div className={`flex items-center ${className}`} aria-hidden="true">
+      <GalleryDividerTip flip />
+      <div className="flex-1 h-[5px] bg-black" />
+      <GalleryDividerTip />
+    </div>
+  )
+}
+
 type Props = {
   params: Promise<{ serviceSlug: string; slug: string }>
 }
@@ -296,7 +324,8 @@ async function RealizacjaPageContent({ params }: Props) {
             // więc pierwsza dodatkowa grupa (i=0) jest "drugą" i ma układ odwrócony, kolejna znów normalny, itd.
             const isReversed = i % 2 === 0
             return (
-              <div key={i} className={`mt-20 pt-20 ${isMkGym ? 'border-t-2 border-black' : 'border-t border-[#e8e3d9]'}`}>
+              <div key={i} className={`mt-20 ${isMkGym ? '' : 'pt-20 border-t border-[#e8e3d9]'}`}>
+                {isMkGym && <GalleryDivider className="mb-20" />}
                 {group.title && (
                   <h2 className="font-semibold text-[26px] uppercase tracking-[0.03em] mb-8">
                     {group.title}
