@@ -50,6 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: true, follow: true, googleBot: { index: true, follow: true } },
     alternates: { canonical: siteUrl },
     icons: { icon: '/favicon.png' },
+    verification: { google: 'qr7scS4DJzY0Sw_1g17aptuLn_V7n6m1ZiqsaPwqM2o' },
     openGraph: {
       title: dict.meta.site.ogTitle,
       description: dict.meta.site.ogDescription,
