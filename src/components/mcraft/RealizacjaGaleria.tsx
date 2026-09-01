@@ -1,9 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import type { TouchEvent } from 'react'
 import { ImageWithSkeleton } from '@/components/mcraft/ImageWithSkeleton'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
+
+const SWIPE_THRESHOLD_PX = 40
 
 type GalleryImage = {
   url: string
@@ -27,6 +30,25 @@ export function RealizacjaGaleria({ images, dict, frameClassName = 'bg-[#f0ede7]
   }, [])
 
   const closeLightbox = useCallback(() => setLightboxOpen(false), [])
+
+  const touchStart = useRef<{ x: number; y: number } | null>(null)
+
+  const handleTouchStart = (e: TouchEvent) => {
+    const t = e.touches[0]
+    touchStart.current = { x: t.clientX, y: t.clientY }
+  }
+
+  const makeTouchEndHandler = (goNext: () => void, goPrev: () => void) => (e: TouchEvent) => {
+    const start = touchStart.current
+    touchStart.current = null
+    if (!start) return
+    const t = e.changedTouches[0]
+    const deltaX = t.clientX - start.x
+    const deltaY = t.clientY - start.y
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD_PX || Math.abs(deltaX) < Math.abs(deltaY)) return
+    if (deltaX < 0) goNext()
+    else goPrev()
+  }
 
   useEffect(() => {
     if (!lightboxOpen) return
@@ -52,7 +74,14 @@ export function RealizacjaGaleria({ images, dict, frameClassName = 'bg-[#f0ede7]
   return (
     <>
       {/* Main image */}
-      <div className={`relative w-full aspect-[4/3] overflow-hidden group max-h-[520px] ${frameClassName}`}>
+      <div
+        className={`relative w-full aspect-[4/3] overflow-hidden group max-h-[520px] ${frameClassName}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={makeTouchEndHandler(
+          () => setActiveIndex((activeIndex + 1) % images.length),
+          () => setActiveIndex((activeIndex - 1 + images.length) % images.length),
+        )}
+      >
         <button
           className="absolute inset-0 cursor-zoom-in"
           onClick={() => setLightboxOpen(true)}
@@ -171,6 +200,11 @@ export function RealizacjaGaleria({ images, dict, frameClassName = 'bg-[#f0ede7]
           <div
             className="relative w-[88vw] h-[80vh]"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={makeTouchEndHandler(
+              () => setActive((activeIndex + 1) % images.length),
+              () => setActive((activeIndex - 1 + images.length) % images.length),
+            )}
           >
             {!lightboxLoaded && (
               <div className="absolute inset-0 flex items-center justify-center">
