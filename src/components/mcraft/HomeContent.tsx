@@ -105,7 +105,7 @@ export function HomeContent({ hero, about, cvModal, bioModal, tiles, areas, loca
   return (
     <ModalProvider cvModal={cvModal} bioModal={bioModal} tiles={tiles} dict={dict}>
       {/* ====== HERO ====== */}
-      <header className="relative w-full bg-ink text-light aspect-[48/18] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
+      <header className="relative w-full bg-ink text-light aspect-[3.556] min-h-[590px] max-[980px]:aspect-auto max-[980px]:min-h-[100svh] overflow-hidden" id="top">
         <ImageWithSkeleton
           key={heroBackground}
           src={heroBackground}
