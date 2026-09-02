@@ -21,3 +21,40 @@ export function ModalBodySection({ title, children }: { title: string; children:
     </>
   )
 }
+
+type ParsedTextBlock = { type: 'p' | 'ul'; lines: string[] }
+
+function parseTextBlocks(text: string): ParsedTextBlock[] {
+  const blocks: ParsedTextBlock[] = []
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim()
+    if (!line) continue
+    if (line.startsWith('- ') || line === '-') {
+      const content = line.replace(/^-\s*/, '')
+      const last = blocks[blocks.length - 1]
+      if (last?.type === 'ul') last.lines.push(content)
+      else blocks.push({ type: 'ul', lines: [content] })
+    } else {
+      blocks.push({ type: 'p', lines: [line] })
+    }
+  }
+  return blocks
+}
+
+/** Renderuje tekst z textarea: każdy Enter to osobny akapit, linie zaczynające się od "-" tworzą listę wypunktowaną. */
+export function ParsedText({ text, className }: { text: string; className?: string }) {
+  const blocks = parseTextBlocks(text)
+  return (
+    <div className={`flex flex-col gap-2.5 ${className ?? ''}`}>
+      {blocks.map((block, i) =>
+        block.type === 'ul' ? (
+          <ul key={i} className="flex flex-col gap-1.5 pl-4 list-disc marker:text-accent">
+            {block.lines.map((line, j) => <li key={j}>{line}</li>)}
+          </ul>
+        ) : (
+          <p key={i}>{block.lines[0]}</p>
+        ),
+      )}
+    </div>
+  )
+}

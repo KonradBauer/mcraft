@@ -6,7 +6,7 @@ import type { BioModal, CvModal, StatTile } from '@/payload-types'
 import type { Dictionary } from '@/lib/i18n/dictionaries/pl'
 import { getTileIcon } from '@/lib/tileIcons'
 import { mediaUrl } from '@/lib/mediaUrl'
-import { ModalBodySection, ModalHead } from './ModalShared'
+import { ModalBodySection, ModalHead, ParsedText } from './ModalShared'
 
 const ModalBio = dynamic(() => import('./ModalBio').then((m) => m.ModalBio))
 
@@ -238,7 +238,7 @@ function ModalScopeContent({ title, description, dict }: ScopeModalContent & { d
     <>
       <ModalHead eyebrowText={dict.modal.scope.eyebrow} title={title} />
       <div className="px-12 pt-4 pb-8 max-[980px]:px-7">
-        <p className="text-[13.5px] leading-[1.65] text-[#56544e]">{description}</p>
+        <ParsedText text={description} className="text-[13.5px] leading-[1.65] text-[#56544e]" />
       </div>
     </>
   )
